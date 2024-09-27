@@ -23,7 +23,7 @@ const Overview = () => {
   };
 
   return (
-    <div className="font-[family-name:var(--font-geist-sans)] max-w-3xl mx-auto p-6">
+    <div className="font-[family-name:var(--font-geist-sans)] max-w-3xl mx-auto">
       <h1 className="text-4xl font-bold mb-6">Spark Overview</h1>
       <p className="mb-4">
         A trust-minimized solution designed to scale Bitcoin and extend the
