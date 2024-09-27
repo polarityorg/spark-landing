@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 
 const Overview = () => {
-  const [activeSection, setActiveSection] = useState("");
+  const [, setActiveSection] = useState("");
 
   const sections = [
     { id: "spark-tldr", title: "Spark TLDR" },
