@@ -24,12 +24,6 @@ const Overview = () => {
 
   return (
     <div className="font-[family-name:var(--font-geist-sans)] max-w-3xl mx-auto pt-8">
-      <h1 className="text-4xl font-bold mb-6">Spark Overview</h1>
-      <p className="mb-4">
-        A trust-minimized solution designed to scale Bitcoin and extend the
-        Lightning Network.
-      </p>
-
       {/* disclaimer */}
       <h5 className="font-bold text-sm">Disclaimer</h5>
       <p className="mb-4">
