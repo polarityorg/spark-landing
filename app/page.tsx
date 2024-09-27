@@ -8,7 +8,7 @@ import Overview from "@/components/overview";
 export default function Home() {
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen max-w-3xl mx-auto p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
+      <main className="flex flex-col gap-8 row-start-2 sm:items-start">
         <Image
           className="dark:invert"
           src="/spark.svg"
@@ -17,7 +17,7 @@ export default function Home() {
           height={38}
           priority
         />
-        <p className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
+        <p className="list-inside list-decimal text-sm text-left sm:text-left font-[family-name:var(--font-geist-mono)]">
           A trust-minimized solution designed to scale Bitcoin and extend the
           Lightning Network.
         </p>
