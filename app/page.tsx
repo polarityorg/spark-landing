@@ -1,5 +1,3 @@
-import { BlockMath } from "react-katex";
-
 import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
@@ -43,13 +41,6 @@ export default function Home({
             <Overview />
           </TabsContent>
           <TabsContent value="technical" className="w-full">
-            {/* <div className="flex justify-center items-center h-full">
-              <div className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
-                <BlockMath
-                  math={`K_{\\text{SO\\_old}} + K_{\\text{User\\_old}} = \\sum_{i=1}^{n} \\left( K_{\\text{User}_i} + K_{\\text{SO}_i} \\right)`}
-                />
-              </div>
-            </div> */}
             <TechnicalOverview />
           </TabsContent>
         </Tabs>

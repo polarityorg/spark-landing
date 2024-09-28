@@ -10,7 +10,7 @@ import { InlineMath } from "react-katex";
 import Image from "next/image";
 
 const TechnicalOverview = () => {
-  const [activeSection, setActiveSection] = useState("");
+  const [, setActiveSection] = useState("");
 
   const sections = [
     { id: "overview", title: "Overview" },
@@ -389,8 +389,8 @@ const TechnicalOverview = () => {
                       <li>
                         The user and SE work together to generate an aggregate
                         public key, which is the sum of all the individual SE
-                        public keys and the user's public key. They then derive
-                        a pay-to-taproot address for this key.
+                        public keys and the user&apos;s public key. They then
+                        derive a pay-to-taproot address for this key.
                       </li>
                       <li>
                         <InlineMath
