@@ -422,480 +422,506 @@ const TechnicalOverview = () => {
           )}
           {section.id === "transaction-lifecycles" && (
             <div>
-              {/* Deposit */}
-              <h3 className="text-xl font-semibold mb-2">Deposits from L1</h3>
-              <p className="mb-4">
-                This section outlines the step-by-step process for depositing
-                funds from the Bitcoin L1 into Spark.
-              </p>
-              <h4 className="text-lg font-semibold mt-2 mb-2">
-                Steps-by-Step Process
-              </h4>
-              <div className="ml-4">
-                <ol className="list-decimal pl-4 space-y-4">
-                  <li className="pl-2">
-                    <p>
-                      <strong>Key Generation:</strong>
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="deposits">
+                  <AccordionTrigger>Deposits from L1</AccordionTrigger>
+                  <AccordionContent>
+                    <h4 className="text-lg font-semibold mt-2 mb-2">
+                      Steps-by-Step Process
+                    </h4>
+                    <div className="ml-4">
+                      <ol className="list-decimal pl-4 space-y-4">
+                        <li className="pl-2">
+                          <p>
+                            <strong>Key Generation:</strong>
+                          </p>
+                          <ul className="list-disc ml-8 mt-2">
+                            <li className="pl-2">
+                              <p>
+                                The user and SE work together to generate an
+                                aggregate public key, which is the sum of all
+                                the individual SE public keys and the
+                                user&apos;s public key. They then derive a
+                                pay-to-taproot address for this key.
+                              </p>
+                            </li>
+                            <li className="pl-2">
+                              <p>
+                                <InlineMath
+                                  math={`PubKey_{Combined} = PubKey_{User} + PubKey_{SO_1} + PubKey_{SO_2} ...`}
+                                />
+                              </p>
+                            </li>
+                          </ul>
+                        </li>
+                        <li className="pl-2">
+                          <p>
+                            <strong>Setup and Signing:</strong>
+                          </p>
+                          <ul className="list-disc ml-8 mt-2">
+                            <li className="pl-2">
+                              <p>
+                                User and SE collaboratively create and sign two
+                                transactions:
+                              </p>
+                              <ol className="list-decimal pl-4 space-y-4">
+                                <li className="pl-2">
+                                  <p>
+                                    An intermediate transaction (not
+                                    broadcasted) with no timelock that spends
+                                    from the combined public key back to the
+                                    combined public key. This transaction
+                                    triggers the relative timelock of leaves
+                                    under it.
+                                  </p>
+                                </li>
+                                <li className="pl-2">
+                                  <p>
+                                    A refund transaction with a timelock
+                                    relative to the intermediate transaction.
+                                    This transaction is broadcasted if the user
+                                    wants to exit Spark.
+                                  </p>
+                                </li>
+                              </ol>
+                            </li>
+                            <li className="pl-2">
+                              <p>
+                                <strong>
+                                  Both transactions are signed by all parties
+                                  involved in order to recreate the combined key
+                                  spending condition.
+                                </strong>
+                              </p>
+                            </li>
+                          </ul>
+                        </li>
+                        <li className="pl-2">
+                          <p>
+                            <strong>Storage:</strong>
+                          </p>
+                          <ul className="list-disc ml-8 mt-2">
+                            <li className="pl-2">
+                              <p>
+                                User and SE securely store the signed
+                                transactions
+                              </p>
+                            </li>
+                          </ul>
+                        </li>
+                        <li className="pl-2">
+                          <p>
+                            <strong>User Deposit:</strong>
+                          </p>
+                          <ul className="list-disc ml-8 mt-2">
+                            <li className="pl-2">
+                              <p>
+                                User broadcasts a deposit transaction to the
+                                Pay-to-Taproot address from Step 1
+                              </p>
+                            </li>
+                          </ul>
+                        </li>
+                        <li className="pl-2">
+                          <p>
+                            <strong>SE Confirmation:</strong>
+                          </p>
+                          <ul className="list-disc ml-8 mt-2">
+                            <li className="pl-2">
+                              <p>
+                                SE verifies the deposit and issues a Spark leaf
+                                to the user
+                              </p>
+                            </li>
+                          </ul>
+                        </li>
+                      </ol>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="splits">
+                  <AccordionTrigger>Splitting a Leaf</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="mb-4">
+                      By splitting keys, we can create a transaction that spends
+                      the original UTXO and produces multiple outputs, each
+                      controlled by a part of the split key. The sum of the keys
+                      in all branches equals the original key, allowing flexible
+                      transaction management without on-chain transactions.
+                      <br />
+                      <br />
+                      To split a leaf in Spark, we need to split it&apos;s
+                      existing key into multiple keys such that the sum of the
+                      new keys equals the original key.
+                      <br />
+                      <br />
+                      This can be represented as follows:
+                      <br />
+                      Original key: <InlineMath math="a_0=150" />
+                      <br />
+                      <br />
+                      Split into two keys: <InlineMath math="a_1=100" />{" "}
+                      <InlineMath math="a_2=50" />
+                      <br />
+                      <br />
+                      Ensuring <InlineMath math="a_0= a_1+a_2" />
+                      <br />
+                      <br />
+                      If the parent leaf is encumbered by the spending condition
+                      of <InlineMath math="a_0" /> it can then alternatively be
+                      spent using <InlineMath math="a_1+a_2" />, as they sum up
+                      to <InlineMath math="a_0" />.
+                      <br />
+                      <br />
+                      We want to ensure the following:
+                      <br />
+                      <InlineMath math="\text{PrivKey}_{\text{User\_Old}} + \text{PrivKey}_{\text{SE\_Old}} = \sum_{i=1}^{n} \left( \text{PrivKey}_{\text{User}_i} + \text{PrivKey}_{\text{SE}_i} \right)" />
                     </p>
-                    <ul className="list-disc ml-8 mt-2">
+                    <h4 className="text-lg font-semibold mt-4 mb-2">
+                      Step-by-Step Process
+                    </h4>
+                    <ol className="list-decimal pl-4 space-y-4">
                       <li className="pl-2">
                         <p>
-                          The user and SE work together to generate an aggregate
-                          public key, which is the sum of all the individual SE
-                          public keys and the user&apos;s public key. They then
-                          derive a pay-to-taproot address for this key.
+                          <strong>User Key Splitting</strong>
                         </p>
+                        <ul className="list-disc ml-8 mt-2">
+                          <li className="pl-2">
+                            <p>Generate n new user private keys</p>
+                          </li>
+                          <li className="pl-2 mb-2">
+                            <p>
+                              Calculate the difference <InlineMath math="t" />{" "}
+                              between old and new keys:
+                            </p>
+                          </li>
+                          <InlineMath math="t = \text{PrivKey}_{\text{User\_Old}} - \sum_{i=1}^{n} \text{PrivKey}_{\text{User}_i}" />
+                        </ul>
                       </li>
                       <li className="pl-2">
                         <p>
-                          <InlineMath
-                            math={`PubKey_{Combined} = PubKey_{User} + PubKey_{SO_1} + PubKey_{SO_2} ...`}
-                          />
+                          <strong>SE Key Splitting</strong>
                         </p>
-                      </li>
-                    </ul>
-                  </li>
-                  <li className="pl-2">
-                    <p>
-                      <strong>Setup and Signing:</strong>
-                    </p>
-                    <ul className="list-disc ml-8 mt-2">
-                      <li className="pl-2">
-                        <p>
-                          User and SE collaboratively create and sign two
-                          transactions:
-                        </p>
-                        <ol className="list-decimal pl-4 space-y-4">
+                        <ul className="list-disc  ml-8 mt-2">
                           <li className="pl-2">
                             <p>
-                              An intermediate transaction (not broadcasted) with
-                              no timelock that spends from the combined public
-                              key back to the combined public key. This
-                              transaction triggers the relative timelock of
-                              leaves under it.
+                              Generate <InlineMath math="n-1" /> random SE
+                              private keys
                             </p>
                           </li>
                           <li className="pl-2">
                             <p>
-                              A refund transaction with a timelock relative to
-                              the intermediate transaction. This transaction is
-                              broadcasted if the user wants to exit Spark.
+                              Calculate the final SE key to satisfy the key sum
+                              equality
                             </p>
                           </li>
-                        </ol>
+                        </ul>
+                      </li>
+                      <li className="pl-2">
+                        <p>
+                          <strong>Branch Transaction Creation</strong>
+                        </p>
+                        <ul className="list-disc  ml-8 mt-2">
+                          <li className="pl-2">
+                            <p>
+                              Create transaction with multiple outputs, each
+                              locked by a new combined public key
+                            </p>
+                          </li>
+                          <li className="pl-2">
+                            <p>Sign the transaction using original keys</p>
+                          </li>
+                        </ul>
+                      </li>
+                      <li className="pl-2">
+                        <p>
+                          <strong>Key Deletion</strong>
+                        </p>
+                        <ul className="list-disc  ml-8 mt-2">
+                          <li className="pl-2">
+                            <p>Securely delete original private keys</p>
+                          </li>
+                        </ul>
                       </li>
                       <li className="pl-2">
                         <p>
                           <strong>
-                            Both transactions are signed by all parties involved
-                            in order to recreate the combined key spending
-                            condition.
+                            Intermediate and Refund Transactions for Each Leaf
                           </strong>
                         </p>
+                        <ul className="list-disc  ml-8 mt-2">
+                          <li className="pl-2">
+                            <p>
+                              Create and sign intermediate and refund
+                              transactions for each new leaf using the new keys
+                            </p>
+                          </li>
+                        </ul>
                       </li>
-                    </ul>
-                  </li>
-                  <li className="pl-2">
-                    <p>
-                      <strong>Storage:</strong>
-                    </p>
-                    <ul className="list-disc ml-8 mt-2">
                       <li className="pl-2">
                         <p>
-                          User and SE securely store the signed transactions
+                          <strong>Finalization</strong>
                         </p>
+                        <ul className="list-disc  ml-8 mt-2">
+                          <li className="pl-2">
+                            <p>Store branch transaction off-chain</p>
+                          </li>
+                          <li className="pl-2">
+                            <p>Record new leaves for use within Spark</p>
+                          </li>
+                        </ul>
                       </li>
-                    </ul>
-                  </li>
-                  <li className="pl-2">
-                    <p>
-                      <strong>User Deposit:</strong>
-                    </p>
-                    <ul className="list-disc ml-8 mt-2">
-                      <li className="pl-2">
-                        <p>
-                          User broadcasts a deposit transaction to the
-                          Pay-to-Taproot address from Step 1
-                        </p>
-                      </li>
-                    </ul>
-                  </li>
-                  <li className="pl-2">
-                    <p>
-                      <strong>SE Confirmation:</strong>
-                    </p>
-                    <ul className="list-disc ml-8 mt-2">
-                      <li className="pl-2">
-                        <p>
-                          SE verifies the deposit and issues a Spark leaf to the
-                          user
-                        </p>
-                      </li>
-                    </ul>
-                  </li>
-                </ol>
-              </div>
-              {/* Splitting */}
-              <h3 className="text-xl font-semibold mt-4 mb-2">
-                Splitting a leaf
-              </h3>
-              <p className="mb-4">
-                By splitting keys, we can create a transaction that spends the
-                original UTXO and produces multiple outputs, each controlled by
-                a part of the split key. The sum of the keys in all branches
-                equals the original key, allowing flexible transaction
-                management without on-chain transactions.
-                <br />
-                <br />
-                To split a leaf in Spark, we need to split it&apos;s existing
-                key into multiple keys such that the sum of the new keys equals
-                the original key.
-                <br />
-                <br />
-                This can be represented as follows:
-                <br />
-                Original key: <InlineMath math="a_0=150" />
-                <br />
-                <br />
-                Split into two keys: <InlineMath math="a_1=100" />{" "}
-                <InlineMath math="a_2=50" />
-                <br />
-                <br />
-                Ensuring <InlineMath math="a_0= a_1+a_2" />
-                <br />
-                <br />
-                If the parent leaf is encumbered by the spending condition of{" "}
-                <InlineMath math="a_0" /> it can then alternatively be spent
-                using <InlineMath math="a_1+a_2" />, as they sum up to{" "}
-                <InlineMath math="a_0" />.
-                <br />
-                <br />
-                We want to ensure the following:
-                <br />
-                <InlineMath math="\text{PrivKey}_{\text{User\_Old}} + \text{PrivKey}_{\text{SE\_Old}} = \sum_{i=1}^{n} \left( \text{PrivKey}_{\text{User}_i} + \text{PrivKey}_{\text{SE}_i} \right)" />
-              </p>
-              <h4 className="text-lg font-semibold mt-4 mb-2">
-                Step-by-Step Process
-              </h4>
-              <ol className="list-decimal pl-4 space-y-4">
-                <li className="pl-2">
-                  <p>
-                    <strong>User Key Splitting</strong>
-                  </p>
-                  <ul className="list-disc ml-8 mt-2">
-                    <li className="pl-2">
-                      <p>Generate n new user private keys</p>
-                    </li>
-                    <li className="pl-2 mb-2">
-                      <p>
-                        Calculate the difference <InlineMath math="t" /> between
-                        old and new keys:
-                      </p>
-                    </li>
-                    <InlineMath math="t = \text{PrivKey}_{\text{User\_Old}} - \sum_{i=1}^{n} \text{PrivKey}_{\text{User}_i}" />
-                  </ul>
-                </li>
-                <li className="pl-2">
-                  <p>
-                    <strong>SE Key Splitting</strong>
-                  </p>
-                  <ul className="list-disc  ml-8 mt-2">
-                    <li className="pl-2">
-                      <p>
-                        Generate <InlineMath math="n-1" /> random SE private
-                        keys
-                      </p>
-                    </li>
-                    <li className="pl-2">
-                      <p>
-                        Calculate the final SE key to satisfy the key sum
-                        equality
-                      </p>
-                    </li>
-                  </ul>
-                </li>
-                <li className="pl-2">
-                  <p>
-                    <strong>Branch Transaction Creation</strong>
-                  </p>
-                  <ul className="list-disc  ml-8 mt-2">
-                    <li className="pl-2">
-                      <p>
-                        Create transaction with multiple outputs, each locked by
-                        a new combined public key
-                      </p>
-                    </li>
-                    <li className="pl-2">
-                      <p>Sign the transaction using original keys</p>
-                    </li>
-                  </ul>
-                </li>
-                <li className="pl-2">
-                  <p>
-                    <strong>Key Deletion</strong>
-                  </p>
-                  <ul className="list-disc  ml-8 mt-2">
-                    <li className="pl-2">
-                      <p>Securely delete original private keys</p>
-                    </li>
-                  </ul>
-                </li>
-                <li className="pl-2">
-                  <p>
-                    <strong>
-                      Intermediate and Refund Transactions for Each Leaf
-                    </strong>
-                  </p>
-                  <ul className="list-disc  ml-8 mt-2">
-                    <li className="pl-2">
-                      <p>
-                        Create and sign intermediate and refund transactions for
-                        each new leaf using the new keys
-                      </p>
-                    </li>
-                  </ul>
-                </li>
-                <li className="pl-2">
-                  <p>
-                    <strong>Finalization</strong>
-                  </p>
-                  <ul className="list-disc  ml-8 mt-2">
-                    <li className="pl-2">
-                      <p>Store branch transaction off-chain</p>
-                    </li>
-                    <li className="pl-2">
-                      <p>Record new leaves for use within Spark</p>
-                    </li>
-                  </ul>
-                </li>
-              </ol>
-              {/* Transfer */}
-              <h3 className="text-xl font-semibold mt-4 mb-2">Transfers</h3>
-              <p className="mb-4">
-                Ownership is transferred by adjusting the SE&apos;s key so that
-                the combined key remains the same before and after the transfer,
-                but control shifts from the sender to the receiver.
-                <br />
-                <br />
-                Original Combined Key:
-                <br />
-                <InlineMath math="\text{PubKey}_{\text{Combined}} = \text{PubKey}_{\text{Sender}} + \text{PubKey}_{\text{SE}}" />
-                <br />
-                <br />
-                After Transfer:
-                <br />
-                <InlineMath math="\text{PubKey}_{\text{Combined}} = \text{PubKey}_{\text{Receiver}} + \text{PubKey}'_{\text{SE}}" />
-              </p>
-              <h4 className="text-lg font-semibold mt-4 mb-2">
-                Step-by-Step Process
-              </h4>
-              <ol className="list-decimal pl-4 space-y-4">
-                <li className="pl-2">
-                  <p>
-                    <strong>Initiation</strong>
-                  </p>
-                  <ul className="list-disc  ml-8 mt-2">
-                    <li className="pl-2">
-                      <p>SE generates random value x₁</p>
-                    </li>
-                    <li className="pl-2">
-                      <p>
-                        Sender uses the x₁ value and calculates t₁
-                        <br />
-                        <InlineMath math="\text{t}_1 = \text{PrivKey}_{\text{Sender}} + x_1" />
-                      </p>
-                    </li>
-                    <li className="pl-2">
-                      The sender encrypts t₁ with receiver&apos;s public key
-                    </li>
-                  </ul>
-                </li>
-                <li className="pl-2">
-                  <strong>Receiver Claim</strong>
-                  <ul className="list-disc  ml-8 mt-2">
-                    <li className="pl-2">
-                      Receiver decrypts t₁ using their private key and
-                      calculates t₂ using a new random key
+                    </ol>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="transfers">
+                  <AccordionTrigger>Transfer</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="mb-4">
+                      Ownership is transferred by adjusting the SE&apos;s key so
+                      that the combined key remains the same before and after
+                      the transfer, but control shifts from the sender to the
+                      receiver.
                       <br />
-                      <InlineMath math="\text{t}_2 = \text{t}_1 - \text{PrivKey}_{\text{Receiver}}" />
-                    </li>
-                  </ul>
-                </li>
-                <li className="pl-2">
-                  <strong>SE Key Adjustment</strong>
-                  <ul className="list-disc  ml-8 mt-2">
-                    <li className="pl-2">
-                      SE&apos;s use t₂ to calculate new private key that summed
-                      with the new receiver key equals the original combined key
-                    </li>
-                    <li className="pl-2">
-                      The SE and receiver sign a new refund transaction with a
-                      lower timelock than the previous one
-                    </li>
-                    <li className="pl-2">
-                      SE securely deletes the old private key
-                    </li>
-                    <li className="pl-2">
-                      Transfer completed, receiver has full control
-                    </li>
-                  </ul>
-                </li>
-              </ol>
-              {/* Withdraw to L1*/}
-              <h3 className="text-xl font-semibold mt-4 mb-2">
-                Withdrawals to L1
-              </h3>
-              <p className="mb-4">
-                There are two ways to exit Spark to L1 - either by using an SSP
-                or by unilaterally exiting.
-              </p>
-              <h4 className="text-lg font-semibold mb-2">Using an SSP</h4>
-              <h5 className="text-md font-semibold mb-2">
-                Steps-by-Step Process
-              </h5>
-              <p className="mb-4">Something about connectors</p>
-              <h4 className="text-lg font-semibold mt-4 mb-2">
-                Unilateral Exit
-              </h4>
-              <p className="mb-4">
-                The user can unilaterally exit Spark at any time by broadcasting
-                the refund transaction for their leaf or leaves. In cases where
-                the leaf is the child of a branch, the branch transaction will
-                need to be broadcasted first.
-                <br />
-                <br />
-                Any user who has previously held the leaf could attempt to
-                publish an old state. The current user will have a signed
-                transaction with a lower timelock. If the current user is not
-                online, the SE and SSP can optionally serve as watchtowers on
-                behalf of the current user and publish the latest transaction
-                state if the previous owner attempts to be malicious and
-                broadcast an invalid state. The SO&apos;s can do this since each
-                leaf (unless it&apos;s the root of a tree) has one or many
-                parent transactions that need to be broadcasted before the leaf
-                and to trigger the leafs time bomb. Note that this does not
-                change the trust assumptions - we still rely on 1 of the SOs to
-                be online and honest.
-              </p>
-              {/* Lightning */}
-              {/* Lightning */}
-              <h3 className="text-xl font-semibold mt-4 mb-2">Lightning</h3>
+                      <br />
+                      Original Combined Key:
+                      <br />
+                      <InlineMath math="\text{PubKey}_{\text{Combined}} = \text{PubKey}_{\text{Sender}} + \text{PubKey}_{\text{SE}}" />
+                      <br />
+                      <br />
+                      After Transfer:
+                      <br />
+                      <InlineMath math="\text{PubKey}_{\text{Combined}} = \text{PubKey}_{\text{Receiver}} + \text{PubKey}'_{\text{SE}}" />
+                    </p>
+                    <h4 className="text-lg font-semibold mt-4 mb-2">
+                      Step-by-Step Process
+                    </h4>
+                    <ol className="list-decimal pl-4 space-y-4">
+                      <li className="pl-2">
+                        <p>
+                          <strong>Initiation</strong>
+                        </p>
+                        <ul className="list-disc  ml-8 mt-2">
+                          <li className="pl-2">
+                            <p>SE generates random value x₁</p>
+                          </li>
+                          <li className="pl-2">
+                            <p>
+                              Sender uses the x₁ value and calculates t₁
+                              <br />
+                              <InlineMath math="\text{t}_1 = \text{PrivKey}_{\text{Sender}} + x_1" />
+                            </p>
+                          </li>
+                          <li className="pl-2">
+                            The sender encrypts t₁ with receiver&apos;s public
+                            key
+                          </li>
+                        </ul>
+                      </li>
+                      <li className="pl-2">
+                        <strong>Receiver Claim</strong>
+                        <ul className="list-disc  ml-8 mt-2">
+                          <li className="pl-2">
+                            Receiver decrypts t₁ using their private key and
+                            calculates t₂ using a new random key
+                            <br />
+                            <InlineMath math="\text{t}_2 = \text{t}_1 - \text{PrivKey}_{\text{Receiver}}" />
+                          </li>
+                        </ul>
+                      </li>
+                      <li className="pl-2">
+                        <strong>SE Key Adjustment</strong>
+                        <ul className="list-disc  ml-8 mt-2">
+                          <li className="pl-2">
+                            SE&apos;s use t₂ to calculate new private key that
+                            summed with the new receiver key equals the original
+                            combined key
+                          </li>
+                          <li className="pl-2">
+                            The SE and receiver sign a new refund transaction
+                            with a lower timelock than the previous one
+                          </li>
+                          <li className="pl-2">
+                            SE securely deletes the old private key
+                          </li>
+                          <li className="pl-2">
+                            Transfer completed, receiver has full control
+                          </li>
+                        </ul>
+                      </li>
+                    </ol>
+                  </AccordionContent>
+                </AccordionItem>
 
-              <h4 className="text-lg font-semibold mb-2">
-                Receiving a Lightning Payment
-              </h4>
-              <ol className="list-decimal pl-8">
-                <li>
-                  <p>
-                    Alice generates a Lightning invoice with a route hint
-                    through the SSP routing node, including a preimage P.
-                  </p>
-                </li>
-                <li>
-                  <p>
-                    Alice shards the preimage P into n shards (n = number of
-                    SOs).
-                  </p>
-                </li>
-                <li>
-                  <p>
-                    Alice sends one preimage shard to each SO. SOs maintain a
-                    mapping of user_pubkey:invoice:preimage_shard.
-                  </p>
-                </li>
-                <li>
-                  <p>Alice shares the invoice with Bob.</p>
-                </li>
-                <li>
-                  <p>
-                    Bob sends a Lightning payment which reaches the SSP routing
-                    node.
-                  </p>
-                </li>
-                <li>
-                  <p>
-                    SSP makes an API call to the SE for an atomic transfer of
-                    leaves to Alice in exchange for the preimage from all SOs.
-                  </p>
-                </li>
-              </ol>
+                <AccordionItem value="withdrawals">
+                  <AccordionTrigger>Withdrawals to L1</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="mb-4">
+                      There are two ways to exit Spark to L1 - either by using
+                      an SSP or by unilaterally exiting.
+                    </p>
+                    <h4 className="text-lg font-semibold mb-2">Using an SSP</h4>
+                    <h5 className="text-md font-semibold mb-2">
+                      Steps-by-Step Process
+                    </h5>
+                    <p className="mb-4">Something about connectors</p>
+                    <h4 className="text-lg font-semibold mt-4 mb-2">
+                      Unilateral Exit
+                    </h4>
+                    <p className="mb-4">
+                      The user can unilaterally exit Spark at any time by
+                      broadcasting the refund transaction for their leaf or
+                      leaves. In cases where the leaf is the child of a branch,
+                      the branch transaction will need to be broadcasted first.
+                      <br />
+                      <br />
+                      Any user who has previously held the leaf could attempt to
+                      publish an old state. The current user will have a signed
+                      transaction with a lower timelock. If the current user is
+                      not online, the SE and SSP can optionally serve as
+                      watchtowers on behalf of the current user and publish the
+                      latest transaction state if the previous owner attempts to
+                      be malicious and broadcast an invalid state. The SO&apos;s
+                      can do this since each leaf (unless it&apos;s the root of
+                      a tree) has one or many parent transactions that need to
+                      be broadcasted before the leaf and to trigger the leafs
+                      time bomb. Note that this does not change the trust
+                      assumptions - we still rely on 1 of the SOs to be online
+                      and honest.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
 
-              <h5 className="text-md font-semibold mt-4 mb-2">
-                Atomic Swap Methodology
-              </h5>
-              <ol className="list-decimal pl-8">
-                <li>
-                  <p>
-                    SOs create signature shares for refund transactions of
-                    leaves being transferred.
-                  </p>
-                </li>
-                <li>
-                  <p>
-                    Signature shares are encrypted by the preimage share owned
-                    by that SO.
-                  </p>
-                </li>
-                <li>
-                  <p>
-                    Encrypted shares are distributed to each SO within the SE.
-                  </p>
-                </li>
-                <li>
-                  <p>SSS is used to share the preimage.</p>
-                </li>
-                <li>
-                  <p>
-                    Signature shares are decrypted using newly-shared preimage
-                    shares from each SO.
-                  </p>
-                </li>
-              </ol>
+                <AccordionItem value="lightning">
+                  <AccordionTrigger>Lightning</AccordionTrigger>
+                  <AccordionContent>
+                    <h4 className="text-lg font-semibold mb-2">
+                      Receiving a Lightning Payment
+                    </h4>
+                    <ol className="list-decimal pl-8">
+                      <li>
+                        <p>
+                          Alice generates a Lightning invoice with a route hint
+                          through the SSP routing node, including a preimage P.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          Alice shards the preimage P into n shards (n = number
+                          of SOs).
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          Alice sends one preimage shard to each SO. SOs
+                          maintain a mapping of
+                          user_pubkey:invoice:preimage_shard.
+                        </p>
+                      </li>
+                      <li>
+                        <p>Alice shares the invoice with Bob.</p>
+                      </li>
+                      <li>
+                        <p>
+                          Bob sends a Lightning payment which reaches the SSP
+                          routing node.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          SSP makes an API call to the SE for an atomic transfer
+                          of leaves to Alice in exchange for the preimage from
+                          all SOs.
+                        </p>
+                      </li>
+                    </ol>
 
-              <p className="mt-4">
-                <strong>Note:</strong> Preimage shares are created to resist
-                brute-force attempts by malicious SOs.
-              </p>
+                    <h5 className="text-md font-semibold mt-4 mb-2">
+                      Atomic Swap Methodology
+                    </h5>
+                    <ol className="list-decimal pl-8">
+                      <li>
+                        <p>
+                          SOs create signature shares for refund transactions of
+                          leaves being transferred.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          Signature shares are encrypted by the preimage share
+                          owned by that SO.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          Encrypted shares are distributed to each SO within the
+                          SE.
+                        </p>
+                      </li>
+                      <li>
+                        <p>SSS is used to share the preimage.</p>
+                      </li>
+                      <li>
+                        <p>
+                          Signature shares are decrypted using newly-shared
+                          preimage shares from each SO.
+                        </p>
+                      </li>
+                    </ol>
 
-              <h4 className="text-lg font-semibold mt-6 mb-2">
-                Sending a Lightning Payment
-              </h4>
-              <ol className="list-decimal pl-8">
-                <li>
-                  <p>Alice receives a Lightning invoice from Bob.</p>
-                </li>
-                <li>
-                  <p>
-                    Alice makes an API call to the SSP, agreeing to
-                    conditionally transfer leaves upon payment completion.
-                  </p>
-                </li>
-                <li>
-                  <p>
-                    SE locks transfers on Alice&apos;s specified leaves until a
-                    specified time.
-                  </p>
-                </li>
-                <li>
-                  <p>
-                    SSP makes a Lightning payment to pay Bob&apos;s invoice.
-                  </p>
-                </li>
-                <li>
-                  <p>SSP provides proof of Lightning payment to the SE.</p>
-                </li>
-                <li>
-                  <p>
-                    SE finalizes the transfer of Alice&apos;s leaves to the SSP
-                    atomically.
-                  </p>
-                </li>
-              </ol>
+                    <p className="mt-4">
+                      <strong>Note:</strong> Preimage shares are created to
+                      resist brute-force attempts by malicious SOs.
+                    </p>
 
-              <p className="mt-4">
-                <strong>Note:</strong> If the specified time expires, the SE
-                unlocks usage of the leaves and keeps control with Alice.
-              </p>
+                    <h4 className="text-lg font-semibold mt-6 mb-2">
+                      Sending a Lightning Payment
+                    </h4>
+                    <ol className="list-decimal pl-8">
+                      <li>
+                        <p>Alice receives a Lightning invoice from Bob.</p>
+                      </li>
+                      <li>
+                        <p>
+                          Alice makes an API call to the SSP, agreeing to
+                          conditionally transfer leaves upon payment completion.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          SE locks transfers on Alice&apos;s specified leaves
+                          until a specified time.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          SSP makes a Lightning payment to pay Bob&apos;s
+                          invoice.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          SSP provides proof of Lightning payment to the SE.
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          SE finalizes the transfer of Alice&apos;s leaves to
+                          the SSP atomically.
+                        </p>
+                      </li>
+                    </ol>
+
+                    <p className="mt-4">
+                      <strong>Note:</strong> If the specified time expires, the
+                      SE unlocks usage of the leaves and keeps control with
+                      Alice.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </div>
           )}
           {section.id === "spark-trust-model" && (
