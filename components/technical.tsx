@@ -66,12 +66,10 @@ const TechnicalOverview = () => {
                 Spark is a scalable solution that can onboard billions of users
                 overnight, with a low on-chain footprint, no pre-signing or
                 availability requirements of users, and minimal trust
-                assumptions. From there, we explore how to reach a fully
-                trustless variation of Spark in the future. This proposal is a
-                logical extension of Statechains, seeking to provide a solution
-                that balances what is feasible and practical while staying true
-                to the pathways laid out for further scaling Lightning and
-                enabling broad adoption.
+                assumptions. This proposal is a logical extension of
+                Statechains, seeking to provide a solution that balances what is
+                feasible and practical while staying true to the pathways laid
+                out for further scaling Lightning and enabling broad adoption.
               </p>
             </div>
           )}
