@@ -409,15 +409,11 @@ const Overview = () => {
             </>
           )}
           {section.id === "spark-ux" && (
-            <>
-              <h3 className="text-xl font-bold mb-2">User Experience</h3>
-              <p className="mb-4">
-                Spark is our dream payment solution. We&apos;re building Spark
-                with simplicity, security, and performance in mind &mdash; all
-                so end-users and developers can have the best experience
-                possible.
-              </p>
-            </>
+            <p className="mb-4">
+              Spark is our dream payment solution. We&apos;re building Spark
+              with simplicity, security, and performance in mind &mdash; all so
+              end-users and developers can have the best experience possible.
+            </p>
           )}
           {section.id === "faq" && (
             <Accordion type="single" collapsible className="w-full">
