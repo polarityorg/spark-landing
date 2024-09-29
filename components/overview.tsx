@@ -314,8 +314,8 @@ const Overview = () => {
                 will sign an exit transaction, so that if the SE ever go offline
                 or act maliciously, you can always reclaim your funds on Bitcoin
                 to your preferred address. Once your deposit is confirmed
-                on-chain, you're all set—congratulations you now have funds on
-                Spark!
+                on-chain, you&apos;re all set—congratulations you now have funds
+                on Spark!
               </p>
               <Image
                 src="/bitcoin-spark.png"
