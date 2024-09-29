@@ -283,6 +283,14 @@ const TechnicalOverview = () => {
                   <AccordionTrigger>Timelocks</AccordionTrigger>
                   <AccordionContent>
                     <p className="mb-4">
+                      Timelocks on Bitcoin can either be absolute or relative.
+                      An absolute timelock specifies a block height after which
+                      a transaction can be broadcasted. A relative timelock
+                      specifies a number of blocks after the parent transaction
+                      is included in a block before the child transaction can be
+                      broadcasted.
+                      <br />
+                      <br />
                       The diagram below shows how statechains typically work:
                       <Image
                         src="/timelock1.png"
