@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/accordion";
 import { InlineMath } from "react-katex";
 import Image from "next/image";
-import { Separator } from "./ui/separator";
 
 const TechnicalOverview = () => {
   const [, setActiveSection] = useState("");
@@ -57,11 +56,11 @@ const TechnicalOverview = () => {
                 so requires each user to, at a minimum, open a single channel
                 with an on-chain transaction - or more realistically, have
                 multiple channels requiring multiple on-chain transactions.
-                While this helps scale transactions, it isn't economically
+                While this helps scale transactions, it isn&apos;t economically
                 viable for billions of customers or customers sensitive to
-                on-chain fees. Further, it's burdensome both economically and
-                technically to source sufficient inbound liquidity for each user
-                and to have that liquidity locked to a specific user.
+                on-chain fees. Further, it&apos;s burdensome both economically
+                and technically to source sufficient inbound liquidity for each
+                user and to have that liquidity locked to a specific user.
                 <br />
                 <br />
                 Spark is a scalable solution that can onboard billions of users
@@ -142,8 +141,8 @@ const TechnicalOverview = () => {
                   The group of operators that run Spark. They are responsible
                   for performing the operations necessary for Spark - signing
                   and forgetting past keys. Operators within the SE could
-                  simultaneously act as SSP's or just participate in signing
-                  operations to progress the tree.
+                  simultaneously act as SSP&apos;s or just participate in
+                  signing operations to progress the tree.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="so">
@@ -194,8 +193,8 @@ const TechnicalOverview = () => {
                       <br />
                       <br />
                       Each key is represented as a random number. In this
-                      example, SE's key is represented by the value 100, and A's
-                      key is represented by the value 50.
+                      example, SE&apos;s key is represented by the value 100,
+                      and A&apos;s key is represented by the value 50.
                       <br />
                       <br />
                       <InlineMath math={`100+50=150 =Key1`} />
@@ -222,17 +221,17 @@ const TechnicalOverview = () => {
                       <br />
                       Alice now wishes to transfer ownership of this UTXO to Bob
                       (B), but she wants to do so without putting the
-                      transaction on-chain. Bob's key is represented by the
+                      transaction on-chain. Bob&apos;s key is represented by the
                       number 40. He calculates the difference between his key
-                      and Alice's key is 10. For him plus the SE to sign using
-                      the same value as Alice+SE (150), he needs the SE to tweak
-                      their key by 10. So, the SE discards the old key and only
-                      keeps a copy of the newly tweaked key 110. Now, the SE+Bob
-                      still equals 150, so the UTXO can be spent by signing
-                      using the combined 150. Alice can't still sign a new
-                      transaction because the SE forgot the 100 key, so now
-                      Alice+SE=160 which isn't a valid key to sign the
-                      transaction.
+                      and Alice&apos;s key is 10. For him plus the SE to sign
+                      using the same value as Alice+SE (150), he needs the SE to
+                      tweak their key by 10. So, the SE discards the old key and
+                      only keeps a copy of the newly tweaked key 110. Now, the
+                      SE+Bob still equals 150, so the UTXO can be spent by
+                      signing using the combined 150. Alice can&apos;t still
+                      sign a new transaction because the SE forgot the 100 key,
+                      so now Alice+SE=160 which isn&apos;t a valid key to sign
+                      the transaction.
                       <br />
                       <br />
                       Typically, when handing off the key, the new owner will
@@ -242,9 +241,9 @@ const TechnicalOverview = () => {
                       what was signed previously, and then Bob will craft a new
                       transaction with an absolute time lock of 90 (less than
                       the lock Alice has a signed transaction for). Each time
-                      it's passed to a new person, they decrease the time lock.
-                      If anyone tried to claim the UTXO, they could only do so
-                      once their time bomb arrived.
+                      it&apos;s passed to a new person, they decrease the time
+                      lock. If anyone tried to claim the UTXO, they could only
+                      do so once their time bomb arrived.
                       <br />
                       <br />
                       It should be noted that this limits the time that a UTXO
@@ -262,8 +261,8 @@ const TechnicalOverview = () => {
                       latest owner and no prior owner can acquire a newly signed
                       transaction after passing off ownership - because the
                       honest entities within the SE have forgotten the old
-                      untweaked key and thereby couldn't sign with it even if
-                      coerced.
+                      untweaked key and thereby couldn&apos;t sign with it even
+                      if coerced.
                     </p>{" "}
                   </AccordionContent>
                 </AccordionItem>
@@ -324,18 +323,19 @@ const TechnicalOverview = () => {
                       Txn1 spends the output of Txn0. Txn1 has no timelock. When
                       users transfer keys, they transfer ownership of the key
                       that encumbers the output of Txn1. The transactions that
-                      spend from Txn1's output look like the normal statechain
-                      transactions that include decreasing timelocks relative to
-                      their parent transaction. But because Txn1 is held
-                      off-chain, there is no absolute timebomb.
+                      spend from Txn1&apos;s output look like the normal
+                      statechain transactions that include decreasing timelocks
+                      relative to their parent transaction. But because Txn1 is
+                      held off-chain, there is no absolute timebomb.
                     </p>
                     <p className="mb-4">
                       The obvious problem with this is that if someone
                       double-spends the output consumed by Txn1, then all of the
-                      leaves (Txn2..4) become invalid. To avoid this, the "SE"
-                      key is deleted by the SE - resulting in only one
-                      transaction ever generated for Txn0's output. The exact
-                      mechanics of this will be discussed later.
+                      leaves (Txn2..4) become invalid. To avoid this, the
+                      &quot;SE&quot; key is deleted by the SE - resulting in
+                      only one transaction ever generated for Txn0&apos;s
+                      output. The exact mechanics of this will be discussed
+                      later.
                     </p>
                   </AccordionContent>
                 </AccordionItem>
@@ -556,9 +556,9 @@ const TechnicalOverview = () => {
                 management without on-chain transactions.
                 <br />
                 <br />
-                To split a leaf in Spark, we need to split it's existing key
-                into multiple keys such that the sum of the new keys equals the
-                original key.
+                To split a leaf in Spark, we need to split it&apos;s existing
+                key into multiple keys such that the sum of the new keys equals
+                the original key.
                 <br />
                 <br />
                 This can be represented as follows:
@@ -683,9 +683,9 @@ const TechnicalOverview = () => {
               {/* Transfer */}
               <h3 className="text-xl font-semibold mt-4 mb-2">Transfers</h3>
               <p className="mb-4">
-                Ownership is transferred by adjusting the SE's key so that the
-                combined key remains the same before and after the transfer, but
-                control shifts from the sender to the receiver.
+                Ownership is transferred by adjusting the SE&apos;s key so that
+                the combined key remains the same before and after the transfer,
+                but control shifts from the sender to the receiver.
               </p>
               <p className="mb-4">
                 <strong>Process Overview:</strong>
@@ -722,7 +722,7 @@ const TechnicalOverview = () => {
                       </p>
                     </li>
                     <li className="pl-2">
-                      The sender encrypts t₁ with receiver's public key
+                      The sender encrypts t₁ with receiver&apos;s public key
                     </li>
                   </ul>
                 </li>
@@ -741,8 +741,8 @@ const TechnicalOverview = () => {
                   <strong>SE Key Adjustment</strong>
                   <ul className="list-disc  ml-8 mt-2">
                     <li className="pl-2">
-                      SE's use t₂ to calculate new private key that summed with
-                      the new receiver key equals the original combined key
+                      SE&apos;s use t₂ to calculate new private key that summed
+                      with the new receiver key equals the original combined key
                     </li>
                     <li className="pl-2">
                       The SE and receiver sign a new refund transaction with a
@@ -777,7 +777,7 @@ const TechnicalOverview = () => {
               <ol className="list-decimal pl-4 space-y-4">
                 <li className="pl-2">
                   <p>
-                    <strong>Something about connector's</strong>
+                    <strong>Something about connector&apos;s</strong>
                   </p>
                 </li>
               </ol>
@@ -799,12 +799,12 @@ const TechnicalOverview = () => {
                 online, the SE and SSP can optionally serve as watchtowers on
                 behalf of the current user and publish the latest transaction
                 state if the previous owner attempts to be malicious and
-                broadcast an invalid state. The SO's can do this since each leaf
-                (unless it's the root of a tree) has one or many parent
-                transactions that need to be broadcasted before the leaf and to
-                trigger the leafs time bomb. Note that this does not change the
-                trust assumptions - we still rely on 1 of the SOs to be online
-                and honest.
+                broadcast an invalid state. The SO&apos;s can do this since each
+                leaf (unless it&apos;s the root of a tree) has one or many
+                parent transactions that need to be broadcasted before the leaf
+                and to trigger the leafs time bomb. Note that this does not
+                change the trust assumptions - we still rely on 1 of the SOs to
+                be online and honest.
               </p>
               {/* Lightning */}
               {/* Lightning */}
@@ -901,19 +901,21 @@ const TechnicalOverview = () => {
                 </li>
                 <li>
                   <p>
-                    SE locks transfers on Alice's specified leaves until a
+                    SE locks transfers on Alice&apos;s specified leaves until a
                     specified time.
                   </p>
                 </li>
                 <li>
-                  <p>SSP makes a Lightning payment to pay Bob's invoice.</p>
+                  <p>
+                    SSP makes a Lightning payment to pay Bob&apos;s invoice.
+                  </p>
                 </li>
                 <li>
                   <p>SSP provides proof of Lightning payment to the SE.</p>
                 </li>
                 <li>
                   <p>
-                    SE finalizes the transfer of Alice's leaves to the SSP
+                    SE finalizes the transfer of Alice&apos;s leaves to the SSP
                     atomically.
                   </p>
                 </li>
