@@ -422,8 +422,6 @@ const TechnicalOverview = () => {
                 This section outlines the step-by-step process for depositing
                 funds from the Bitcoin L1 into Spark.
               </p>
-              <h4 className="text-lg font-semibold mb-2">Pre-conditions</h4>
-              <p className="mb-4">User has a Bitcoin wallet with some sats</p>
               <h4 className="text-lg font-semibold mt-2 mb-2">
                 Steps-by-Step Process
               </h4>
@@ -583,8 +581,6 @@ const TechnicalOverview = () => {
                 <br />
                 <InlineMath math="\text{PrivKey}_{\text{User\_Old}} + \text{PrivKey}_{\text{SE\_Old}} = \sum_{i=1}^{n} \left( \text{PrivKey}_{\text{User}_i} + \text{PrivKey}_{\text{SE}_i} \right)" />
               </p>
-              <h4 className="text-lg font-semibold mb-2">Pre-conditions</h4>
-              <p className="mb-4">User controls a leaf in Spark</p>
               <h4 className="text-lg font-semibold mt-4 mb-2">
                 Step-by-Step Process
               </h4>
@@ -686,9 +682,6 @@ const TechnicalOverview = () => {
                 Ownership is transferred by adjusting the SE&apos;s key so that
                 the combined key remains the same before and after the transfer,
                 but control shifts from the sender to the receiver.
-              </p>
-              <p className="mb-4">
-                <strong>Process Overview:</strong>
                 <br />
                 <br />
                 Original Combined Key:
@@ -700,8 +693,6 @@ const TechnicalOverview = () => {
                 <br />
                 <InlineMath math="\text{PubKey}_{\text{Combined}} = \text{PubKey}_{\text{Receiver}} + \text{PubKey}'_{\text{SE}}" />
               </p>
-              <h4 className="text-lg font-semibold mb-2">Pre-conditions</h4>
-              <p className="mb-4">User controls a leaf in Spark</p>
               <h4 className="text-lg font-semibold mt-4 mb-2">
                 Step-by-Step Process
               </h4>
@@ -766,26 +757,13 @@ const TechnicalOverview = () => {
                 or by unilaterally exiting.
               </p>
               <h4 className="text-lg font-semibold mb-2">Using an SSP</h4>
-              <h5 className="text-md font-semibold mb-2">Pre-conditions</h5>
-              <p className="mb-4">User controls a leaf in Spark</p>
-              <p className="mb-4">
-                An SSP has funds on L1 and is willing to swap for Spark funds
-              </p>
               <h5 className="text-md font-semibold mb-2">
                 Steps-by-Step Process
               </h5>
-              <ol className="list-decimal pl-4 space-y-4">
-                <li className="pl-2">
-                  <p>
-                    <strong>Something about connector&apos;s</strong>
-                  </p>
-                </li>
-              </ol>
+              <p className="mb-4">Something about connectors</p>
               <h4 className="text-lg font-semibold mt-4 mb-2">
                 Unilateral Exit
               </h4>
-              <h5 className="text-md font-semibold mb-2">Pre-conditions</h5>
-              <p className="mb-4">User controls a leaf in Spark</p>
               <p className="mb-4">
                 The user can unilaterally exit Spark at any time by broadcasting
                 the refund transaction for their leaf or leaves. In cases where
