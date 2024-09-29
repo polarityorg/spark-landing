@@ -426,15 +426,12 @@ const TechnicalOverview = () => {
                 Steps-by-Step Process
               </h4>
               <div className="ml-4">
-                <h5 className="text-md font-semibold mb-2">
-                  Step 1 - Address Generation
-                </h5>
-                <ol className="list-decimal pl-8">
+                <ol className="list-decimal pl-4 space-y-4">
                   <li className="pl-2">
                     <p>
                       <strong>Key Generation:</strong>
                     </p>
-                    <ol className="list-disc ml-8 space-y-2">
+                    <ul className="list-disc ml-8 mt-2">
                       <li className="pl-2">
                         <p>
                           The user and SE work together to generate an aggregate
@@ -450,24 +447,19 @@ const TechnicalOverview = () => {
                           />
                         </p>
                       </li>
-                    </ol>
+                    </ul>
                   </li>
-                </ol>
-                <h5 className="text-md font-semibold mb-2">
-                  Step 2 - Transaction Creation
-                </h5>
-                <ol className="list-decimal pl-8">
                   <li className="pl-2">
                     <p>
                       <strong>Setup and Signing:</strong>
                     </p>
-                    <ul className="list-disc ml-8">
+                    <ul className="list-disc ml-8 mt-2">
                       <li className="pl-2">
                         <p>
                           User and SE collaboratively create and sign two
                           transactions:
                         </p>
-                        <ol className="list-decimal ml-8">
+                        <ol className="list-decimal pl-4 space-y-4">
                           <li className="pl-2">
                             <p>
                               An intermediate transaction (not broadcasted) with
@@ -501,7 +493,7 @@ const TechnicalOverview = () => {
                     <p>
                       <strong>Storage:</strong>
                     </p>
-                    <ul className="list-disc ml-8">
+                    <ul className="list-disc ml-8 mt-2">
                       <li className="pl-2">
                         <p>
                           User and SE securely store the signed transactions
@@ -509,16 +501,11 @@ const TechnicalOverview = () => {
                       </li>
                     </ul>
                   </li>
-                </ol>
-                <h5 className="text-md font-semibold mb-2">
-                  Step 3 - Deposit and Confirmation
-                </h5>
-                <ol className="list-decimal pl-8">
                   <li className="pl-2">
                     <p>
                       <strong>User Deposit:</strong>
                     </p>
-                    <ul className="list-disc ml-8">
+                    <ul className="list-disc ml-8 mt-2">
                       <li className="pl-2">
                         <p>
                           User broadcasts a deposit transaction to the
@@ -531,7 +518,7 @@ const TechnicalOverview = () => {
                     <p>
                       <strong>SE Confirmation:</strong>
                     </p>
-                    <ul className="list-disc ml-8">
+                    <ul className="list-disc ml-8 mt-2">
                       <li className="pl-2">
                         <p>
                           SE verifies the deposit and issues a Spark leaf to the
