@@ -42,7 +42,7 @@ export default function Home({
         />
         <p className="text-sm text-left sm:text-left font-[family-name:var(--font-geist-mono)]">
           A trust-minimized solution designed to scale Bitcoin and extend the
-          Lightning Network.
+          Lightning Network
         </p>
         <Separator />
         <Tabs defaultValue={defaultTab} className="w-full">
