@@ -28,6 +28,7 @@
     "react-dom": "^18",
     "react-katex": "^3.0.1",
     "react-markdown": "^9.0.1",
+    "react-qr-rounded": "^1.0.0",
     "remark": "^15.0.1",
     "remark-html": "^16.0.1",
     "tailwind-merge": "^2.5.2",
