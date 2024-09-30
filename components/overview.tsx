@@ -44,18 +44,6 @@ const Overview = () => {
         ))}
       </ol>
 
-      {/* disclaimer */}
-      <h5 className="font-bold text-sm">Disclaimer</h5>
-      <p className="mb-4">
-        Typically, when a new protocol is introduced to the community, less than
-        1% of people end up reading it given how overwhelming the material can
-        be. We&apos;ve tried something different; this version is an attempt to
-        speak to multiple audiences.
-      </p>
-      <p className="mb-4">
-        Please keep us honest — any and all feedback is welcome.
-      </p>
-
       {/* Sections */}
       {sections.map((section) => (
         <section key={section.id} id={section.id}>
