@@ -54,7 +54,7 @@ export default function SendRequestPage() {
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
         className="flex items-center justify-between p-6">
         <Link href="/wallet" aria-label="Back to wallet">
           <Button variant="ghost" size="icon">
@@ -68,7 +68,7 @@ export default function SendRequestPage() {
       <motion.main
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
         className="flex-grow flex flex-col justify-between px-6 pt-8">
         <div className="flex-grow flex flex-col justify-center items-center mb-8">
           <p className="text-6xl font-bold mb-4">
@@ -125,7 +125,7 @@ export default function SendRequestPage() {
       <motion.footer
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
+        transition={{ duration: 0.5, delay: 0.6 }}
         className="p-6 mb-16">
         <div className="flex gap-4">
           <Button
