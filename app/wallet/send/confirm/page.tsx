@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ChevronLeft, Loader2, Check } from "lucide-react";
@@ -70,7 +70,7 @@ const SummaryStep = ({
   );
 };
 
-export default function ConfirmPage() {
+function ConfirmPageContent() {
   const searchParams = useSearchParams();
   const [amountCents, setAmountCents] = useState(0);
   const [step, setStep] = useState<"to" | "summary" | "sent">("to");
@@ -219,5 +219,19 @@ export default function ConfirmPage() {
         </motion.div>
       </motion.footer>
     </div>
+  );
+}
+
+export default function ConfirmPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-white flex flex-col items-center justify-center font-[family-name:var(--font-geist-sans)]">
+          <Loader2 className="h-12 w-12 animate-spin text-black" />
+          <p className="mt-4 text-lg font-semibold">Loading...</p>
+        </div>
+      }>
+      <ConfirmPageContent />
+    </Suspense>
   );
 }
