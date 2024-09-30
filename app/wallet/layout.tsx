@@ -26,7 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className="mx-auto w-full h-[100svh] max-w-[490px] overflow-auto bg-white">
+        <div className="mx-auto w-full h-[100dvh] max-w-[490px] overflow-hidden bg-white">
           <motion.div
             key={pathname}
             initial={{ opacity: 0, x: 20 }}
@@ -35,7 +35,8 @@ export default function RootLayout({
             transition={{
               duration: 0.5,
               ease: "easeInOut",
-            }}>
+            }}
+            className="h-full flex flex-col">
             {children}
           </motion.div>
         </div>
