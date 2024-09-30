@@ -69,7 +69,7 @@ export default function SendRequestPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="flex-grow flex flex-col justify-between px-6 py-8">
+        className="flex-grow flex flex-col justify-between px-6 pt-8">
         <div className="flex-grow flex flex-col justify-center items-center mb-8">
           <p className="text-6xl font-bold mb-4">
             <span className="tabular-nums">
