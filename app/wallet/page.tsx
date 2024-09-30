@@ -65,7 +65,7 @@ export default function Wallet() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
-        className="flex justify-center">
+        className="flex justify-center mb-12">
         <Link href="/wallet/send" className="w-full">
           <Button className="w-full py-6 font-bold text-lg rounded-3xl">
             Send/Request money
