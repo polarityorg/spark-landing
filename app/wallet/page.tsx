@@ -49,18 +49,22 @@ export default function Wallet() {
         <p className="text-gray-300 font-bold mb-8">100k sats</p>
 
         <div className="flex gap-4 mb-20">
-          <Button className="flex items-center gap-2 rounded-xl bg-gray-100 text-black font-bold shadow-none text-base px-5 py-5 hover:bg-gray-200 transition-colors duration-200">
+          <Link
+            className="flex items-center gap-2 rounded-xl bg-gray-100 text-black font-bold shadow-none text-md px-4 py-3 hover:bg-gray-200 transition-colors duration-200"
+            href="/wallet/deposit">
             <div className="bg-black rounded-full p-1">
-              <Plus className="w-4 h-4 text-gray-100" strokeWidth={5} />
+              <Plus className="w-3 h-3 text-gray-100" strokeWidth={5} />
             </div>
             Add Funds
-          </Button>
-          <Button className="flex items-center gap-2 rounded-xl bg-gray-100 text-black font-bold shadow-none text-base px-5 py-5 hover:bg-gray-200 transition-colors duration-200">
+          </Link>
+          <Link
+            className="flex items-center gap-2 rounded-xl bg-gray-100 text-black font-bold shadow-none text-md px-4 py-3 hover:bg-gray-200 transition-colors duration-200"
+            href="/wallet/withdraw">
             <div className="bg-black rounded-full p-1">
-              <ArrowDown className="w-4 h-4 text-gray-100" strokeWidth={4} />
+              <ArrowDown className="w-3 h-3 text-gray-100" strokeWidth={4} />
             </div>
             Withdraw
-          </Button>
+          </Link>
         </div>
       </motion.main>
 

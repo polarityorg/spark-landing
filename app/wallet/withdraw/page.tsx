@@ -3,13 +3,15 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ChevronLeft } from "lucide-react";
+import { X, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
-const MAX_AMOUNT_CENTS = 99999999; // $999,999.99
+const MAX_AMOUNT_CENTS = 99999999;
 
-export default function SendRequestPage() {
+export default function WithdrawPage() {
   const [amountCents, setAmountCents] = useState(0);
+  const [address, setAddress] = useState("");
   const availableBalance = 0.1;
 
   const handleNumberClick = useCallback((digit: string) => {
@@ -44,10 +46,11 @@ export default function SendRequestPage() {
     );
   }, [availableBalance]);
 
-  const isRequestDisabled = (balance: number, amount: number) =>
-    balance === 0 || amount === 0;
-  const isSendDisabled = (balance: number, amount: number) =>
-    isRequestDisabled(balance, amount) || amount / 100 > balance;
+  const isWithdrawDisabled = useCallback(
+    (balance: number, amount: number, address: string) =>
+      balance === 0 || amount === 0 || amount / 100 > balance || !address,
+    []
+  );
 
   return (
     <div className="min-h-screen bg-white flex flex-col font-[family-name:var(--font-geist-sans)]">
@@ -57,14 +60,25 @@ export default function SendRequestPage() {
         transition={{ duration: 0.5, delay: 0.5 }}
         className="flex items-center justify-between p-6">
         <Link href="/wallet" aria-label="Back to wallet">
-          <Button variant="ghost" size="icon">
-            <ChevronLeft className="h-6 w-6" strokeWidth={4} />
-          </Button>
+          <X className="w-6 h-6" strokeWidth={2.5} />
         </Link>
-        <h1 className="text-xl font-bold">Send / Request</h1>
-        <div className="w-10" aria-hidden="true" />
+        <h1 className="text-xl font-bold">Withdraw</h1>
+        <div className="w-6 h-6" aria-hidden="true" />
       </motion.header>
 
+      <motion.main
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+        className="flex-grow flex flex-col justify-between px-6 pt-8">
+        <Input
+          type="text"
+          placeholder="Enter Bitcoin address or LN invoice"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          className="mt-4 rounded-full shadow-none px-4 py-6 font-bold"
+        />
+      </motion.main>
       <motion.main
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -127,26 +141,12 @@ export default function SendRequestPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
         className="p-6 mb-16">
-        <div className="flex gap-4">
-          <Link href="/wallet/request" className="flex-1">
-            <Button
-              variant="outline"
-              className="w-full py-6 text-lg rounded-3xl font-bold shadow-none"
-              disabled={isRequestDisabled(availableBalance, amountCents)}>
-              Request
-            </Button>
-          </Link>
-          <Link
-            href={`/wallet/send/confirm?amount=${amountCents}`}
-            className="flex-1">
-            <Button
-              variant="default"
-              className="w-full py-6 text-lg rounded-3xl font-bold shadow-none"
-              disabled={isSendDisabled(availableBalance, amountCents)}>
-              Send
-            </Button>
-          </Link>
-        </div>
+        <Button
+          variant="default"
+          className="w-full py-6 text-lg rounded-3xl font-bold"
+          disabled={isWithdrawDisabled(availableBalance, amountCents, address)}>
+          Withdraw
+        </Button>
       </motion.footer>
     </div>
   );
