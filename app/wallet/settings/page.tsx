@@ -42,27 +42,31 @@ export default function SettingsPage() {
         className="flex-grow flex flex-col px-6 pt-8 space-y-6">
         <section>
           <h2 className="text-lg font-semibold mb-3">Profile</h2>
-          <div className="bg-gray-50 rounded-lg p-4 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <Phone className="w-5 h-5 text-gray-500 mr-3" />
-                <p className="font-bold">+1 650 644 8779</p>
+          <div className="bg-gray-50 rounded-lg">
+            <div className="flex items-center py-4 px-4">
+              <div className="w-10 flex justify-center">
+                <Phone className="w-5 h-5 text-gray-500" />
               </div>
+              <p className="text-base font-bold">+1 650 644 8779</p>
             </div>
-          </div>{" "}
+          </div>
         </section>
 
         <section>
           <h2 className="text-lg font-semibold mb-3">Settings</h2>
-          <Button className="w-full bg-gray-50 rounded-lg divide-y divide-gray-200 hover:bg-gray-100 transition-colors duration-200 shadow-none py-6">
-            <div className="flex items-center justify-between p-4 w-full">
-              <div className="flex items-center">
-                <LogOut className="w-5 h-5 text-red-500 mr-3" />
-                <p className="font-bold text-red-500">Log Out</p>
+          <Link href="/logout" className="block">
+            <div className="w-full bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+              <div className="flex items-center justify-between py-4 px-4">
+                <div className="flex items-center">
+                  <div className="w-10 flex justify-center">
+                    <LogOut className="w-5 h-5 text-red-500" />
+                  </div>
+                  <p className="text-base font-bold text-red-500">Log Out</p>
+                </div>
+                <ChevronRight className="w-5 h-5 text-gray-400" />
               </div>
-              <ChevronRight className="w-5 h-5 text-gray-400" />
             </div>
-          </Button>
+          </Link>
         </section>
       </motion.main>
     </div>
