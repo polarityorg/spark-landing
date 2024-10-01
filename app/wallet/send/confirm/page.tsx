@@ -8,15 +8,23 @@ import { Button } from "@/components/ui/button";
 import { useSearchParams } from "next/navigation";
 import { PhoneInput } from "@/components/phone-input";
 import { cn } from "@/lib/utils"; // Make sure you have this utility function
+import { Input } from "@/components/ui/input";
 
 const ToStep = ({
-  phoneNumber,
-  setPhoneNumber,
+  recipient,
+  setRecipient,
 }: {
-  onContinue: (phoneNumber: string) => void;
-  phoneNumber: string;
-  setPhoneNumber: (number: string) => void;
+  onContinue: (recipient: string) => void;
+  recipient: string;
+  setRecipient: (value: string) => void;
 }) => {
+  const [inputType, setInputType] = useState<"phone" | "publicKey">("phone");
+
+  const toggleInputType = () => {
+    setInputType(inputType === "phone" ? "publicKey" : "phone");
+    setRecipient("");
+  };
+
   return (
     <div className="flex flex-col h-full">
       <h2 className="text-3xl font-bold mb-6">
@@ -24,18 +32,44 @@ const ToStep = ({
         <br />
         the money?
       </h2>
-      <PhoneInput value={phoneNumber} onChange={setPhoneNumber} />
+      {inputType === "phone" ? (
+        <PhoneInput value={recipient} onChange={setRecipient} />
+      ) : (
+        <Input
+          type="text"
+          value={recipient}
+          onChange={(e) => setRecipient(e.target.value)}
+          placeholder="Enter public key"
+          className="w-full px-2 py-6 border rounded-lg shadow-none"
+        />
+      )}
+      <Button
+        variant="link"
+        onClick={toggleInputType}
+        className="mt-2 text-sm text-gray-600 self-start p-0">
+        {inputType === "phone"
+          ? "Or send to a public key"
+          : "Or send to a phone number"}
+      </Button>
     </div>
   );
 };
 
 const SummaryStep = ({
   amountCents,
-  phoneNumber,
+  recipient,
 }: {
   amountCents: number;
-  phoneNumber: string;
+  recipient: string;
 }) => {
+  const formatRecipient = (value: string) => {
+    const phonePattern = /^\+\d{10,}$/;
+    if (phonePattern.test(value)) {
+      return value.replace(/^(\+\d)(\d{3})(\d{3})(\d{4})$/, "$1 ($2) $3-$4");
+    }
+    return value;
+  };
+
   return (
     <div className="flex flex-col h-full">
       <div className="flex-grow flex flex-col justify-center items-center mb-8">
@@ -53,12 +87,7 @@ const SummaryStep = ({
       <div className="mb-4">
         <p className="text-sm font-semibold mb-2">To</p>
         <div className="bg-gray-100 rounded-lg p-3">
-          <p className="text-lg font-bold">
-            {phoneNumber.replace(
-              /^(\+\d)(\d{3})(\d{3})(\d{4})$/,
-              "$1 ($2) $3-$4"
-            )}
-          </p>
+          <p className="text-lg font-bold">{formatRecipient(recipient)}</p>
         </div>
       </div>
       <div className="border border-gray-300 rounded-lg p-3 mb-4">
@@ -74,7 +103,7 @@ function ConfirmPageContent() {
   const searchParams = useSearchParams();
   const [amountCents, setAmountCents] = useState(0);
   const [step, setStep] = useState<"to" | "summary" | "sent">("to");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [recipient, setRecipient] = useState("");
   const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
@@ -85,7 +114,7 @@ function ConfirmPageContent() {
   }, [searchParams]);
 
   const handleContinue = (number: string) => {
-    setPhoneNumber(number);
+    setRecipient(number);
     setStep("summary");
   };
 
@@ -157,11 +186,11 @@ function ConfirmPageContent() {
         {step === "to" ? (
           <ToStep
             onContinue={handleContinue}
-            phoneNumber={phoneNumber}
-            setPhoneNumber={setPhoneNumber}
+            recipient={recipient}
+            setRecipient={setRecipient}
           />
         ) : step === "summary" ? (
-          <SummaryStep amountCents={amountCents} phoneNumber={phoneNumber} />
+          <SummaryStep amountCents={amountCents} recipient={recipient} />
         ) : (
           <div className="flex flex-col h-full items-center justify-center">
             <div className="mb-8 flex flex-col items-center">
@@ -198,13 +227,13 @@ function ConfirmPageContent() {
           ) : (
             <Button
               onClick={() =>
-                step === "to" ? handleContinue(phoneNumber) : handleSendMoney()
+                step === "to" ? handleContinue(recipient) : handleSendMoney()
               }
               className={cn(
                 "w-full h-14 text-lg font-bold shadow-none",
                 isSending && "pointer-events-none"
               )}
-              disabled={step === "to" && phoneNumber.length < 10}>
+              disabled={step === "to" && recipient.length < 10}>
               <span
                 className={cn("transition-opacity", isSending && "opacity-0")}>
                 {step === "to" ? "Continue" : "Send Money"}
