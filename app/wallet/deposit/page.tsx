@@ -24,7 +24,7 @@ export default function DepositPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col font-[family-name:var(--font-geist-sans)]">
       <motion.header
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
         className="flex items-center justify-between p-6">
@@ -36,7 +36,7 @@ export default function DepositPage() {
       </motion.header>
 
       <motion.main
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
         className="flex-grow flex flex-col justify-center items-center px-6">

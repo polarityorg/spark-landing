@@ -9,7 +9,7 @@ export default function Wallet() {
   return (
     <div className="min-h-screen bg-white flex flex-col p-6 font-[family-name:var(--font-geist-sans)]">
       <motion.header
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
         className="flex justify-between items-center mb-20">
@@ -38,7 +38,7 @@ export default function Wallet() {
       </motion.header>
 
       <motion.main
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
         className="flex-grow flex flex-col items-center justify-center">
@@ -69,7 +69,7 @@ export default function Wallet() {
       </motion.main>
 
       <motion.footer
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
         className="flex justify-center mb-16">

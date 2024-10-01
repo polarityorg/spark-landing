@@ -38,7 +38,7 @@ export default function ActivityPage() {
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: -20 },
+    hidden: { opacity: 0, y: 0 },
     visible: {
       opacity: 1,
       y: 0,
@@ -60,7 +60,7 @@ export default function ActivityPage() {
       animate="visible">
       <header className="mb-8">
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}>
           <Link

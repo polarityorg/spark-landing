@@ -23,7 +23,7 @@ export default function RootLayout({
   const pathname = usePathname();
 
   const isVerticalAnimation =
-    pathname.includes("/activity") || pathname.includes("/settings");
+    pathname.includes("activity") || pathname.includes("settings");
 
   return (
     <html lang="en">
@@ -34,20 +34,22 @@ export default function RootLayout({
             key={pathname}
             initial={{
               opacity: 0,
-              y: isVerticalAnimation ? -300 : 300,
-              x: isVerticalAnimation ? 0 : 300,
+              [isVerticalAnimation ? "y" : "x"]: isVerticalAnimation
+                ? 300
+                : 300,
             }}
-            animate={{ opacity: 1, y: 0, x: 0 }}
+            animate={{ opacity: 1, [isVerticalAnimation ? "y" : "x"]: 0 }}
             exit={{
               opacity: 0,
-              y: isVerticalAnimation ? 300 : 0,
-              x: isVerticalAnimation ? 0 : -300,
+              [isVerticalAnimation ? "y" : "x"]: isVerticalAnimation
+                ? -300
+                : -300,
             }}
             transition={{
               type: "spring",
               stiffness: 300,
               damping: 30,
-              duration: 0.2,
+              duration: 0.5,
             }}
             className="h-full flex flex-col">
             {children}
