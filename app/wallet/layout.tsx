@@ -22,6 +22,9 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
 
+  const isVerticalAnimation =
+    pathname.includes("/activity") || pathname.includes("/settings");
+
   return (
     <html lang="en">
       <body
@@ -29,12 +32,22 @@ export default function RootLayout({
         <div className="mx-auto w-full h-[100dvh] max-w-[490px] overflow-hidden bg-white">
           <motion.div
             key={pathname}
-            initial={{ opacity: 0, x: 0 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -0 }}
+            initial={{
+              opacity: 0,
+              y: isVerticalAnimation ? -300 : 300,
+              x: isVerticalAnimation ? 0 : 300,
+            }}
+            animate={{ opacity: 1, y: 0, x: 0 }}
+            exit={{
+              opacity: 0,
+              y: isVerticalAnimation ? 300 : 0,
+              x: isVerticalAnimation ? 0 : -300,
+            }}
             transition={{
+              type: "spring",
+              stiffness: 300,
+              damping: 30,
               duration: 0.2,
-              ease: "easeInOut",
             }}
             className="h-full flex flex-col">
             {children}
