@@ -20,11 +20,14 @@
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.0",
+    "@scure/bip32": "^1.5.0",
     "@types/mdx": "^2.0.13",
+    "bip39": "^3.1.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "1.0.0",
     "framer-motion": "^11.9.0",
+    "input-otp": "^1.2.4",
     "katex": "^0.16.11",
     "lucide-react": "^0.446.0",
     "next": "14.2.13",
@@ -35,10 +38,12 @@
     "react-phone-number-input": "^3.4.8",
     "react-qr-code": "^2.0.15",
     "react-qr-rounded": "^1.0.0",
+    "react-toastify": "^10.0.5",
     "remark": "^15.0.1",
     "remark-html": "^16.0.1",
     "tailwind-merge": "^2.5.2",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -3,24 +3,43 @@
 import Link from "next/link";
 import { X, DollarSign } from "lucide-react";
 import { motion } from "framer-motion";
+import { useWalletStore } from "../store";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-interface Transaction {
-  type: "received" | "sent";
-  amount: number;
-  from: string;
-  date: Date;
-}
+// interface Transaction {
+//   id: string;
+//   type: "received" | "sent";
+//   amount: number;
+//   from: string;
+//   date: Date;
+// }
 
 export default function ActivityPage() {
-  const transactions: Transaction[] = [
-    {
-      type: "received",
-      amount: 0.1,
-      from: "+1 321 591 3342",
-      date: new Date("2023-08-20T13:59:00"),
-    },
-    // Add more transactions here as needed
-  ];
+  const activity = useWalletStore((state) => state.activity);
+  const mnemonic = useWalletStore((state) => state.mnemonic);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!mnemonic) {
+      router.replace("/");
+    } else {
+      // Optionally, fetch and set activity here
+      // For now, we'll use dummy data
+      if (activity.length === 0) {
+        useWalletStore.getState().setActivity([
+          {
+            id: "1",
+            type: "received",
+            amount: 0.1,
+            from: "+1 321 591 3342",
+            date: new Date("2023-08-20T13:59:00"),
+          },
+          // ... more dummy transactions ...
+        ]);
+      }
+    }
+  }, [mnemonic, router, activity.length]);
 
   const containerVariants = {
     hidden: { opacity: 0, y: -50 },
@@ -83,7 +102,7 @@ export default function ActivityPage() {
             Completed
           </motion.h2>
           <motion.ul className="space-y-4">
-            {transactions.map((transaction, index) => (
+            {activity.map((transaction, index) => (
               <motion.li
                 key={index}
                 className="flex items-center justify-between"

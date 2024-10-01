@@ -1,11 +1,77 @@
 "use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useWalletStore } from "./store";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Clock, Settings, Plus, ArrowDown } from "lucide-react";
+import {
+  Plus,
+  Loader2,
+  Settings,
+  Clock,
+  ArrowDown,
+  Copy,
+  Check,
+} from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { truncatePubkey } from "@/lib/utils";
 
 export default function Wallet() {
+  const mnemonic = useWalletStore((state) => state.mnemonic);
+  const balance = useWalletStore((state) => state.balance);
+  const pubkey = useWalletStore((state) => state.pubkey);
+  const setBalance = useWalletStore((state) => state.setBalance);
+  const router = useRouter();
+  const [copied, setCopied] = useState(false);
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      if (!mnemonic) {
+        router.replace("/home");
+      } else {
+        setBalance(Math.floor(Math.random() * (200 - 100 + 1) + 100));
+      }
+    }
+  }, [mnemonic, router, setBalance, mounted]);
+
+  if (!mounted) {
+    return null;
+  }
+
+  if (!mnemonic) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-12 h-12 animate-spin" />
+      </div>
+    );
+  }
+
+  const formatSats = (sats: number) => {
+    if (sats >= 1000000) {
+      return (sats / 1000000).toFixed(1) + "M";
+    } else if (sats >= 1000) {
+      return (sats / 1000).toFixed(1) + "k";
+    } else {
+      return sats.toString();
+    }
+  };
+
+  const copyPubkey = () => {
+    if (pubkey) {
+      navigator.clipboard.writeText(pubkey);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white flex flex-col p-6 font-[family-name:var(--font-geist-sans)]">
       <motion.header
@@ -42,11 +108,26 @@ export default function Wallet() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
         className="flex-grow flex flex-col items-center justify-center">
-        <h2 className="text-md text-black mb-4 bg-gray-100 p-3 rounded-xl font-bold">
-          My Balance
-        </h2>
-        <p className="text-6xl font-bold mb-1">$0.10</p>
-        <p className="text-gray-300 font-bold mb-8">100k sats</p>
+        <Button
+          onClick={copyPubkey}
+          className="text-md text-black mb-4 bg-gray-100 p-3 rounded-xl font-bold flex items-center gap-2 hover:bg-gray-200 transition-colors duration-200">
+          {copied ? (
+            <Check className="w-4 h-4 " />
+          ) : (
+            <Copy className="w-4 h-4" />
+          )}
+          {truncatePubkey(pubkey || "")}
+        </Button>
+        <p className="text-6xl font-bold mb-1">
+          {balance.toLocaleString("en-US", {
+            style: "currency",
+            currency: "USD",
+          })}
+        </p>
+        <p className="text-gray-300 font-bold mb-8">
+          {" "}
+          {formatSats(Math.round((balance * 100000000) / 70000))} sats
+        </p>
 
         <div className="flex gap-4 mb-20">
           <Link
@@ -75,7 +156,7 @@ export default function Wallet() {
         className="flex justify-center mb-16">
         <Link href="/wallet/send" className="w-full">
           <Button className="w-full py-6 font-bold text-lg rounded-3xl">
-            Send/Request money
+            Send Money
           </Button>
         </Link>
       </motion.footer>

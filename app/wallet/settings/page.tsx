@@ -1,11 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { X, Phone, LogOut, ChevronRight } from "lucide-react";
+import { X, Phone, KeyRound } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useWalletStore } from "../store";
+import { useRouter } from "next/navigation";
+import { truncatePubkey } from "@/lib/utils";
 
 export default function SettingsPage() {
+  const clearMnemonic = useWalletStore((state) => state.clearMnemonic);
+  const router = useRouter();
+  const phoneNumber = useWalletStore((state) => state.phoneNumber);
+  const pubkey = useWalletStore((state) => state.pubkey);
+
+  const handleLogout = () => {
+    if (confirm("Are you sure you want to log out?")) {
+      clearMnemonic();
+      router.replace("/home");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white flex flex-col font-[family-name:var(--font-geist-sans)]">
       <motion.header
@@ -39,7 +54,7 @@ export default function SettingsPage() {
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="flex-grow flex flex-col px-6 pt-8 space-y-6">
+        className="flex-grow flex flex-col px-6 pt-8 space-y-6 mb-20">
         <section>
           <h2 className="text-lg font-semibold mb-3">Profile</h2>
           <div className="bg-gray-50 rounded-lg">
@@ -47,28 +62,38 @@ export default function SettingsPage() {
               <div className="w-10 flex justify-center">
                 <Phone className="w-5 h-5 text-gray-500" />
               </div>
-              <p className="text-base font-bold">+1 650 644 8779</p>
+              <p className="text-base font-bold">
+                {phoneNumber
+                  ? phoneNumber.replace(
+                      /^(\+\d)(\d{3})(\d{3})(\d{4})$/,
+                      "$1 ($2) $3-$4"
+                    )
+                  : "N/A"}
+              </p>
+            </div>
+            <div className="flex items-center py-4 px-4">
+              <div className="w-10 flex justify-center">
+                <KeyRound className="w-5 h-5 text-gray-500" />
+              </div>
+              <p className="text-base font-bold">
+                {truncatePubkey(pubkey || "", 12)}
+              </p>
             </div>
           </div>
         </section>
-
-        <section>
-          <h2 className="text-lg font-semibold mb-3">Settings</h2>
-          <Link href="/logout" className="block">
-            <div className="w-full bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-              <div className="flex items-center justify-between py-4 px-4">
-                <div className="flex items-center">
-                  <div className="w-10 flex justify-center">
-                    <LogOut className="w-5 h-5 text-red-500" />
-                  </div>
-                  <p className="text-base font-bold text-red-500">Log Out</p>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
-              </div>
-            </div>
-          </Link>
-        </section>
       </motion.main>
+
+      <motion.footer
+        initial={{ opacity: 0, y: 0 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+        className="flex justify-center px-6 mb-16">
+        <Button
+          onClick={handleLogout}
+          className="w-full py-6 font-bold text-lg rounded-3xl shadow-none">
+          Log Out
+        </Button>
+      </motion.footer>
     </div>
   );
 }

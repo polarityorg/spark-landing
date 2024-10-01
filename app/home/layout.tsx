@@ -2,8 +2,7 @@
 import localFont from "next/font/local";
 import "../globals.css";
 import { motion } from "framer-motion";
-import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -21,17 +20,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = usePathname();
+  const isVerticalAnimation = false;
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-
   if (!mounted) {
     return null;
   }
-
-  const isVerticalAnimation =
-    pathname.includes("activity") || pathname.includes("settings");
 
   return (
     <html lang="en">
@@ -39,7 +34,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <div className="mx-auto w-full h-[100dvh] max-w-[490px] overflow-hidden bg-white">
           <motion.div
-            key={pathname}
             initial={{
               opacity: 0,
               [isVerticalAnimation ? "y" : "x"]: isVerticalAnimation
