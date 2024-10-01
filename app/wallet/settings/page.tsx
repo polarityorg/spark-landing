@@ -11,7 +11,7 @@ export default function SettingsPage() {
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
         className="flex items-center justify-between p-6">
         <Link href="/wallet" aria-label="Back to wallet">
           <Button variant="ghost" size="icon">
@@ -38,7 +38,7 @@ export default function SettingsPage() {
       <motion.main
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
         className="flex-grow flex flex-col px-6 pt-8 space-y-6">
         <section>
           <h2 className="text-lg font-semibold mb-3">Profile</h2>
