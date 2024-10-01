@@ -32,7 +32,7 @@ export default function ActivityPage() {
         stiffness: 100,
         damping: 15,
         mass: 1,
-        delay: 0.3, // Added delay
+        delay: 0.1,
       },
     },
   };
@@ -47,7 +47,7 @@ export default function ActivityPage() {
         stiffness: 100,
         damping: 15,
         mass: 0.5,
-        delay: 0.5, // Added delay
+        delay: 0.3,
       },
     },
   };
@@ -62,8 +62,7 @@ export default function ActivityPage() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }} // Added delay
-        >
+          transition={{ duration: 0.5, delay: 0.1 }}>
           <Link
             href="/wallet"
             className="inline-block"

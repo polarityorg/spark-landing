@@ -32,17 +32,24 @@ const ToStep = ({
         <br />
         the money?
       </h2>
-      {inputType === "phone" ? (
-        <PhoneInput value={recipient} onChange={setRecipient} />
-      ) : (
-        <Input
-          type="text"
-          value={recipient}
-          onChange={(e) => setRecipient(e.target.value)}
-          placeholder="Enter public key"
-          className="w-full px-2 py-6 border rounded-lg shadow-none"
-        />
-      )}
+      <motion.div
+        key={inputType}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.3 }}>
+        {inputType === "phone" ? (
+          <PhoneInput value={recipient} onChange={setRecipient} />
+        ) : (
+          <Input
+            type="text"
+            value={recipient}
+            onChange={(e) => setRecipient(e.target.value)}
+            placeholder="Enter public key"
+            className="w-full px-2 py-6 border rounded-lg shadow-none"
+          />
+        )}
+      </motion.div>
       <Button
         variant="link"
         onClick={toggleInputType}
@@ -138,7 +145,7 @@ function ConfirmPageContent() {
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
         className="flex flex-col">
         <div className="flex items-center justify-between p-6">
           {step === "to" || step === "sent" ? (
@@ -181,7 +188,7 @@ function ConfirmPageContent() {
       <motion.main
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
         className="flex-grow flex flex-col px-6 pt-8">
         {step === "to" ? (
           <ToStep
@@ -208,7 +215,7 @@ function ConfirmPageContent() {
       <motion.footer
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
         className="p-6 mb-16">
         <motion.div
           className="relative overflow-hidden mx-auto"

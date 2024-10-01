@@ -26,7 +26,7 @@ export default function DepositPage() {
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
         className="flex items-center justify-between p-6">
         <Link href="/wallet" aria-label="Back to wallet">
           <X className="w-6 h-6" strokeWidth={2.5} />
@@ -38,7 +38,7 @@ export default function DepositPage() {
       <motion.main
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
         className="flex-grow flex flex-col justify-center items-center px-6">
         <p className="mb-6 text-center text-gray-600 font-bold">
           Scan this QR code to deposit funds

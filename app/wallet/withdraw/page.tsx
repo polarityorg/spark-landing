@@ -57,7 +57,7 @@ export default function WithdrawPage() {
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
         className="flex items-center justify-between p-6">
         <Link href="/wallet" aria-label="Back to wallet">
           <X className="w-6 h-6" strokeWidth={2.5} />
@@ -69,7 +69,7 @@ export default function WithdrawPage() {
       <motion.main
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
         className="flex-grow flex flex-col justify-between px-6 pt-8">
         <Input
           type="text"
@@ -82,7 +82,7 @@ export default function WithdrawPage() {
       <motion.main
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
         className="flex-grow flex flex-col justify-between px-6 pt-8">
         <div className="flex-grow flex flex-col justify-center items-center mb-8">
           <p className="text-6xl font-bold mb-4">
@@ -139,7 +139,7 @@ export default function WithdrawPage() {
       <motion.footer
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
         className="p-6 mb-16">
         <Button
           variant="default"

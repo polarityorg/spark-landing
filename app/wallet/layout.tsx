@@ -29,11 +29,11 @@ export default function RootLayout({
         <div className="mx-auto w-full h-[100dvh] max-w-[490px] overflow-hidden bg-white">
           <motion.div
             key={pathname}
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 0 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+            exit={{ opacity: 0, x: -0 }}
             transition={{
-              duration: 0.5,
+              duration: 0.2,
               ease: "easeInOut",
             }}
             className="h-full flex flex-col">

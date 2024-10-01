@@ -11,7 +11,7 @@ export default function Wallet() {
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
         className="flex justify-between items-center mb-20">
         <div className="text-xl font-bold">
           <Image
@@ -40,7 +40,7 @@ export default function Wallet() {
       <motion.main
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
         className="flex-grow flex flex-col items-center justify-center">
         <h2 className="text-md text-black mb-4 bg-gray-100 p-3 rounded-xl font-bold">
           My Balance
@@ -71,7 +71,7 @@ export default function Wallet() {
       <motion.footer
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
         className="flex justify-center mb-16">
         <Link href="/wallet/send" className="w-full">
           <Button className="w-full py-6 font-bold text-lg rounded-3xl">
