@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface Transaction {
+export interface Transaction {
   id: string;
   type: "received" | "sent";
   amount: number;

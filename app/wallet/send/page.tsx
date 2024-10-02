@@ -9,8 +9,9 @@ import { PhoneInput } from "@/components/phone-input";
 import { Input } from "@/components/ui/input";
 import { Loader2, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useWalletStore } from "../store";
+import { Transaction, useWalletStore } from "../store";
 import { useRouter } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
 
 const MAX_AMOUNT_CENTS = 99999999; // $999,999.99
 
@@ -68,6 +69,9 @@ ToStep.displayName = "ToStep";
 export default function SendPage() {
   const mnemonic = useWalletStore((state) => state.mnemonic);
   const availableBalance = useWalletStore((state) => state.balance);
+  const setBalance = useWalletStore((state) => state.setBalance);
+  const setActivity = useWalletStore((state) => state.setActivity);
+  const activity = useWalletStore((state) => state.activity);
   const router = useRouter();
 
   const [amountCents, setAmountCents] = useState(0);
@@ -141,6 +145,20 @@ export default function SendPage() {
     setIsSending(true);
     // Simulate sending money
     setTimeout(() => {
+      const newBalance = availableBalance - amountCents / 100;
+      setBalance(newBalance);
+
+      const newTransaction: Transaction = {
+        id: uuidv4(),
+        type: "sent",
+        amount: amountCents / 100,
+        from: recipient,
+        date: new Date(),
+      };
+
+      // Update the activity list with the new transaction
+      setActivity([newTransaction, ...activity]);
+
       setIsSending(false);
       setStep("sent");
     }, 1000);

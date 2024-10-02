@@ -15,6 +15,14 @@ import { useRouter } from "next/navigation";
 //   date: Date;
 // }
 
+const formatRecipient = (value: string) => {
+  const phonePattern = /^\+\d{10,}$/;
+  if (phonePattern.test(value)) {
+    return value.replace(/^(\+\d)(\d{3})(\d{3})(\d{4})$/, "$1 ($2) $3-$4");
+  }
+  return value;
+};
+
 export default function ActivityPage() {
   const activity = useWalletStore((state) => state.activity);
   const mnemonic = useWalletStore((state) => state.mnemonic);
@@ -118,7 +126,9 @@ export default function ActivityPage() {
                     <p className="font-semibold">
                       {transaction.type === "received" ? "Received" : "Sent"}
                     </p>
-                    <p className="text-gray-500 text-sm">{transaction.from}</p>
+                    <p className="text-gray-500 text-sm">
+                      {formatRecipient(transaction.from)}
+                    </p>
                   </div>
                 </div>
                 <div className="text-right">

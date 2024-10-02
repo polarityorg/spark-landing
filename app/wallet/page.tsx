@@ -42,7 +42,7 @@ export default function Wallet() {
         }
       }
     }
-  }, [mnemonic, router, setBalance, mounted]);
+  }, [mnemonic, router, setBalance, mounted, balance]);
 
   if (!mounted) {
     return null;
