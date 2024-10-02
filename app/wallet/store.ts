@@ -3,9 +3,10 @@ import { persist } from "zustand/middleware";
 
 export interface Transaction {
   id: string;
-  type: "received" | "sent";
+  type: "received" | "sent" | "withdraw" | "deposit";
   amount: number;
-  from: string;
+  from?: string;
+  to?: string;
   date: Date;
 }
 

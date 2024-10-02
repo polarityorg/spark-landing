@@ -1,15 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { X, DollarSign } from "lucide-react";
+import { X, DollarSign, ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import { useWalletStore } from "../store";
+import { truncatePubkey } from "@/lib/utils";
 
 // interface Transaction {
 //   id: string;
-//   type: "received" | "sent";
+//   type: "received" | "sent" | "withdraw" | "deposit";
 //   amount: number;
-//   from: string;
+//   from?: string;
+//   to?: string;
 //   date: Date;
 // }
 
@@ -17,6 +19,9 @@ const formatRecipient = (value: string) => {
   const phonePattern = /^\+\d{10,}$/;
   if (phonePattern.test(value)) {
     return value.replace(/^(\+\d)(\d{3})(\d{3})(\d{4})$/, "$1 ($2) $3-$4");
+  }
+  if (value.length > 12) {
+    return truncatePubkey(value, 6);
   }
   return value;
 };
@@ -100,19 +105,37 @@ export default function ActivityPage() {
                     variants={itemVariants}>
                     <div className="flex items-center">
                       <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mr-4">
-                        <DollarSign
-                          className="w-6 h-6 text-gray-600"
-                          strokeWidth={3}
-                        />
+                        {transaction.type === "withdraw" ? (
+                          <ArrowUpRight
+                            className="w-6 h-6 text-gray-600"
+                            strokeWidth={3}
+                          />
+                        ) : transaction.type === "deposit" ? (
+                          <ArrowDownLeft
+                            className="w-6 h-6 text-gray-600"
+                            strokeWidth={3}
+                          />
+                        ) : (
+                          <DollarSign
+                            className="w-6 h-6 text-gray-600"
+                            strokeWidth={3}
+                          />
+                        )}
                       </div>
                       <div>
                         <p className="font-semibold">
                           {transaction.type === "received"
                             ? "Received"
+                            : transaction.type === "withdraw"
+                            ? "Withdrawn"
+                            : transaction.type === "deposit"
+                            ? "Deposited"
                             : "Sent"}
                         </p>
                         <p className="text-gray-500 text-sm">
-                          {formatRecipient(transaction.from)}
+                          {formatRecipient(
+                            transaction.from ?? transaction.to ?? ""
+                          )}
                         </p>
                       </div>
                     </div>

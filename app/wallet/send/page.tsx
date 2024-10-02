@@ -118,7 +118,7 @@ export default function SendPage() {
         type: "sent",
         amount: amountCents / 100,
         from: recipient,
-        date: new Date(),
+        date: new Date(Date.now()),
       };
 
       // Update the activity list with the new transaction

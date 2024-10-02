@@ -1,73 +1,148 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { X, ChevronLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useWalletStore } from "../store";
-
-const MAX_AMOUNT_CENTS = 99999999;
+import { Loader2, Check } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Transaction, useWalletStore } from "../store";
+import {
+  AddressStep,
+  AmountStep,
+  SummaryStep,
+} from "@/components/WithdrawSteps"; // Create this new component
+import { decodeLightningInvoice } from "@/utils/lightning"; // Dummy decoder
+import { isValidBitcoinAddress } from "@/utils/validation"; // Address validator
+import { v4 as uuidv4 } from "uuid";
 
 export default function WithdrawPage() {
-  const [amountCents, setAmountCents] = useState(0);
+  const [step, setStep] = useState<"address" | "amount" | "summary" | "sent">(
+    "address"
+  );
   const [address, setAddress] = useState("");
-  const [isAddressInputFocused, setIsAddressInputFocused] = useState(false);
+  const [amountCents, setAmountCents] = useState<number>(0);
+  const [isSending, setIsSending] = useState(false);
+  const [error, setError] = useState("");
   const availableBalance = useWalletStore((state) => state.balance);
+  const setBalance = useWalletStore((state) => state.setBalance);
+  const setActivity = useWalletStore((state) => state.setActivity);
+  const activity = useWalletStore((state) => state.activity);
 
-  const handleNumberClick = useCallback((digit: string) => {
-    setAmountCents((prevAmount) =>
-      Math.min(prevAmount * 10 + parseInt(digit), MAX_AMOUNT_CENTS)
-    );
-  }, []);
-
-  const handleDelete = useCallback(() => {
-    setAmountCents((prevAmount) => Math.floor(prevAmount / 10));
-  }, []);
-
-  const handleKeyPress = useCallback(
-    (event: KeyboardEvent) => {
-      if (isAddressInputFocused) return;
-
-      if (/^[0-9]$/.test(event.key)) {
-        handleNumberClick(event.key);
-      } else if (event.key === "Backspace") {
-        handleDelete();
+  const handleContinueFromAddress = () => {
+    if (address.startsWith("lnbc") || address.startsWith("LNBC")) {
+      // Decode the Lightning invoice (dummy decoding for now)
+      const decodedInvoice = decodeLightningInvoice(address);
+      if (decodedInvoice.amount === 0) {
+        setStep("amount");
+      } else {
+        setAmountCents(decodedInvoice.amount * 100); // Assuming amount is in dollars
+        setStep("summary");
       }
-    },
-    [handleNumberClick, handleDelete, isAddressInputFocused]
-  );
+    } else if (isValidBitcoinAddress(address)) {
+      setStep("amount");
+    } else {
+      setError("Please enter a valid Bitcoin address or LN invoice.");
+    }
+  };
 
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [handleKeyPress]);
+  const handleSendMoney = () => {
+    if (availableBalance < amountCents / 100) {
+      setError("Insufficient balance.");
+      return;
+    }
+    setIsSending(true);
+    // Simulate sending money
+    setTimeout(() => {
+      const newBalance = availableBalance - amountCents / 100;
+      setBalance(newBalance);
 
-  const handleUseMax = useCallback(() => {
-    setAmountCents(
-      Math.min(Math.round(availableBalance * 100), MAX_AMOUNT_CENTS)
-    );
-  }, [availableBalance]);
+      const newTransaction: Transaction = {
+        id: uuidv4(),
+        type: "withdraw",
+        amount: amountCents / 100,
+        to: address,
+        date: new Date(Date.now()),
+      };
 
-  const isWithdrawDisabled = useCallback(
-    (balance: number, amount: number, address: string) =>
-      balance === 0 || amount === 0 || amount / 100 > balance || !address,
-    []
-  );
+      // Update the activity list with the new transaction
+      setActivity([newTransaction, ...activity]);
+
+      setIsSending(false);
+      setStep("sent");
+    }, 1000);
+  };
+
+  const handleBack = () => {
+    if (step === "amount") {
+      setStep("address");
+    } else if (step === "summary") {
+      if (address.startsWith("lnbc") || address.startsWith("LNBC")) {
+        const decodedInvoice = decodeLightningInvoice(address);
+        if (decodedInvoice.amount === 0) {
+          setStep("amount");
+        } else {
+          setStep("address");
+        }
+      } else {
+        setStep("amount");
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white flex flex-col font-[family-name:var(--font-geist-sans)]">
       <motion.header
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="flex items-center justify-between p-6">
-        <Link href="/wallet" aria-label="Back to wallet">
-          <X className="w-6 h-6" strokeWidth={2.5} />
-        </Link>
-        <h1 className="text-xl font-bold">Withdraw</h1>
-        <div className="w-6 h-6" aria-hidden="true" />
+        transition={{ duration: 0.5, delay: 0.2 }}>
+        <div className="flex items-center justify-between p-6">
+          {step === "address" || step === "sent" ? (
+            <Link href="/wallet" aria-label="Back to wallet">
+              <Button variant="ghost" size="icon">
+                <ChevronLeft className="h-6 w-6" strokeWidth={4} />
+              </Button>
+            </Link>
+          ) : (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleBack}
+              aria-label="Go back">
+              <ChevronLeft className="h-6 w-6" strokeWidth={4} />
+            </Button>
+          )}
+          <h1 className="text-xl font-bold">
+            {step === "address"
+              ? "Withdraw"
+              : step === "amount"
+              ? "Amount"
+              : step === "summary"
+              ? "Summary"
+              : "Success"}
+          </h1>
+          <div className="w-10" aria-hidden="true" />
+        </div>
+
+        {/* Progress bar */}
+        {step !== "address" && (
+          <div className="h-0.5 bg-gray-200 w-full">
+            <motion.div
+              className="h-0.5 bg-black"
+              initial={{ width: "33.33%" }}
+              animate={{
+                width:
+                  step === "amount"
+                    ? "33.33%"
+                    : step === "summary"
+                    ? "66.66%"
+                    : "100%",
+              }}
+              transition={{ duration: 0.3 }}
+            />
+          </div>
+        )}
       </motion.header>
 
       <motion.main
@@ -75,71 +150,38 @@ export default function WithdrawPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
         className="flex-grow flex flex-col justify-between px-6 pt-8">
-        <Input
-          type="text"
-          placeholder="Enter Bitcoin address or LN invoice"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          onFocus={() => setIsAddressInputFocused(true)}
-          onBlur={() => setIsAddressInputFocused(false)}
-          className="mt-4 rounded-full shadow-none px-4 py-6 font-bold"
-        />
-      </motion.main>
-      <motion.main
-        initial={{ opacity: 0, y: 0 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-        className="flex-grow flex flex-col justify-between px-6 pt-8">
-        <div className="flex-grow flex flex-col justify-center items-center mb-8">
-          <p className="text-6xl font-bold mb-4">
-            <span className="tabular-nums">
-              $
-              {(amountCents / 100).toLocaleString("en-US", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </span>
-          </p>
-          <div className="flex items-center justify-center bg-gray-100 rounded-full overflow-hidden">
-            <p className="text-base font-bold text-gray-700 px-3 py-2">
-              Available: ${availableBalance.toFixed(2)}
-            </p>
-            <Button
-              variant="outline"
-              onClick={handleUseMax}
-              className="text-sm font-bold py-2 px-3 h-full rounded-full border-l border border-gray-300">
-              Use Max
-            </Button>
-          </div>
-        </div>
+        {step === "address" && (
+          <AddressStep
+            address={address}
+            setAddress={setAddress}
+            error={error}
+          />
+        )}
 
-        <div className="w-full max-w-xs mx-auto">
-          <div className="grid grid-cols-3 gap-x-16 gap-y-4">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, null, 0, "delete"].map(
-              (item, index) => (
-                <Button
-                  key={index}
-                  variant="ghost"
-                  className="aspect-square text-2xl font-bold p-0 h-auto"
-                  onClick={() => {
-                    if (item === "delete") {
-                      handleDelete();
-                    } else if (item !== null) {
-                      handleNumberClick(item.toString());
-                    }
-                  }}
-                  disabled={item === null}
-                  aria-label={item === "delete" ? "Delete" : item?.toString()}>
-                  {item === "delete" ? (
-                    <ChevronLeft className="h-6 w-6" strokeWidth={4} />
-                  ) : (
-                    item
-                  )}
-                </Button>
-              )
-            )}
+        {step === "amount" && (
+          <AmountStep
+            amountCents={amountCents}
+            setAmountCents={setAmountCents}
+            availableBalance={availableBalance}
+          />
+        )}
+
+        {step === "summary" && (
+          <SummaryStep amountCents={amountCents} recipient={address} />
+        )}
+
+        {step === "sent" && (
+          <div className="flex flex-col h-full items-center justify-center">
+            <div className="mb-8 flex flex-col items-center">
+              <div className="rounded-full bg-black p-3 mb-4">
+                <Check className="h-8 w-8 text-white" strokeWidth={4} />
+              </div>
+              <h2 className="text-3xl font-bold text-center">
+                Sent ${(amountCents / 100).toFixed(2)}
+              </h2>
+            </div>
           </div>
-        </div>
+        )}
       </motion.main>
 
       <motion.footer
@@ -147,12 +189,62 @@ export default function WithdrawPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
         className="p-6 mb-16">
-        <Button
-          variant="default"
-          className="w-full py-6 text-lg rounded-3xl font-bold"
-          disabled={isWithdrawDisabled(availableBalance, amountCents, address)}>
-          Withdraw
-        </Button>
+        {/* Footer buttons based on step */}
+        {step === "address" && (
+          <Button
+            onClick={handleContinueFromAddress}
+            className="w-full h-14 text-lg font-bold shadow-none rounded-full"
+            disabled={!address}>
+            Continue
+          </Button>
+        )}
+
+        {step === "amount" && (
+          <Button
+            onClick={() => setStep("summary")}
+            className="w-full h-14 text-lg font-bold shadow-none rounded-full"
+            disabled={
+              amountCents === 0 || amountCents / 100 > availableBalance
+            }>
+            Continue
+          </Button>
+        )}
+
+        {step === "summary" && (
+          <motion.div
+            className="relative overflow-hidden mx-auto"
+            initial={{ width: "100%" }}
+            animate={{
+              width: isSending ? 56 : "100%",
+              borderRadius: isSending ? 28 : 24,
+            }}
+            transition={{ duration: 0.3 }}>
+            <Button
+              onClick={handleSendMoney}
+              className={cn(
+                "w-full h-14 text-lg font-bold shadow-none rounded-full",
+                isSending && "pointer-events-none"
+              )}>
+              <span
+                className={cn("transition-opacity", isSending && "opacity-0")}>
+                Withdraw
+              </span>
+              {isSending && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Loader2 className="h-8 w-8 animate-spin text-white" />
+                </div>
+              )}
+            </Button>
+          </motion.div>
+        )}
+
+        {step === "sent" && (
+          <Link href="/wallet" className="block w-full">
+            <Button className="w-full h-14 text-lg font-bold shadow-none rounded-full">
+              Go Home
+            </Button>
+          </Link>
+        )}
       </motion.footer>
     </div>
   );

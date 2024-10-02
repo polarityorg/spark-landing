@@ -12,3 +12,9 @@ export const otpIsValid = (otp: string): boolean => {
   const otpRegex = /^\d{6}$/;
   return otpRegex.test(otp);
 };
+
+export function isValidBitcoinAddress(address: string): boolean {
+  // Implement real validation logic, or use a validation library
+  // For now, we'll do a simple length check
+  return address.length > 20;
+}
