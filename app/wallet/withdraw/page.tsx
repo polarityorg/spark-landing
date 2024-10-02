@@ -188,7 +188,8 @@ export default function WithdrawPage() {
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
-        className="p-6 mb-16">
+        className="p-6"
+        style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))" }}>
         {/* Footer buttons based on step */}
         {step === "address" && (
           <Button

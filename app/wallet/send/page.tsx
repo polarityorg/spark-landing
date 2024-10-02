@@ -118,7 +118,7 @@ export default function SendPage() {
         type: "sent",
         amount: amountCents / 100,
         from: recipient,
-        date: new Date(Date.now()),
+        date: new Date(),
       };
 
       // Update the activity list with the new transaction
@@ -290,7 +290,8 @@ export default function SendPage() {
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
-        className="p-6 mb-16">
+        className="p-6"
+        style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))" }}>
         {/* Adjust footer buttons based on step */}
         {step === "amount" && (
           <div className="flex gap-4">

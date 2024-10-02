@@ -160,8 +160,8 @@ export default function ImportWalletPage() {
       <motion.footer
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="flex justify-center mb-16">
+        transition={{ duration: 0.5, delay: 0.3 }}
+        style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))" }}>
         <Button
           onClick={handleContinue}
           disabled={
