@@ -16,6 +16,7 @@ import {
   InputOTPSlot,
   InputOTPSeparator,
 } from "@/components/ui/input-otp";
+import { isValidPhoneNumber } from "@/utils/validation";
 
 export default function ImportWalletPage() {
   const router = useRouter();
@@ -30,15 +31,20 @@ export default function ImportWalletPage() {
 
   const handleContinue = () => {
     if (step === "mnemonic") {
-      const { isValid, pubkey } = walletSDK.importWallet(mnemonic);
+      const { isValid, pubkey } = walletSDK.importWallet(mnemonic.trim());
       if (isValid && pubkey) {
         setStep("phone");
+        setError(""); // Clear any previous errors
       } else {
-        setError("Invalid mnemonic. Please ensure it has 12 words.");
+        setError("Invalid mnemonic. Please ensure it has 12 valid words.");
       }
     } else if (step === "phone") {
-      // Validate phone number here
-      setStep("otp");
+      if (isValidPhoneNumber(phoneNumber)) {
+        setStep("otp");
+        setError("");
+      } else {
+        setError("Please enter a valid phone number.");
+      }
     } else if (step === "otp") {
       // Validate OTP here
       handleImport();
@@ -159,8 +165,8 @@ export default function ImportWalletPage() {
         <Button
           onClick={handleContinue}
           disabled={
-            (step === "mnemonic" && mnemonic.split(" ").length !== 12) ||
-            (step === "phone" && !phoneNumber) ||
+            (step === "mnemonic" && mnemonic.trim().split(" ").length !== 12) ||
+            (step === "phone" && !isValidPhoneNumber(phoneNumber)) ||
             (step === "otp" && otp.length !== 6)
           }
           className="w-full py-6 font-bold text-lg rounded-3xl shadow-none">

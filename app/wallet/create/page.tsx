@@ -15,6 +15,7 @@ import {
   InputOTPSlot,
   InputOTPSeparator,
 } from "@/components/ui/input-otp";
+import { isValidPhoneNumber, otpIsValid } from "@/utils/validation";
 
 export default function CreateWalletPage() {
   const router = useRouter();
@@ -70,12 +71,20 @@ export default function CreateWalletPage() {
 
   const handleContinue = () => {
     if (step === "phone") {
-      // Validate phone number here
-      setStep("otp");
+      if (isValidPhoneNumber(phoneNumber)) {
+        setStep("otp");
+        setError("");
+      } else {
+        setError("Please enter a valid phone number.");
+      }
     } else if (step === "otp") {
       // Validate OTP here
-      setStep("mnemonic");
-      handleCreate();
+      if (otpIsValid(otp)) {
+        setStep("mnemonic");
+        handleCreate();
+      } else {
+        setError("Invalid OTP. Please try again.");
+      }
     } else if (step === "mnemonic") {
       handleCreateWallet();
     }

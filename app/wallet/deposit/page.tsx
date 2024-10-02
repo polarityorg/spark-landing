@@ -58,7 +58,7 @@ export default function DepositPage() {
             className="flex items-center px-3 py-2 w-1/2">
             <Copy className="w-4 h-4 mr-2 flex-shrink-0" />
             <span className="truncate font-bold">
-              {copyStatus.bitcoin || "Copy Bitcoin Address"}
+              {copyStatus.bitcoin || "Bitcoin Address"}
             </span>
           </Button>
           <Button
@@ -66,7 +66,7 @@ export default function DepositPage() {
             className="flex items-center px-3 py-2 w-1/2">
             <Copy className="w-4 h-4 mr-2 flex-shrink-0" />
             <span className="truncate font-bold">
-              {copyStatus.lightning || "Copy Lightning Invoice"}
+              {copyStatus.lightning || "LN Invoice"}
             </span>
           </Button>
         </div>

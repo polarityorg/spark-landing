@@ -12,59 +12,10 @@ import { cn } from "@/lib/utils";
 import { Transaction, useWalletStore } from "../store";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
+import { isValidPhoneNumber, isValidPublicKey } from "@/utils/validation";
+import { ToStep, SummaryStep } from "@/components/SendSteps";
 
 const MAX_AMOUNT_CENTS = 99999999; // $999,999.99
-
-const ToStep = memo(
-  ({
-    recipient,
-    setRecipient,
-    inputType,
-    toggleInputType,
-  }: {
-    recipient: string;
-    setRecipient: (value: string) => void;
-    inputType: "phone" | "publicKey";
-    toggleInputType: () => void;
-  }) => {
-    return (
-      <div className="flex flex-col h-full">
-        <h2 className="text-3xl font-bold mb-6">
-          Who will receive
-          <br />
-          the money?
-        </h2>
-        <motion.div
-          initial={{ opacity: 0, y: 0 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 0 }}
-          transition={{ duration: 0.3 }}>
-          {inputType === "phone" ? (
-            <PhoneInput value={recipient} onChange={setRecipient} />
-          ) : (
-            <Input
-              type="text"
-              value={recipient}
-              onChange={(e) => setRecipient(e.target.value)}
-              placeholder="Enter public key"
-              className="w-full px-2 py-6 border rounded-lg shadow-none"
-            />
-          )}
-        </motion.div>
-        <Button
-          variant="link"
-          onClick={toggleInputType}
-          className="mt-2 text-sm text-gray-600 self-start p-0">
-          {inputType === "phone"
-            ? "Or send to a public key"
-            : "Or send to a phone number"}
-        </Button>
-      </div>
-    );
-  }
-);
-
-ToStep.displayName = "ToStep";
 
 export default function SendPage() {
   const mnemonic = useWalletStore((state) => state.mnemonic);
@@ -81,6 +32,7 @@ export default function SendPage() {
   const [recipient, setRecipient] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [inputType, setInputType] = useState<"phone" | "publicKey">("phone");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!mnemonic) {
@@ -137,11 +89,26 @@ export default function SendPage() {
     setStep("to");
   };
 
+  const isValidRecipient = (recipient: string): boolean => {
+    return inputType === "phone"
+      ? isValidPhoneNumber(recipient)
+      : isValidPublicKey(recipient);
+  };
+
   const handleContinueToSummary = () => {
+    if (!isValidRecipient(recipient)) {
+      setError("Please enter a valid recipient.");
+      return;
+    }
+    setError("");
     setStep("summary");
   };
 
   const handleSendMoney = () => {
+    if (availableBalance < amountCents / 100) {
+      setError("Insufficient balance.");
+      return;
+    }
     setIsSending(true);
     // Simulate sending money
     setTimeout(() => {
@@ -170,51 +137,6 @@ export default function SendPage() {
     } else if (step === "summary") {
       setStep("to");
     }
-  };
-
-  // Confirmation step components
-  const SummaryStep = ({
-    amountCents,
-    recipient,
-  }: {
-    amountCents: number;
-    recipient: string;
-  }) => {
-    const formatRecipient = (value: string) => {
-      const phonePattern = /^\+\d{10,}$/;
-      if (phonePattern.test(value)) {
-        return value.replace(/^(\+\d)(\d{3})(\d{3})(\d{4})$/, "$1 ($2) $3-$4");
-      }
-      return value;
-    };
-
-    return (
-      <div className="flex flex-col h-full">
-        <div className="flex-grow flex flex-col justify-center items-center mb-8">
-          <p className="text-xl font-bold mb-2">You are Sending</p>
-          <p className="text-6xl font-bold mb-4">
-            <span className="tabular-nums">
-              $
-              {(amountCents / 100).toLocaleString("en-US", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </span>
-          </p>
-        </div>
-        <div className="mb-4">
-          <p className="text-sm font-semibold mb-2">To</p>
-          <div className="bg-gray-100 rounded-lg p-3">
-            <p className="text-lg font-bold">{formatRecipient(recipient)}</p>
-          </div>
-        </div>
-        <div className="border border-gray-300 rounded-lg p-3 mb-4">
-          <p className="text-sm text-gray-500 font-bold">
-            *Transfers cannot be reversed
-          </p>
-        </div>
-      </div>
-    );
   };
 
   if (!mnemonic) {
@@ -339,12 +261,12 @@ export default function SendPage() {
         )}
 
         {step === "to" && (
-          // {{ edit_3: Use the external memoized ToStep component }}
           <ToStep
             recipient={recipient}
             setRecipient={setRecipient}
             inputType={inputType}
             toggleInputType={toggleInputType}
+            setError={setError}
           />
         )}
 

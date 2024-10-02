@@ -54,10 +54,10 @@ export default function SettingsPage() {
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="flex-grow flex flex-col items-center justify-center space-y-8">
-        <section>
+        className="flex-grow w-full flex flex-col items-center justify-center space-y-8">
+        <section className="w-full">
           <h2 className="text-lg font-semibold mb-3">Profile</h2>
-          <div className="bg-gray-50 rounded-lg">
+          <div className="bg-gray-50 rounded-lg w-full">
             <div className="flex items-center py-4 px-4">
               <div className="w-10 flex justify-center">
                 <Phone className="w-5 h-5 text-gray-500" />

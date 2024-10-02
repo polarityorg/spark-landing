@@ -4,7 +4,6 @@ import Link from "next/link";
 import { X, DollarSign } from "lucide-react";
 import { motion } from "framer-motion";
 import { useWalletStore } from "../store";
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 // interface Transaction {
@@ -27,27 +26,6 @@ export default function ActivityPage() {
   const activity = useWalletStore((state) => state.activity);
   const mnemonic = useWalletStore((state) => state.mnemonic);
   const router = useRouter();
-
-  useEffect(() => {
-    if (!mnemonic) {
-      router.replace("/");
-    } else {
-      // Optionally, fetch and set activity here
-      // For now, we'll use dummy data
-      if (activity.length === 0) {
-        useWalletStore.getState().setActivity([
-          {
-            id: "1",
-            type: "received",
-            amount: 0.1,
-            from: "+1 321 591 3342",
-            date: new Date("2023-08-20T13:59:00"),
-          },
-          // ... more dummy transactions ...
-        ]);
-      }
-    }
-  }, [mnemonic, router, activity.length]);
 
   const containerVariants = {
     hidden: { opacity: 0, y: -50 },
@@ -104,56 +82,70 @@ export default function ActivityPage() {
 
       <main>
         <section>
-          <motion.h2
-            className="text-xl font-bold text-gray-400 mb-4"
-            variants={itemVariants}>
-            Completed
-          </motion.h2>
-          <motion.ul className="space-y-4">
-            {activity.map((transaction, index) => (
-              <motion.li
-                key={index}
-                className="flex items-center justify-between"
+          {activity.length === 0 ? (
+            <motion.p
+              className="text-center font-bold text-muted-foreground py-8"
+              variants={itemVariants}>
+              No transactions yet
+            </motion.p>
+          ) : (
+            <>
+              <motion.h2
+                className="text-xl font-bold text-gray-400 mb-4"
                 variants={itemVariants}>
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mr-4">
-                    <DollarSign
-                      className="w-6 h-6 text-gray-600"
-                      strokeWidth={3}
-                    />
-                  </div>
-                  <div>
-                    <p className="font-semibold">
-                      {transaction.type === "received" ? "Received" : "Sent"}
-                    </p>
-                    <p className="text-gray-500 text-sm">
-                      {formatRecipient(transaction.from)}
-                    </p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p
-                    className={`font-semibold ${
-                      transaction.type === "received"
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}>
-                    {transaction.type === "received" ? "+" : "-"} $
-                    {transaction.amount.toFixed(2)}
-                  </p>
-                  <p className="text-gray-500 text-sm">
-                    {transaction.date.toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      hour: "numeric",
-                      minute: "numeric",
-                      hour12: true,
-                    })}
-                  </p>
-                </div>
-              </motion.li>
-            ))}
-          </motion.ul>
+                Completed
+              </motion.h2>
+              <motion.ul className="space-y-4">
+                {activity.map((transaction, index) => (
+                  <motion.li
+                    key={index}
+                    className="flex items-center justify-between"
+                    variants={itemVariants}>
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mr-4">
+                        <DollarSign
+                          className="w-6 h-6 text-gray-600"
+                          strokeWidth={3}
+                        />
+                      </div>
+                      <div>
+                        <p className="font-semibold">
+                          {transaction.type === "received"
+                            ? "Received"
+                            : "Sent"}
+                        </p>
+                        <p className="text-gray-500 text-sm">
+                          {formatRecipient(transaction.from)}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p
+                        className={`font-semibold ${
+                          transaction.type === "received"
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }`}>
+                        {transaction.type === "received" ? "+" : "-"} $
+                        {transaction.amount.toFixed(2)}
+                      </p>
+                      <p className="text-gray-500 text-sm">
+                        {transaction.date instanceof Date
+                          ? transaction.date.toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              hour: "numeric",
+                              minute: "numeric",
+                              hour12: true,
+                            })
+                          : "Unknown Date"}
+                      </p>
+                    </div>
+                  </motion.li>
+                ))}
+              </motion.ul>
+            </>
+          )}
         </section>
       </main>
     </motion.div>
