@@ -131,35 +131,25 @@ export default function CreateWalletPage() {
               maxLength={6}
               value={otp}
               onChange={setOtp}
-              className="w-full justify-center shadow-none">
-              <InputOTPGroup className="gap-2 sm:gap-4 shadow-none">
-                <InputOTPSlot
-                  index={0}
-                  className="w-12 h-12 shadow-none rounded-md"
-                />
-                <InputOTPSlot
-                  index={1}
-                  className="w-12 h-12 shadow-none rounded-md"
-                />
-                <InputOTPSlot
-                  index={2}
-                  className="w-12 h-12 shadow-none rounded-md"
-                />
+              className="w-full h-full justify-center shadow-none">
+              <InputOTPGroup className="gap-2 sm:gap-4 shadow-none w-full h-full">
+                {[0, 1, 2].map((index) => (
+                  <InputOTPSlot
+                    key={index}
+                    index={index}
+                    className="w-full h-full aspect-square shadow-none rounded-md"
+                  />
+                ))}
               </InputOTPGroup>
-              <InputOTPSeparator className="mx-2 sm:mx-4" />
-              <InputOTPGroup className="gap-2 sm:gap-4">
-                <InputOTPSlot
-                  index={3}
-                  className="w-12 h-12 shadow-none rounded-md"
-                />
-                <InputOTPSlot
-                  index={4}
-                  className="w-12 h-12 shadow-none rounded-md"
-                />
-                <InputOTPSlot
-                  index={5}
-                  className="w-12 h-12 shadow-none rounded-md"
-                />
+              <InputOTPSeparator />
+              <InputOTPGroup className="gap-2 sm:gap-4 w-full h-full">
+                {[3, 4, 5].map((index) => (
+                  <InputOTPSlot
+                    key={index}
+                    index={index}
+                    className="w-full h-full aspect-square shadow-none rounded-md"
+                  />
+                ))}
               </InputOTPGroup>
             </InputOTP>
           </div>
