@@ -426,6 +426,18 @@ const TechnicalOverview = () => {
                 <AccordionItem value="deposits">
                   <AccordionTrigger>Deposits from L1</AccordionTrigger>
                   <AccordionContent>
+                    <p className="mb-4">
+                      Deposits L1 funds to spark is quite straight forward. The
+                      SE and user collaborate to generate an aggregate public
+                      key and derive a pay-to-taproot address from it. They then
+                      work together to collaboratively create and sign two
+                      transactions, a refund transaction and an intermediate
+                      transaction before it that triggers the refunds relative
+                      timelock. Once these transactions are both signed, the
+                      user can finally send their deposit transaction to the
+                      pay-to-taproot address. The user will now have a leaf in
+                      Spark.
+                    </p>
                     <h4 className="text-lg font-semibold mt-2 mb-2">
                       Steps-by-Step Process
                     </h4>
@@ -435,7 +447,7 @@ const TechnicalOverview = () => {
                           <p>
                             <strong>Key Generation:</strong>
                           </p>
-                          <ul className="list-disc ml-8 mt-2">
+                          <ul className="list-disc ml-8 mt-2 space-y-2">
                             <li className="pl-2">
                               <p>
                                 The user and SE work together to generate an
@@ -458,7 +470,14 @@ const TechnicalOverview = () => {
                           <p>
                             <strong>Setup and Signing:</strong>
                           </p>
-                          <ul className="list-disc ml-8 mt-2">
+                          <ul className="list-disc ml-8 mt-2 space-y-2">
+                            <li className="pl-2">
+                              <p>
+                                User constructs a deposit transaction sending
+                                their funds to the pay-to-taproot address, but
+                                doesn&apos;t broadcast it.
+                              </p>
+                            </li>
                             <li className="pl-2">
                               <p>
                                 User and SE collaboratively create and sign two
@@ -469,7 +488,7 @@ const TechnicalOverview = () => {
                                   <p>
                                     An intermediate transaction (not
                                     broadcasted) with no timelock that spends
-                                    from the combined public key back to the
+                                    from the deposit transaction back to the
                                     combined public key. This transaction
                                     triggers the relative timelock of leaves
                                     under it.
@@ -477,10 +496,10 @@ const TechnicalOverview = () => {
                                 </li>
                                 <li className="pl-2">
                                   <p>
-                                    A refund transaction with a timelock
-                                    relative to the intermediate transaction.
-                                    This transaction is broadcasted if the user
-                                    wants to exit Spark.
+                                    A refund transaction that spends from the
+                                    intermediate transaction. This transaction
+                                    is broadcasted if the user wants to
+                                    unilaterally exit Spark.
                                   </p>
                                 </li>
                               </ol>
@@ -500,7 +519,7 @@ const TechnicalOverview = () => {
                           <p>
                             <strong>Storage:</strong>
                           </p>
-                          <ul className="list-disc ml-8 mt-2">
+                          <ul className="list-disc ml-8 mt-2 space-y-2">
                             <li className="pl-2">
                               <p>
                                 User and SE securely store the signed
@@ -513,7 +532,7 @@ const TechnicalOverview = () => {
                           <p>
                             <strong>User Deposit:</strong>
                           </p>
-                          <ul className="list-disc ml-8 mt-2">
+                          <ul className="list-disc ml-8 mt-2 space-y-2">
                             <li className="pl-2">
                               <p>
                                 User broadcasts a deposit transaction to the
@@ -526,11 +545,11 @@ const TechnicalOverview = () => {
                           <p>
                             <strong>SE Confirmation:</strong>
                           </p>
-                          <ul className="list-disc ml-8 mt-2">
+                          <ul className="list-disc ml-8 mt-2 space-y-2">
                             <li className="pl-2">
                               <p>
-                                SE verifies the deposit and issues a Spark leaf
-                                to the user
+                                SE verifies the deposit on-chain and issues a
+                                Spark leaf to the user
                               </p>
                             </li>
                           </ul>
@@ -544,11 +563,14 @@ const TechnicalOverview = () => {
                   <AccordionTrigger>Splitting a Leaf</AccordionTrigger>
                   <AccordionContent>
                     <p className="mb-4">
-                      By splitting keys, we can create a transaction that spends
-                      the original UTXO and produces multiple outputs, each
-                      controlled by a part of the split key. The sum of the keys
-                      in all branches equals the original key, allowing flexible
-                      transaction management without on-chain transactions.
+                      We split leaves to be able to spend smaller denominations.
+                      We do so by constructing a Bitcoin transaction that takes
+                      the parent UTXO as an input and produces multiple outputs,
+                      each controlled by a new key, which is split off from the
+                      original key. The sum of the new keys in all branches
+                      equals the original key, this allows for re-aggregation of
+                      leaves and more flexible leaf management without on-chain
+                      transactions.
                       <br />
                       <br />
                       To split a leaf in Spark, we need to split it&apos;s
@@ -586,7 +608,7 @@ const TechnicalOverview = () => {
                         <p>
                           <strong>User Key Splitting</strong>
                         </p>
-                        <ul className="list-disc ml-8 mt-2">
+                        <ul className="list-disc ml-8 mt-2 space-y-2">
                           <li className="pl-2">
                             <p>Generate n new user private keys</p>
                           </li>
@@ -680,10 +702,10 @@ const TechnicalOverview = () => {
                   <AccordionTrigger>Transfer</AccordionTrigger>
                   <AccordionContent>
                     <p className="mb-4">
-                      Ownership is transferred by adjusting the SE&apos;s key so
-                      that the combined key remains the same before and after
-                      the transfer, but control shifts from the sender to the
-                      receiver.
+                      Leaf ownership is transferred by adjusting the SE&apos;s
+                      key so that the combined key (SE+User) remains the same
+                      before and after the transfer, but control shifts from the
+                      sender to the receiver.
                       <br />
                       <br />
                       Original Combined Key:
@@ -694,6 +716,13 @@ const TechnicalOverview = () => {
                       After Transfer:
                       <br />
                       <InlineMath math="\text{PubKey}_{\text{Combined}} = \text{PubKey}_{\text{Receiver}} + \text{PubKey}'_{\text{SE}}" />
+                      <br />
+                      <br />
+                      <p className="mb-4">
+                        We do this by tweaking the SE key with the difference
+                        between the sender and receiver private keys. Note that
+                        no private keys are ever revealed through this process.
+                      </p>
                     </p>
                     <h4 className="text-lg font-semibold mt-4 mb-2">
                       Step-by-Step Process
@@ -766,7 +795,7 @@ const TechnicalOverview = () => {
                     <h5 className="text-md font-semibold mb-2">
                       Steps-by-Step Process
                     </h5>
-                    <p className="mb-4">Something about connectors</p>
+                    <p className="mb-4">TODO: Something about connectors</p>
                     <h4 className="text-lg font-semibold mt-4 mb-2">
                       Unilateral Exit
                     </h4>
@@ -929,17 +958,17 @@ const TechnicalOverview = () => {
               <p className="mb-4">
                 In designing Spark, the primary goal was to maintain strong
                 security guarantees for users while maintaining performance. We
-                achieve this by closely mirroring the trust model of the
-                Lightning Network, ensuring that users have the exact same L1
-                guarantees.
+                achieve this by closely mirroring the Lightning model, ensuring
+                that users have the exact same L1 guarantees on Spark as they do
+                on LN.
                 <br />
                 <br />
                 Spark relies upon a minimum of 1 honest operator of the SE out
                 of the n participants but can be configured with a threshold as
                 desired for liveliness. Even with coercion, there is nothing
-                that can be done for past states if the one honest operator is
-                truly deleting the old keys. This compares favorably with every
-                other L2 other than LN, which requires no honest entities.
+                that can be done for past states if the honest set of operators
+                are truly deleting the old keys. This compares favorably with
+                every other L2 other than LN, which requires no honest entities.
               </p>
             </div>
           )}
