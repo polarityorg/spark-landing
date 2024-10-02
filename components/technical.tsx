@@ -264,21 +264,6 @@ const TechnicalOverview = () => {
                     </p>{" "}
                   </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="SSP">
-                  <AccordionTrigger>
-                    SSP - Spark Service Provider
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <p className="mb-4">
-                      A Spark service provider is an entity that is willing to
-                      swap funds in and out Spark for funds on Lightning or L1.
-                      They may choose to charge a small fee for this service,
-                      and ultimately improve the overall capital efficiency of
-                      the system by making it cheaper and faster to on and
-                      offboard.
-                    </p>
-                  </AccordionContent>
-                </AccordionItem>
                 <AccordionItem value="Timelocks">
                   <AccordionTrigger>Timelocks</AccordionTrigger>
                   <AccordionContent>

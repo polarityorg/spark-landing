@@ -32,10 +32,11 @@ export default function Home({
         <div className="flex flex-col gap-2 text-sm text-left text-muted-foreground">
           <h5 className="font-bold text-sm">Disclaimer</h5>
           <p>
-            Typically, when a new protocol is introduced to the community, less
-            than 1% of people end up reading it given how overwhelming the
-            material can be. We&apos;ve tried something different; this version
-            is an attempt to speak to multiple audiences.
+            Typically, when a new scaling solution is introduced to the
+            community, less than 1% of people end up reading it given how
+            overwhelming the material can be. We&apos;ve tried something
+            different; this version is an attempt to speak to multiple
+            audiences.
           </p>
           <p>Please keep us honest — any and all feedback is welcome.</p>
         </div>
