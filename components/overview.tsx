@@ -80,7 +80,9 @@ const Overview = () => {
                   <p>Extremely low fees</p>
                 </li>
                 <li className="pl-2">
-                  <p>Native Lightning interface</p>
+                  <p>
+                    Native Lightning interface without needing to run a node
+                  </p>
                 </li>
                 <li className="pl-2">
                   <p>Ability to scale to billions of users</p>
@@ -96,9 +98,6 @@ const Overview = () => {
                     Capital efficiency (no pre-funding, large liquidity lockups
                     etc.)
                   </p>
-                </li>
-                <li className="pl-2">
-                  <p>Private payments support</p>
                 </li>
                 <li className="pl-2">
                   <p>Offline receive</p>
@@ -154,8 +153,8 @@ const Overview = () => {
               <br />
               However, the more we were moving forward, the more we were faced
               with the limitations of Lightning&apos;s current design,
-              particularly when it came to scaling the number of nodes on the
-              network.
+              particularly when it came to the economic feasibility of running
+              nodes for individual users.
               <br />
               <br />
               As it stands, Lightning cannot effectively onboard billions of
@@ -183,7 +182,7 @@ const Overview = () => {
               <br />
               This issue isn&apos;t unique to Lightspark at all. Anyone building
               on the Lightning Network quickly faces the same limitations. A lot
-              of very talented companies (Breez, Greenlight, Phoenix, etc.) and
+              of very talented teams (Breez, Greenlight, Phoenix, etc.) and
               builders are working hard to find ways to mitigate these issues.
               <br />
               <br />
@@ -209,16 +208,16 @@ const Overview = () => {
                 overview which gets into the weeds of Spark.
                 <br />
                 <br />
-                The general idea of Spark is that it allows BTC to be spent
-                off-chain instantly. On Bitcoin, on-chain funds are denoted by
-                UTXOs (Unspent transaction outputs, Bitcoin a user hasn&apos;t
-                spent yet). In Spark, the user sends UTXO&apos;s to a multisig
-                between the user and the Spark Operators (SOs). When a user
-                wants to transfer ownership of these funds the Spark Operators
-                coordinate and adjust their keys so the new owner takes control.
-                The beauty of this is that at every moment the current owner
-                remains in full control of their funds and can exit at any time
-                without needing permission from the SOs.
+                The general idea of Spark is that it allows assets on Bitcoin to
+                be spent off-chain instantly. On Bitcoin, on-chain funds are
+                denoted by UTXOs (Unspent transaction outputs, Bitcoin a user
+                hasn&apos;t spent yet). In Spark, the user sends UTXO&apos;s to
+                a multisig between the user and the Spark Operators (SOs). When
+                a user wants to transfer ownership of these funds the Spark
+                Operators coordinate and adjust their keys so the new owner
+                takes control. The beauty of this is that at every moment the
+                current owner remains in full control of their funds and can
+                exit at any time without needing permission from the SOs.
                 <br />
                 <br />
                 There are several ways to interact with Spark:
@@ -226,7 +225,13 @@ const Overview = () => {
               <ol className="list-decimal list-inside mb-4">
                 <li>Move funds in and out from Bitcoin</li>
                 <li>Transfer within Spark to other users</li>
-                <li>Send and receive via Lightning</li>
+                <li>
+                  Send and receive via Lightning{" "}
+                  <b>
+                    <small>(without the headache)</small>
+                  </b>
+                </li>
+                <li>Lightning address & UMA</li>
               </ol>
               <p className="mb-4">
                 To fully understand how these transactions work — or to make
@@ -235,6 +240,16 @@ const Overview = () => {
               </p>
               <h3 className="text-xl font-bold mb-2">Key Definitions</h3>
               <ul className="list-disc pl-6 mb-8 space-y-2">
+                <li className="pl-2">
+                  <p>
+                    <b>Spark Entity (SE):</b> A group of entities (individually
+                    called SOs) that help facilitate the transfer of UTXO
+                    ownership between users on Spark. Their job is simple: they
+                    generate, manage, manipulate, and delete their keys. This
+                    group can add and remove more operators via consensus to
+                    improve or degrade trust/performance.
+                  </p>
+                </li>
                 <li className="pl-2">
                   <p>
                     <b>Spark Operator (SO):</b> One of the operators within the
@@ -249,24 +264,13 @@ const Overview = () => {
                 </li>
                 <li className="pl-2">
                   <p>
-                    <b>Spark Entity (SE):</b> A group of entities (individually
-                    called SOs) that help facilitate the transfer of UTXO
-                    ownership between users on Spark. Their job is simple: they
-                    generate, manage, manipulate, and delete their keys. This
-                    group can add and remove more operators via consensus to
-                    improve or degrade trust/performance.
-                  </p>
-                </li>
-                <li className="pl-2">
-                  <p>
                     <b>Spark Service Providers (SSPs):</b> SSPs make transfers
                     on Bitcoin and Lightning from Spark cheaper and more
                     efficient. Any entity — whether a wallet provider, exchange,
-                    or market maker etc. can become an SSP. If you don&apos;t
-                    want to trust a provider, you can also be your own SSP. Some
-                    entities will likely be incentivized by charging a small fee
-                    for their services. Lightspark is planning to offer these
-                    services to serve some of our customers.
+                    or market maker etc. Some entities will likely be
+                    incentivized by charging a small fee for their services.
+                    Lightspark is planning to offer these services to serve some
+                    of our customers.
                   </p>
                 </li>
                 <li className="pl-2">
@@ -299,11 +303,10 @@ const Overview = () => {
                 <br />
                 <br />
                 Before you transfer the money into multisig — you and the SE
-                will sign an exit transaction, so that if the SE ever go offline
-                or act maliciously, you can always reclaim your funds on Bitcoin
-                to your preferred address. Once your deposit is confirmed
-                on-chain, you&apos;re all set—congratulations you now have funds
-                on Spark!
+                will sign an exit transaction. This is so if the SE ever goes
+                offline, you can reclaim your funds on L1 to your preferred
+                address. Once your deposit is confirmed on-chain, you&apos;re
+                all set—congratulations you now have funds on Spark!
               </p>
               <Image
                 src="/bitcoin-spark.png"
@@ -342,6 +345,12 @@ const Overview = () => {
                 via an exchange, or pay a merchant via Lightning.
                 <br />
                 <br />
+                Importantly, Spark users don&apos;t need to run a node, manage
+                Lightning channels, or lock up liquidity themselves. This
+                eliminates almost all the overhead associated with traditional
+                Lightning operations.
+                <br />
+                <br />
                 All Lightning payments are powered by SSPs who accept Spark
                 leaves to send Lightning payments or accept Lightning payments
                 for Spark leaves. This is all done via atomic swaps, so no funds
@@ -367,11 +376,11 @@ const Overview = () => {
               <p className="mb-4">
                 This is the most pessimistic scenario and can occur at any time.
                 Unilateral exits are more expensive than cooperative exits, due
-                to the fact that past states need to be published all the way up
-                to the most recent state. There doesn&apos;t need to be a reason
-                to unilaterally exit, but users could choose to if a set of
-                SO&apos;s goes offline, if an SO set is attempting to be
-                malicious, or if they&apos;ve lost confidence in the SE itself.
+                to the fact that the entire tree needs to be published to prove
+                ownership of the most recent state. There doesn&apos;t need to
+                be a reason to unilaterally exit, but users could choose to if a
+                set of SOs goes offline, or if they&apos;ve lost confidence in
+                the SE itself.
                 <br />
                 <br />
                 This solution requires no cooperation, and can be done by any
@@ -388,11 +397,11 @@ const Overview = () => {
                 out of the <InlineMath math="n" /> participants but can be
                 configured with a threshold as desired for liveliness. Threshold
                 increases the honest operator requirement to the{" "}
-                <InlineMath math="(n-threshold)/n" />
-                operators being honest (the minority of signers), but decreases
-                the need for every single SO to be online at every point in
-                time. This makes the system more trusted, but also more robust
-                from a network perspective.
+                <InlineMath math="((n-threshold)+1)/n" /> operators being honest
+                (the minority of signers), but decreases the need for every
+                single SO to be online at every point in time. This makes the
+                system more trusted, but also more robust from a network
+                perspective.
               </p>
             </>
           )}

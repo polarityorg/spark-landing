@@ -22,12 +22,12 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col font-[family-name:var(--font-geist-sans)]">
+    <div className="min-h-screen bg-white flex flex-col p-6 font-[family-name:var(--font-geist-sans)]">
       <motion.header
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="flex items-center justify-between p-6">
+        className="flex justify-between items-center mb-20">
         <Link href="/wallet" aria-label="Back to wallet">
           <Button variant="ghost" size="icon">
             <X className="w-6 h-6" strokeWidth={2.5} />
@@ -54,7 +54,7 @@ export default function SettingsPage() {
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="flex-grow flex flex-col px-6 pt-8 space-y-6 mb-20">
+        className="flex-grow flex flex-col items-center justify-center space-y-8">
         <section>
           <h2 className="text-lg font-semibold mb-3">Profile</h2>
           <div className="bg-gray-50 rounded-lg">
@@ -87,7 +87,7 @@ export default function SettingsPage() {
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
-        className="flex justify-center px-6 mb-16">
+        className="flex justify-center mb-16">
         <Button
           onClick={handleLogout}
           className="w-full py-6 font-bold text-lg rounded-3xl shadow-none">

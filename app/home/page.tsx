@@ -43,7 +43,7 @@ export default function HomePage() {
           priority
         />
 
-        <div className="flex gap-4 mb-20">
+        <div className="flex gap-2 mb-20">
           {[
             { href: "/wallet/import", icon: Cloud, text: "Import Wallet" },
             { href: "/wallet/create", icon: Plus, text: "Create Wallet" },
@@ -51,7 +51,7 @@ export default function HomePage() {
             <Link
               key={href}
               href={href}
-              className="flex items-center gap-2 rounded-xl bg-gray-100 text-black font-bold shadow-none text-md px-4 py-3 hover:bg-gray-200 transition-colors duration-200">
+              className="flex items-center justify-center gap-1 rounded-xl bg-gray-100 text-black font-bold shadow-none text-xs sm:text-sm md:text-base px-2 sm:px-4 py-3 hover:bg-gray-200 transition-colors duration-200 whitespace-nowrap flex-1">
               <div className="bg-black rounded-full p-1">
                 <Icon
                   className="w-3 h-3 text-gray-100"
