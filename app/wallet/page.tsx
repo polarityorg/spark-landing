@@ -37,7 +37,9 @@ export default function Wallet() {
       if (!mnemonic) {
         router.replace("/home");
       } else {
-        setBalance(Math.floor(Math.random() * (200 - 100 + 1) + 100));
+        if (balance === 0) {
+          setBalance(Math.floor(Math.random() * (200 - 100 + 1) + 100));
+        }
       }
     }
   }, [mnemonic, router, setBalance, mounted]);
