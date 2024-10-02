@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback, memo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PhoneInput } from "@/components/phone-input";
-import { Input } from "@/components/ui/input";
 import { Loader2, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Transaction, useWalletStore } from "../store";
@@ -32,7 +30,7 @@ export default function SendPage() {
   const [recipient, setRecipient] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [inputType, setInputType] = useState<"phone" | "publicKey">("phone");
-  const [error, setError] = useState("");
+  const [, setError] = useState("");
 
   useEffect(() => {
     if (!mnemonic) {

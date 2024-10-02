@@ -1,7 +1,5 @@
 import { memo } from "react";
 import { PhoneInput } from "@/components/phone-input";
-import { ChevronLeft } from "lucide-react";
-import { motion } from "framer-motion";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 

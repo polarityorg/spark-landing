@@ -4,7 +4,6 @@ import Link from "next/link";
 import { X, DollarSign } from "lucide-react";
 import { motion } from "framer-motion";
 import { useWalletStore } from "../store";
-import { useRouter } from "next/navigation";
 
 // interface Transaction {
 //   id: string;
@@ -24,8 +23,6 @@ const formatRecipient = (value: string) => {
 
 export default function ActivityPage() {
   const activity = useWalletStore((state) => state.activity);
-  const mnemonic = useWalletStore((state) => state.mnemonic);
-  const router = useRouter();
 
   const containerVariants = {
     hidden: { opacity: 0, y: -50 },
