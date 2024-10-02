@@ -263,26 +263,59 @@ export default function SendPage() {
         transition={{ duration: 0.5, delay: 0.1 }}
         className="flex-grow flex flex-col justify-between px-6 pt-8">
         {step === "amount" && (
-          <div className="flex-grow flex flex-col justify-center items-center mb-8">
-            <p className="text-6xl font-bold mb-4">
-              <span className="tabular-nums">
-                $
-                {(amountCents / 100).toLocaleString("en-US", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </span>
-            </p>
-            <div className="flex items-center justify-center bg-gray-100 rounded-full overflow-hidden">
-              <p className="text-base font-bold text-gray-700 px-3 py-2">
-                Available: ${availableBalance.toFixed(2)}
+          <div className="flex flex-col h-full">
+            {/* Center the amount display */}
+            <div className="flex-grow flex flex-col justify-center items-center">
+              <p className="text-6xl font-bold mb-4">
+                <span className="tabular-nums">
+                  $
+                  {(amountCents / 100).toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </span>
               </p>
-              <Button
-                variant="outline"
-                onClick={handleUseMax}
-                className="text-sm font-bold py-2 px-3 h-full rounded-full border-l border border-gray-300">
-                Use Max
-              </Button>
+              <div className="flex items-center justify-center bg-gray-100 rounded-full overflow-hidden">
+                <p className="text-base font-bold text-gray-700 px-3 py-2">
+                  Available: ${availableBalance.toFixed(2)}
+                </p>
+                <Button
+                  variant="outline"
+                  onClick={handleUseMax}
+                  className="text-sm font-bold py-2 px-3 h-full rounded-full border-l border border-gray-300">
+                  Use Max
+                </Button>
+              </div>
+            </div>
+
+            <div className="w-full max-w-xs mx-auto">
+              <div className="grid grid-cols-3 gap-x-16 gap-y-4">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, null, 0, "delete"].map(
+                  (item, index) => (
+                    <Button
+                      key={index}
+                      variant="ghost"
+                      className="aspect-square text-2xl font-bold p-0 h-auto"
+                      onClick={() => {
+                        if (item === "delete") {
+                          handleDelete();
+                        } else if (item !== null) {
+                          handleNumberClick(item.toString());
+                        }
+                      }}
+                      disabled={item === null}
+                      aria-label={
+                        item === "delete" ? "Delete" : item?.toString()
+                      }>
+                      {item === "delete" ? (
+                        <ChevronLeft className="h-6 w-6" strokeWidth={4} />
+                      ) : (
+                        item
+                      )}
+                    </Button>
+                  )
+                )}
+              </div>
             </div>
           </div>
         )}

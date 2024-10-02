@@ -6,13 +6,15 @@ import { motion } from "framer-motion";
 import { X, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useWalletStore } from "../store";
 
 const MAX_AMOUNT_CENTS = 99999999;
 
 export default function WithdrawPage() {
   const [amountCents, setAmountCents] = useState(0);
   const [address, setAddress] = useState("");
-  const availableBalance = 0.1;
+  const [isAddressInputFocused, setIsAddressInputFocused] = useState(false);
+  const availableBalance = useWalletStore((state) => state.balance);
 
   const handleNumberClick = useCallback((digit: string) => {
     setAmountCents((prevAmount) =>
@@ -26,13 +28,15 @@ export default function WithdrawPage() {
 
   const handleKeyPress = useCallback(
     (event: KeyboardEvent) => {
+      if (isAddressInputFocused) return;
+
       if (/^[0-9]$/.test(event.key)) {
         handleNumberClick(event.key);
       } else if (event.key === "Backspace") {
         handleDelete();
       }
     },
-    [handleNumberClick, handleDelete]
+    [handleNumberClick, handleDelete, isAddressInputFocused]
   );
 
   useEffect(() => {
@@ -76,6 +80,8 @@ export default function WithdrawPage() {
           placeholder="Enter Bitcoin address or LN invoice"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
+          onFocus={() => setIsAddressInputFocused(true)}
+          onBlur={() => setIsAddressInputFocused(false)}
           className="mt-4 rounded-full shadow-none px-4 py-6 font-bold"
         />
       </motion.main>
