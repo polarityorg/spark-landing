@@ -161,7 +161,7 @@ export default function ImportWalletPage() {
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
-        style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))" }}>
+        className="pb-[calc(4.5em+env(safe-area-inset-bottom))]">
         <Button
           onClick={handleContinue}
           disabled={
@@ -169,7 +169,7 @@ export default function ImportWalletPage() {
             (step === "phone" && !isValidPhoneNumber(phoneNumber)) ||
             (step === "otp" && otp.length !== 6)
           }
-          className="w-full py-6 font-bold text-lg rounded-3xl shadow-none">
+          className="w-full py-6 font-bold text-lg rounded-full shadow-none">
           {step === "otp" ? "Sign In" : "Continue"}
         </Button>
       </motion.footer>

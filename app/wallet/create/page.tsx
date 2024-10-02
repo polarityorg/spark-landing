@@ -211,7 +211,7 @@ export default function CreateWalletPage() {
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
-        style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))" }}>
+        className="pb-[calc(4.5em+env(safe-area-inset-bottom))]">
         <Button
           onClick={handleContinue}
           className="w-full py-6 font-bold text-lg rounded-full"

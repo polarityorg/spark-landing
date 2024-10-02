@@ -199,7 +199,7 @@ export default function SendPage() {
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="flex-grow flex flex-col justify-between px-6 pt-8">
+        className="flex-grow flex flex-col justify-between px-6 py-8">
         {step === "amount" && (
           <div className="flex flex-col h-full">
             {/* Center the amount display */}
@@ -290,8 +290,7 @@ export default function SendPage() {
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
-        className="p-6"
-        style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))" }}>
+        className="p-6 mb-8 pb-[calc(4.5em+env(safe-area-inset-bottom))]">
         {/* Adjust footer buttons based on step */}
         {step === "amount" && (
           <div className="flex gap-4">

@@ -154,10 +154,10 @@ export default function Wallet() {
       <motion.footer
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))" }}>
-        <Link href="/wallet/send" className="w-full">
-          <Button className="w-full py-6 font-bold text-lg rounded-3xl">
+        transition={{ duration: 0.5, delay: 0.4 }}
+        className="pb-[calc(4.5em+env(safe-area-inset-bottom))]">
+        <Link href="/wallet/send" className="w-full h-full">
+          <Button className="w-full py-6 font-bold text-lg rounded-full">
             Send Money
           </Button>
         </Link>
