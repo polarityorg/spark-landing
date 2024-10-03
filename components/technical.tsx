@@ -942,12 +942,7 @@ const TechnicalOverview = () => {
             <div>
               <p className="mb-4">
                 In designing Spark, the primary goal was to maintain strong
-                security guarantees for users while maintaining performance. We
-                achieve this by closely mirroring the Lightning model, ensuring
-                that users have the exact same L1 guarantees on Spark as they do
-                on LN.
-                <br />
-                <br />
+                security guarantees for users while maintaining performance.
                 Spark relies upon a minimum of 1 honest operator of the SE out
                 of the n participants but can be configured with a threshold as
                 desired for liveliness. Even with coercion, there is nothing
