@@ -56,7 +56,7 @@ const TechnicalOverview = () => {
                 so requires each user to, at a minimum, open a single channel
                 with an on-chain transaction - or more realistically, have
                 multiple channels requiring multiple on-chain transactions.
-                While this helps scale transactions, it isn&apos;t economically
+                While this helps scale transactions, it&apos;s not economically
                 viable for billions of customers or customers sensitive to
                 on-chain fees. Further, it&apos;s burdensome both economically
                 and technically to source sufficient inbound liquidity for each
@@ -161,248 +161,230 @@ const TechnicalOverview = () => {
           )}
           {section.id === "core-concepts" && (
             <div>
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="statechain">
-                  <AccordionTrigger>Statechains</AccordionTrigger>
-                  <AccordionContent>
-                    <p className="mb-4">
-                      This section can be bypassed if the reader understands
-                      statechains, which are used as a building block for the
-                      proposal which follows. This section will serve as a way
-                      to provide a high-level overview of how statechains work -
-                      note that the description provided here will be imperfect
-                      and not completely accurate intentionally; rather, this
-                      will serve as a way to understand the functionality of
-                      statechains.
-                      <br />
-                      <br /> Statechains are a way to transfer ownership of a
-                      UTXO off-chain.
-                      <br />
-                      <br />
-                      First, begin with the assumption that adding keys together
-                      can form a single key. We will start with two parties
-                      holding keys - one is the user Alice (A) and the other
-                      will be called the statechain entity (SE) which can be
-                      composed of any number of members, but will be shown as a
-                      single entity below.
-                      <br />
-                      <br />
-                      <InlineMath math={`SE+A=Key1`} />
-                      <br />
-                      <br />
-                      Each key is represented as a random number. In this
-                      example, SE&apos;s key is represented by the value 100,
-                      and A&apos;s key is represented by the value 50.
-                      <br />
-                      <br />
-                      <InlineMath math={`100+50=150 =Key1`} />
-                      <br />
-                      <br />
-                      Now assume that a signature is simply multiplying the key
-                      by the hash of some object. The hash will also be
-                      represented by a number. In this example, our hash will be
-                      represented by the value 2. Thus, a signature of this hash
-                      will be:
-                      <br />
-                      <br />
-                      <InlineMath math={`(100+50)*2=300`} />
-                      <br />
-                      <br />
-                      We begin with a UTXO encumbered by the spending condition
-                      requiring the combined signature of SE and A (i.e., signed
-                      by the 150 combined key). By placing this condition on the
-                      UTXO, we are putting the UTXO into the statechain. When
-                      this occurs, Alice and the SE craft and sign a spending
-                      transaction, which sends the coins directly to Alice after
-                      an absolute timelock of 100 blocks from now.
-                      <br />
-                      <br />
-                      Alice now wishes to transfer ownership of this UTXO to Bob
-                      (B), but she wants to do so without putting the
-                      transaction on-chain. Bob&apos;s key is represented by the
-                      number 40. He calculates the difference between his key
-                      and Alice&apos;s key is 10. For him plus the SE to sign
-                      using the same value as Alice+SE (150), he needs the SE to
-                      tweak their key by 10. So, the SE discards the old key and
-                      only keeps a copy of the newly tweaked key 110. Now, the
-                      SE+Bob still equals 150, so the UTXO can be spent by
-                      signing using the combined 150. Alice can&apos;t still
-                      sign a new transaction because the SE forgot the 100 key,
-                      so now Alice+SE=160 which isn&apos;t a valid key to sign
-                      the transaction.
-                      <br />
-                      <br />
-                      Typically, when handing off the key, the new owner will
-                      work with the SE to sign a new spending transaction with a
-                      lower time bomb than what Alice had on her signed
-                      transactions. Alice and SE have a way of conveying to Bob
-                      what was signed previously, and then Bob will craft a new
-                      transaction with an absolute time lock of 90 (less than
-                      the lock Alice has a signed transaction for). Each time
-                      it&apos;s passed to a new person, they decrease the time
-                      lock. If anyone tried to claim the UTXO, they could only
-                      do so once their time bomb arrived.
-                      <br />
-                      <br />
-                      It should be noted that this limits the time that a UTXO
-                      can exist within a statechain - the current owner of the
-                      UTXO needs to claim the funds on-chain once the timebomb
-                      expires or else the prior owner will have the opportunity
-                      to claim the UTXO on-chain.
-                      <br />
-                      <br />
-                      The SE is generally n entities. As long as one of the
-                      entities actually discards the old key, then the transfer
-                      is safe. The safety guarantee holds true as long as a
-                      single one of the n entities is honest. If that is the
-                      case, then no old owner can claim the UTXO prior to the
-                      latest owner and no prior owner can acquire a newly signed
-                      transaction after passing off ownership - because the
-                      honest entities within the SE have forgotten the old
-                      untweaked key and thereby couldn&apos;t sign with it even
-                      if coerced.
-                    </p>{" "}
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="Timelocks">
-                  <AccordionTrigger>Timelocks</AccordionTrigger>
-                  <AccordionContent>
-                    <p className="mb-4">
-                      Timelocks on Bitcoin can either be absolute or relative.
-                      An absolute timelock specifies a block height after which
-                      a transaction can be broadcasted. A relative timelock
-                      specifies a number of blocks after the parent transaction
-                      is included in a block before the child transaction can be
-                      broadcasted.
-                      <br />
-                      <br />
-                      The diagram below shows how statechains typically work:
-                      <Image
-                        src="/timelock1.png"
-                        alt="Timelock Diagram"
-                        width={800}
-                        height={400}
-                        className="mb-8"
-                      />
+              <section>
+                <h3 className="text-xl font-semibold mb-4">Statechains</h3>
+                <p className="mb-4">
+                  This section can be bypassed if the reader understands
+                  statechains, which are used as a building block for the
+                  proposal which follows. This section will serve as a way to
+                  provide a high-level overview of how statechains work - note
+                  that the description provided here will be imperfect and not
+                  completely accurate intentionally; rather, this will serve as
+                  a way to understand the functionality of statechains.
+                  <br />
+                  <br /> Statechains are a way to transfer ownership of a UTXO
+                  off-chain.
+                  <br />
+                  <br />
+                  First, begin with the assumption that adding keys together can
+                  form a single key. We will start with two parties holding keys
+                  - one is the user Alice (A) and the other will be called the
+                  statechain entity (SE) which can be composed of any number of
+                  members, but will be shown as a single entity below.
+                  <br />
+                  <br />
+                  <InlineMath math={`SE+A=Key1`} />
+                  <br />
+                  <br />
+                  Each key is represented as a random number. In this example,
+                  SE&apos;s key is represented by the value 100, and A&apos;s
+                  key is represented by the value 50.
+                  <br />
+                  <br />
+                  <InlineMath math={`100+50=150 =Key1`} />
+                  <br />
+                  <br />
+                  Now assume that a signature is simply multiplying the key by
+                  the hash of some object. The hash will also be represented by
+                  a number. In this example, our hash will be represented by the
+                  value 2. Thus, a signature of this hash will be:
+                  <br />
+                  <br />
+                  <InlineMath math={`(100+50)*2=300`} />
+                  <br />
+                  <br />
+                  We begin with a UTXO encumbered by the spending condition
+                  requiring the combined signature of SE and A (i.e., signed by
+                  the 150 combined key). By placing this condition on the UTXO,
+                  we are putting the UTXO into the statechain. When this occurs,
+                  Alice and the SE craft and sign a spending transaction, which
+                  sends the coins directly to Alice after an absolute timelock
+                  of 100 blocks from now.
+                  <br />
+                  <br />
+                  Alice now wishes to transfer ownership of this UTXO to Bob
+                  (B), but she wants to do so without putting the transaction
+                  on-chain. Bob&apos;s key is represented by the number 40. He
+                  calculates the difference between his key and Alice&apos;s key
+                  is 10. For him plus the SE to sign using the same value as
+                  Alice+SE (150), he needs the SE to tweak their key by 10. So,
+                  the SE discards the old key and only keeps a copy of the newly
+                  tweaked key 110. Now, the SE+Bob still equals 150, so the UTXO
+                  can be spent by signing using the combined 150. Alice
+                  can&apos;t still sign a new transaction because the SE forgot
+                  the 100 key, so now Alice+SE=160 which isn&apos;t a valid key
+                  to sign the transaction.
+                  <br />
+                  <br />
+                  Typically, when handing off the key, the new owner will work
+                  with the SE to sign a new spending transaction with a lower
+                  time bomb than what Alice had on her signed transactions.
+                  Alice and SE have a way of conveying to Bob what was signed
+                  previously, and then Bob will craft a new transaction with an
+                  absolute time lock of 90 (less than the lock Alice has a
+                  signed transaction for). Each time it&apos;s passed to a new
+                  person, they decrease the time lock. If anyone tried to claim
+                  the UTXO, they could only do so once their time bomb arrived.
+                  <br />
+                  <br />
+                  It should be noted that this limits the time that a UTXO can
+                  exist within a statechain - the current owner of the UTXO
+                  needs to claim the funds on-chain once the timebomb expires or
+                  else the prior owner will have the opportunity to claim the
+                  UTXO on-chain.
+                  <br />
+                  <br />
+                  The SE is generally n entities. As long as one of the entities
+                  actually discards the old key, then the transfer is safe. The
+                  safety guarantee holds true as long as a single one of the n
+                  entities is honest. If that is the case, then no old owner can
+                  claim the UTXO prior to the latest owner and no prior owner
+                  can acquire a newly signed transaction after passing off
+                  ownership - because the honest entities within the SE have
+                  forgotten the old untweaked key and thereby couldn&apos;t sign
+                  with it even if coerced.
+                </p>{" "}
+              </section>
+              <section>
+                <h3 className="text-xl font-semibold mb-4">Timelocks</h3>
+                <p className="mb-4">
+                  Timelocks on Bitcoin can either be absolute or relative. An
+                  absolute timelock specifies a block height after which a
+                  transaction can be broadcasted. A relative timelock specifies
+                  a number of blocks after the parent transaction is included in
+                  a block before the child transaction can be broadcasted.
+                  <br />
+                  <br />
+                  The diagram below shows how statechains typically work:
+                  <Image
+                    src="/timelock1.png"
+                    alt="Timelock Diagram"
+                    width={800}
+                    height={400}
+                    className="mb-8"
+                  />
+                </p>
+                <p className="mb-4">
+                  In the above diagram, transactions 2 through 4 are all held
+                  off-chain. They all spend the same output from Txn0 and are
+                  replacements for each other. They use decreasing timelocks
+                  such that Txn4 can be put on-chain prior to Txn3, which could
+                  be put on-chain prior to Txn2. In this way, when ownership of
+                  the key controlling the funds is transferred to a new user,
+                  they can check the prior transactions and be assured that they
+                  can publish their new transaction first. These timelocks
+                  create a timebomb where the off-chain transaction with the
+                  lowest timelock will need to be put on-chain when its timelock
+                  expires, otherwise there is a risk that other transactions can
+                  claim the funds.
+                </p>
+                <p className="mb-4">
+                  This can, however, be eliminated by the following flow:
+                  <Image
+                    src="/timelock2.png"
+                    alt="Timelock Second Diagram"
+                    width={800}
+                    height={400}
+                    className="mb-8"
+                  />
+                </p>
+                <p className="mb-4">
+                  Txn1 spends the output of Txn0. Txn1 has no timelock. When
+                  users transfer keys, they transfer ownership of the key that
+                  encumbers the output of Txn1. The transactions that spend from
+                  Txn1&apos;s output look like the normal statechain
+                  transactions that include decreasing timelocks relative to
+                  their parent transaction. But because Txn1 is held off-chain,
+                  there is no absolute timebomb.
+                </p>
+                <p className="mb-4">
+                  The obvious problem with this is that if someone double-spends
+                  the output consumed by Txn1, then all of the leaves (Txn2..4)
+                  become invalid. To avoid this, the &quot;SE&quot; key is
+                  deleted by the SE - resulting in only one transaction ever
+                  generated for Txn0&apos;s output. The exact mechanics of this
+                  will be discussed later.
+                </p>
+              </section>
+              <section>
+                <h3 className="text-xl font-semibold mb-4">Spark Tree</h3>
+                <p className="mb-4">
+                  A Spark tree is made up of both Leaf-Transactions as well as
+                  Branch-Transactions.
+                </p>
+                <Image
+                  src="/tree.png"
+                  alt="Tree Diagram"
+                  width={800}
+                  height={400}
+                  className="mb-8"
+                />
+                <p className="mb-4">
+                  <strong>Definition: Branch transaction (BT)</strong> - All
+                  transactions of the tree that are not leaf transactions. In
+                  the above diagram, these are Txn1..7. These are nearly
+                  identical to leaf transactions, except they do not have
+                  timelocks and can only be spent by the sum of the keys of the
+                  leaves under them.
+                </p>
+                <p className="mb-4">
+                  <strong>Definition: Leaf transaction (LT)</strong> - Terminal
+                  transactions of the tree that are owned by an individual user.
+                  In the above diagram, Txn8..11 are leaf transactions.
+                </p>
+                <p className="mb-4">
+                  We extend a UTXO within Spark into branches and leaves. Txn0
+                  is spent by Txn1, which is held off-chain. Txn1 is the first
+                  BT. As mentioned above, the absolute timelock timebombs are
+                  removed from the tree.
+                </p>
+                <p className="mb-4">
+                  At each branching, the keys to spend the parent input are
+                  split as described in Branching spending conditions by
+                  splitting keys. This means that Txn1 could be replaced by a
+                  transaction signed by the aggregation of:
+                </p>
+                <ul className="list-disc ml-8 space-y-2">
+                  <li className="pl-2">
+                    <p>
+                      <InlineMath math="(B_{0.1.1.1.1} + SE_{0.1.1.1.1}) + (B_{0.1.2.1.1} + SE_{0.1.2.1.1}) + (B_{0.2.1.1.1} + SE_{0.2.1.1.1}) + (B_{0.2.2.1.1} + SE_{0.2.2.1.1})" />
                     </p>
-                    <p className="mb-4">
-                      In the above diagram, transactions 2 through 4 are all
-                      held off-chain. They all spend the same output from Txn0
-                      and are replacements for each other. They use decreasing
-                      timelocks such that Txn4 can be put on-chain prior to
-                      Txn3, which could be put on-chain prior to Txn2. In this
-                      way, when ownership of the key controlling the funds is
-                      transferred to a new user, they can check the prior
-                      transactions and be assured that they can publish their
-                      new transaction first. These timelocks create a timebomb
-                      where the off-chain transaction with the lowest timelock
-                      will need to be put on-chain when its timelock expires,
-                      otherwise there is a risk that other transactions can
-                      claim the funds.
+                  </li>
+                  <li className="pl-2">
+                    <p>
+                      Which also equals: <InlineMath math="B_0 + SE_0" />
                     </p>
-                    <p className="mb-4">
-                      This can, however, be eliminated by the following flow:
-                      <Image
-                        src="/timelock2.png"
-                        alt="Timelock Second Diagram"
-                        width={800}
-                        height={400}
-                        className="mb-8"
-                      />
+                  </li>
+                  <li className="pl-2">
+                    <p>
+                      Which also equals:{" "}
+                      <InlineMath math="B_{0.1} + SE_{0.1} + B_{0.2} + SE_{0.2}" />
                     </p>
-                    <p className="mb-4">
-                      Txn1 spends the output of Txn0. Txn1 has no timelock. When
-                      users transfer keys, they transfer ownership of the key
-                      that encumbers the output of Txn1. The transactions that
-                      spend from Txn1&apos;s output look like the normal
-                      statechain transactions that include decreasing timelocks
-                      relative to their parent transaction. But because Txn1 is
-                      held off-chain, there is no absolute timebomb.
+                  </li>
+                  <li className="pl-2">
+                    <p>
+                      Which also equals:
+                      <InlineMath math="B_{0.1.1} + SE_{0.1.1} + B_{0.1.2} + SE_{0.1.2} + B_{0.2.1} + SE_{0.2.1} + B_{0.2.2} + SE_{0.2.2}" />
                     </p>
-                    <p className="mb-4">
-                      The obvious problem with this is that if someone
-                      double-spends the output consumed by Txn1, then all of the
-                      leaves (Txn2..4) become invalid. To avoid this, the
-                      &quot;SE&quot; key is deleted by the SE - resulting in
-                      only one transaction ever generated for Txn0&apos;s
-                      output. The exact mechanics of this will be discussed
-                      later.
+                  </li>
+                  <li className="pl-2">
+                    <p>
+                      Which also equals:
+                      <InlineMath math="(B_{0.1.1.1} + SE_{0.1.1.1}) + (B_{0.1.2.1} + SE_{0.1.2.1}) + (B_{0.2.1.1} + SE_{0.2.1.1}) + (B_{0.2.2.1} + SE_{0.2.2.1})" />
                     </p>
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="Spark Tree">
-                  <AccordionTrigger>Spark Tree</AccordionTrigger>
-                  <AccordionContent>
-                    <p className="mb-4">
-                      A Spark tree is made up of both Leaf-Transactions as well
-                      as Branch-Transactions.
-                    </p>
-                    <Image
-                      src="/tree.png"
-                      alt="Tree Diagram"
-                      width={800}
-                      height={400}
-                      className="mb-8"
-                    />
-                    <p className="mb-4">
-                      <strong>Definition: Branch transaction (BT)</strong> - All
-                      transactions of the tree that are not leaf transactions.
-                      In the above diagram, these are Txn1..7. These are nearly
-                      identical to leaf transactions, except they do not have
-                      timelocks and can only be spent by the sum of the keys of
-                      the leaves under them.
-                    </p>
-                    <p className="mb-4">
-                      <strong>Definition: Leaf transaction (LT)</strong> -
-                      Terminal transactions of the tree that are owned by an
-                      individual user. In the above diagram, Txn8..11 are leaf
-                      transactions.
-                    </p>
-                    <p className="mb-4">
-                      We extend a UTXO within Spark into branches and leaves.
-                      Txn0 is spent by Txn1, which is held off-chain. Txn1 is
-                      the first BT. As mentioned above, the absolute timelock
-                      timebombs are removed from the tree.
-                    </p>
-                    <p className="mb-4">
-                      At each branching, the keys to spend the parent input are
-                      split as described in Branching spending conditions by
-                      splitting keys. This means that Txn1 could be replaced by
-                      a transaction signed by the aggregation of:
-                    </p>
-                    <ul className="list-disc ml-8 space-y-2">
-                      <li className="pl-2">
-                        <p>
-                          <InlineMath math="(B_{0.1.1.1.1} + SE_{0.1.1.1.1}) + (B_{0.1.2.1.1} + SE_{0.1.2.1.1}) + (B_{0.2.1.1.1} + SE_{0.2.1.1.1}) + (B_{0.2.2.1.1} + SE_{0.2.2.1.1})" />
-                        </p>
-                      </li>
-                      <li className="pl-2">
-                        <p>
-                          Which also equals: <InlineMath math="B_0 + SE_0" />
-                        </p>
-                      </li>
-                      <li className="pl-2">
-                        <p>
-                          Which also equals:{" "}
-                          <InlineMath math="B_{0.1} + SE_{0.1} + B_{0.2} + SE_{0.2}" />
-                        </p>
-                      </li>
-                      <li className="pl-2">
-                        <p>
-                          Which also equals:
-                          <InlineMath math="B_{0.1.1} + SE_{0.1.1} + B_{0.1.2} + SE_{0.1.2} + B_{0.2.1} + SE_{0.2.1} + B_{0.2.2} + SE_{0.2.2}" />
-                        </p>
-                      </li>
-                      <li className="pl-2">
-                        <p>
-                          Which also equals:
-                          <InlineMath math="(B_{0.1.1.1} + SE_{0.1.1.1}) + (B_{0.1.2.1} + SE_{0.1.2.1}) + (B_{0.2.1.1} + SE_{0.2.1.1}) + (B_{0.2.2.1} + SE_{0.2.2.1})" />
-                        </p>
-                      </li>
-                    </ul>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+                  </li>
+                </ul>
+              </section>
             </div>
           )}
           {section.id === "transaction-lifecycles" && (
@@ -954,36 +936,47 @@ const TechnicalOverview = () => {
           )}
           {section.id === "limitations-attacks" && (
             <div>
-              <h3 className="text-xl font-semibold mb-2">
-                Prior owner publishes branch
-              </h3>
-              <p className="mb-4">
-                The first attack is for an old owner of the UTXO to publish the
-                branch. When this happens, there is a time limitation during
-                which the correct owner needs to publish the leaf transaction.
-                If the current owner does not do so during the window, then the
-                attacker can claim the UTXO. The SE entities all have a copy of
-                the signed transaction and can act as watchtowers. Additionally,
-                depending on how the Spark is configured, this attack can be
-                fairly costly for the attacker - they need to publish the entire
-                tree (unless someone else has unilaterally closed much of the
-                same branch) and CPFP it.
-              </p>
-              <h3 className="text-xl font-semibold mb-2">
-                Loss of SE liveliness
-              </h3>
-              <p className="mb-4">
-                If any (or a minority if threshold) of the entities comprising
-                the SE lose liveness or lose their keys, Spark will not be able
-                to continue. Users will still be able to withdraw their funds
-                through unilateral exits, but they will be unable to continue to
-                send off-chain payments with Spark. This means that the entities
-                comprising the SE should be carefully chosen to be highly
-                available and low-latency since they are in the flow of UTXO
-                transfers. The number of entities and the threshold of trust are
-                configurable - for example, could require trusting ⅓ of the n
-                entities in the SE, which would grant higher liveliness.
-              </p>
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="prior-owner-publishes-branch">
+                  <AccordionTrigger>
+                    Prior owner publishes branch
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <p className="mb-4">
+                      The first attack is for an old owner of the UTXO to
+                      publish the branch. When this happens, there is a time
+                      limitation during which the correct owner needs to publish
+                      the leaf transaction. If the current owner does not do so
+                      during the window, then the attacker can claim the UTXO.
+                      The SE entities all have a copy of the signed transaction
+                      and can act as watchtowers. Additionally, depending on how
+                      the Spark is configured, this attack can be fairly costly
+                      for the attacker - they need to publish the entire tree
+                      (unless someone else has unilaterally closed much of the
+                      same branch) and CPFP it.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="loss-of-se-liveliness">
+                  <AccordionTrigger>Loss of SE liveliness</AccordionTrigger>
+                  <AccordionContent>
+                    <p className="mb-4">
+                      If any (or a minority if threshold) of the entities
+                      comprising the SE lose liveness or lose their keys, Spark
+                      will not be able to continue. Users will still be able to
+                      withdraw their funds through unilateral exits, but they
+                      will be unable to continue to send off-chain payments with
+                      Spark. This means that the entities comprising the SE
+                      should be carefully chosen to be highly available and
+                      low-latency since they are in the flow of UTXO transfers.
+                      The number of entities and the threshold of trust are
+                      configurable - for example, could require trusting ⅓ of
+                      the n entities in the SE, which would grant higher
+                      liveliness.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </div>
           )}
         </section>
