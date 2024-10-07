@@ -15,23 +15,6 @@ export default function Home({
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen max-w-3xl mx-auto p-8 pb-20 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 pb-8 row-start-2 sm:items-start">
-        {/* <p className="text-sm text-left text-muted-foreground sm:text-left font-[family-name:var(--font-geist-mono)]">
-          A{" "}
-          <a
-            href="https://lightspark.com"
-            className="hover:underline hover:underline-offset-4"
-            target="_blank">
-            Lightspark
-          </a>{" "}
-          &{" "}
-          <a
-            href="https://flashnet.xyz"
-            className="hover:underline hover:underline-offset-4"
-            target="_blank">
-            Polarity
-          </a>{" "}
-          initiative
-        </p> */}
         <Image
           className="dark:invert"
           src="/spark.svg"
@@ -45,6 +28,18 @@ export default function Home({
           Lightning Network.
         </p>
         <Separator />
+        {/* disclaimer */}
+        <div className="flex flex-col gap-2 text-sm text-left text-muted-foreground">
+          <h5 className="font-bold text-sm">Disclaimer</h5>
+          <p>
+            Typically, when a new scaling solution is introduced to the
+            community, less than 1% of people end up reading it given how
+            overwhelming the material can be. We&apos;ve tried something
+            different; this version is an attempt to speak to multiple
+            audiences.
+          </p>
+          <p>Please keep us honest — any and all feedback is welcome.</p>
+        </div>
         <Tabs defaultValue={defaultTab} className="w-full">
           <TabsList className="w-full">
             <TabsTrigger value="overview" className="flex-1">
