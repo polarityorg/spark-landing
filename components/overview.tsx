@@ -210,7 +210,7 @@ const Overview = () => {
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="overview" className="w-full">
-                <div className="pt-8">
+                <div className="pt-4">
                   <p className="mb-4">
                     Spark brings together several concepts introduced to the
                     Bitcoin community over the past few years and is heavily

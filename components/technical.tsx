@@ -31,7 +31,7 @@ const TechnicalOverview = () => {
   };
 
   return (
-    <div className="font-[family-name:var(--font-geist-sans)] max-w-3xl mx-auto pt-8">
+    <div className="font-[family-name:var(--font-geist-sans)] max-w-3xl mx-auto pt-4">
       {/* Outline */}
       <h5 className="font-bold text-sm">Outline</h5>
       <ol className="list-decimal list-inside mb-8">
