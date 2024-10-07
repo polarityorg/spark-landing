@@ -58,7 +58,7 @@ export default function ImportWalletPage() {
       setPubkey(pubkey);
       setPhoneState(phoneNumber);
       // Store both mnemonic and phone number
-      // This is where you'd typically make an API call to your backend
+      // This is where you&apos;d typically make an API call to your backend
       console.log("Importing wallet with:", { mnemonic, phoneNumber });
       router.push("/wallet");
     } else {
