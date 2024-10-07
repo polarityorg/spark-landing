@@ -9,6 +9,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { InlineMath } from "react-katex";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import TechnicalOverview from "./technical";
 
 const Overview = () => {
   const [, setActiveSection] = useState("");
@@ -30,7 +32,7 @@ const Overview = () => {
   };
 
   return (
-    <div className="font-[family-name:var(--font-geist-sans)] max-w-3xl mx-auto pt-8">
+    <div className="font-[family-name:var(--font-geist-sans)] max-w-3xl mx-auto">
       {/* outline */}
       <h5 className="font-bold text-sm">Outline</h5>
       <ol className="list-decimal list-inside mb-8">
@@ -198,218 +200,253 @@ const Overview = () => {
             </p>
           )}
           {section.id === "how-it-works" && (
-            <>
-              <h3 className="text-xl font-semibold mb-2">The high-level</h3>
-              <p className="mb-4">
-                Spark brings together several concepts introduced to the Bitcoin
-                community over the past few years and is heavily inspired by
-                Statechains. With a lot of empathy, since we&apos;ve gone
-                through the same process ourselves, we&apos;ll take the time to
-                explain each concept, making it as clear and enjoyable to read
-                as possible. This section is still relatively high-level. For
-                the technically savvy, we invite you to read our technical
-                overview which gets into the weeds of Spark.
-                <br />
-                <br />
-                The general idea of Spark is that it allows assets on Bitcoin to
-                be spent off-chain instantly. On Bitcoin, on-chain funds are
-                denoted by UTXOs (Unspent transaction outputs, Bitcoin a user
-                hasn&apos;t spent yet). In Spark, the user sends funds into
-                UTXOs encumbered by a collaborative single signature scheme. The
-                participants in this scheme are the user and the Spark Operators
-                (SOs). When a user wants to transfer ownership of these funds
-                the Spark Operators adjust their keys so the new owner takes
-                control, while the overall signature key remains static. The
-                beauty of this is that at every moment, the current owner
-                remains in full control of their funds and can exit at any time
-                without needing permission from the SOs.
-                <br />
-                <br />
-                There are several ways to interact with Spark:
-              </p>
-              <ol className="list-decimal list-inside mb-4">
-                <li>Move funds in and out of Bitcoin</li>
-                <li>Transfer within Spark to other users</li>
-                <li>
-                  Send and receive via Lightning{" "}
-                  <b>
-                    <small>
-                      (without the headaches of operating a Lightning node)
-                    </small>
-                  </b>
-                </li>
-                <li>Lightning address & UMA</li>
-              </ol>
-              <p className="mb-4">
-                To fully understand how these transactions work — or to make
-                sense of anything we&apos;re writing — it helps to know
-                who&apos;s doing what and how everything fits together.
-              </p>
-              <h3 className="text-xl font-bold mb-2">Key Definitions</h3>
-              <ul className="list-disc pl-6 mb-8 space-y-2">
-                <li className="pl-2">
-                  <p>
-                    <b>Spark Entity (SE):</b> A group of entities (individually
-                    called SOs) that help facilitate the transfer of UTXO
-                    ownership between users on Spark. Their job is simple: they
-                    generate, manage, manipulate, and delete their keys. This
-                    group can add and remove more operators via consensus to
-                    improve trust/performance.
+            <Tabs defaultValue="overview" className="w-full">
+              <TabsList className="w-full">
+                <TabsTrigger value="overview" className="flex-1">
+                  High-Level Overview
+                </TabsTrigger>
+                <TabsTrigger value="technical" className="flex-1">
+                  Technical Overview
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="overview" className="w-full">
+                <div className="pt-8">
+                  <p className="mb-4">
+                    Spark brings together several concepts introduced to the
+                    Bitcoin community over the past few years and is heavily
+                    inspired by Statechains. With a lot of empathy, since
+                    we&apos;ve gone through the same process ourselves,
+                    we&apos;ll take the time to explain each concept, making it
+                    as clear and enjoyable to read as possible. This section is
+                    still relatively high-level. For the technically savvy, we
+                    invite you to read our technical overview which gets into
+                    the weeds of Spark.
+                    <br />
+                    <br />
+                    The general idea of Spark is that it allows assets on
+                    Bitcoin to be spent off-chain instantly. On Bitcoin,
+                    on-chain funds are denoted by UTXOs (Unspent transaction
+                    outputs, Bitcoin a user hasn&apos;t spent yet). In Spark,
+                    the user sends funds into UTXOs encumbered by a
+                    collaborative single signature scheme. The participants in
+                    this scheme are the user and the Spark Operators (SOs). When
+                    a user wants to transfer ownership of these funds the Spark
+                    Operators adjust their keys so the new owner takes control,
+                    while the overall signature key remains static. The beauty
+                    of this is that at every moment, the current owner remains
+                    in full control of their funds and can exit at any time
+                    without needing permission from the SOs.
+                    <br />
+                    <br />
+                    There are several ways to interact with Spark:
                   </p>
-                </li>
-                <li className="pl-2">
-                  <p>
-                    <b>Spark Operator (SO):</b> One of the operators within the
-                    SE. They&apos;re mainly responsible for signing transactions
-                    and enabling transfers; they collectively make up the SE.
-                    Who are these operators? We will be engaging with the most
-                    legitimate and neutral companies or organizations in tech,
-                    crypto, academia, etc. If you&apos;re interested in
-                    potentially becoming one, kindly let us know.
+                  <ol className="list-decimal list-inside mb-4">
+                    <li>Move funds in and out of Bitcoin</li>
+                    <li>Transfer within Spark to other users</li>
+                    <li>
+                      Send and receive via Lightning{" "}
+                      <b>
+                        <small>
+                          (without the headaches of operating a Lightning node)
+                        </small>
+                      </b>
+                    </li>
+                    <li>Lightning address & UMA</li>
+                  </ol>
+                  <p className="mb-4">
+                    To fully understand how these transactions work — or to make
+                    sense of anything we&apos;re writing — it helps to know
+                    who&apos;s doing what and how everything fits together.
                   </p>
-                </li>
-                <li className="pl-2">
-                  <p>
-                    <b>Spark Service Providers (SSPs):</b> SSPs make transfers
-                    on Bitcoin and Lightning from Spark cheaper and more
-                    efficient. Any entity — whether a wallet provider, exchange,
-                    market maker, etc. Some entities will likely be incentivized
-                    by charging a small fee for their services. Lightspark is
-                    planning to offer these services to serve some of our
-                    customers.
+                  <h3 className="text-xl font-bold mb-2">Key Definitions</h3>
+                  <ul className="list-disc pl-6 mb-8 space-y-2">
+                    <li className="pl-2">
+                      <p>
+                        <b>Spark Entity (SE):</b> A group of entities
+                        (individually called SOs) that help facilitate the
+                        transfer of UTXO ownership between users on Spark. Their
+                        job is simple: they generate, manage, manipulate, and
+                        delete their keys. This group can add and remove more
+                        operators via consensus to improve trust/performance.
+                      </p>
+                    </li>
+                    <li className="pl-2">
+                      <p>
+                        <b>Spark Operator (SO):</b> One of the operators within
+                        the SE. They&apos;re mainly responsible for signing
+                        transactions and enabling transfers; they collectively
+                        make up the SE. Who are these operators? We will be
+                        engaging with the most legitimate and neutral companies
+                        or organizations in tech, crypto, academia, etc. If
+                        you&apos;re interested in potentially becoming one,
+                        kindly let us know.
+                      </p>
+                    </li>
+                    <li className="pl-2">
+                      <p>
+                        <b>Spark Service Providers (SSPs):</b> SSPs make
+                        transfers on Bitcoin and Lightning from Spark cheaper
+                        and more efficient. Any entity — whether a wallet
+                        provider, exchange, market maker, etc. Some entities
+                        will likely be incentivized by charging a small fee for
+                        their services. Lightspark is planning to offer these
+                        services to serve some of our customers.
+                      </p>
+                    </li>
+                    <li className="pl-2">
+                      <p>
+                        <b>Users:</b> Individuals or entities who own and
+                        control Bitcoin within Spark. Anyone can be a user;
+                        Spark is designed to be as permissionless as possible.
+                      </p>
+                    </li>
+                    <li className="pl-2">
+                      <p>
+                        <b>Leaf/Leaves:</b> These are virtual representations of
+                        a UTXO within Spark.
+                      </p>
+                    </li>
+                  </ul>
+                  <p className="mb-4">
+                    Now that you&apos;re familiar with the key terms, we can
+                    dive into Spark and see how everything comes together. As
+                    mentioned earlier, there are a few ways to get in and out of
+                    Spark.
                   </p>
-                </li>
-                <li className="pl-2">
-                  <p>
-                    <b>Users:</b> Individuals or entities who own and control
-                    Bitcoin within Spark. Anyone can be a user; Spark is
-                    designed to be as permissionless as possible.
+                  <h3 className="text-xl font-bold mb-2">
+                    Moving money into, within and from Spark
+                  </h3>
+                  <h4 className="text-lg font-bold mb-2">
+                    Bitcoin -&gt; Spark
+                  </h4>
+                  <p className="mb-4">
+                    From your existing wallet, all you have to do is send some
+                    BTC to a deposit address controlled by the collaborative
+                    single signature scheme between both you and the SE.
+                    <br />
+                    <br />
+                    Before you transfer the money into Spark— you and the SE
+                    will sign an exit transaction. This is so that if the SE
+                    ever goes offline, you can reclaim your funds on L1 to your
+                    preferred address. Once your deposit is confirmed on-chain,
+                    you&apos;re all set—congratulations, you now have funds on
+                    Spark!
                   </p>
-                </li>
-                <li className="pl-2">
-                  <p>
-                    <b>Leaf/Leaves:</b> These are virtual representations of a
-                    UTXO within Spark.
+                  <Image
+                    src="/bitcoin-spark.png"
+                    alt="Spark Diagram"
+                    width={800}
+                    height={400}
+                    className="mb-4"
+                  />
+                  <h4 className="text-lg font-bold mb-2">
+                    Spark &lt;-&gt; Spark
+                  </h4>
+                  <p className="mb-4">
+                    You can transfer ownership of your Bitcoin to other users
+                    within Spark by coordinating with the SOs. A transfer is
+                    only considered valid when the receiver holds a fully signed
+                    Bitcoin transaction they can use to unilaterally exit.
                   </p>
-                </li>
-              </ul>
-              <p className="mb-4">
-                Now that you&apos;re familiar with the key terms, we can dive
-                into Spark and see how everything comes together. As mentioned
-                earlier, there are a few ways to get in and out of Spark.
-              </p>
-              <h3 className="text-xl font-bold mb-2">
-                Moving money into, within and from Spark
-              </h3>
-              <h4 className="text-lg font-bold mb-2">Bitcoin -&gt; Spark</h4>
-              <p className="mb-4">
-                From your existing wallet, all you have to do is send some BTC
-                to a deposit address controlled by the collaborative single
-                signature scheme between both you and the SE.
-                <br />
-                <br />
-                Before you transfer the money into Spark— you and the SE will
-                sign an exit transaction. This is so that if the SE ever goes
-                offline, you can reclaim your funds on L1 to your preferred
-                address. Once your deposit is confirmed on-chain, you&apos;re
-                all set—congratulations, you now have funds on Spark!
-              </p>
-              <Image
-                src="/bitcoin-spark.png"
-                alt="Spark Diagram"
-                width={800}
-                height={400}
-                className="mb-4"
-              />
-              <h4 className="text-lg font-bold mb-2">Spark &lt;-&gt; Spark</h4>
-              <p className="mb-4">
-                You can transfer ownership of your Bitcoin to other users within
-                Spark by coordinating with the SOs. A transfer is only
-                considered valid when the receiver holds a fully signed Bitcoin
-                transaction they can use to unilaterally exit.
-              </p>
-              <h4 className="text-lg font-bold mb-2">Splitting Leaves</h4>
-              <p className="mb-4">
-                Much like UTXOs (the BTC you haven&apos;t spent yet) on Bitcoin,
-                users can split their leaves into smaller denominations for more
-                flexible transactions. Via splitting, Spark enables you to send
-                smaller portions of leaves as needed. For example, let&apos;s
-                say you deposited 1 BTC into Spark. If you wanted to send 0.5
-                BTC to a friend, you&apos;d first split the 1 BTC into two
-                smaller leaves (0.5 BTC each) and then transfer one away. You
-                can even split and transfer atomically for efficiency and
-                performance!
-              </p>
-              <h4 className="text-lg font-bold mb-2">
-                Lightning &lt;-&gt; Spark
-              </h4>
-              <p className="mb-4">
-                Users within Spark can always send and receive payments directly
-                via the Lightning Network. The best part is that Spark is
-                natively compatible with existing Lightning rails. This is
-                helpful if Spark users want to off-ramp to an exchange, on-ramp
-                to Spark via an exchange, or pay a merchant via Lightning.
-                <br />
-                <br />
-                Importantly, Spark users don&apos;t need to run a node, manage
-                Lightning channels, or lock up liquidity themselves. This
-                eliminates almost all the overhead associated with traditional
-                Lightning operations while providing true offline receipt of
-                funds - which isn’t available in typical Lightning.
-                <br />
-                <br />
-                All Lightning payments are powered by SSPs who accept Spark
-                leaves to send Lightning payments or accept Lightning payments
-                for Spark leaves. This is all done via atomic swaps, so no funds
-                are ever at risk of being stolen by the SSP or user. An SSP may
-                choose to charge a small fee for this service.
-              </p>
-              <h4 className="text-lg font-bold mb-2">Spark -&gt; Bitcoin</h4>
-              <p className="mb-4">
-                We believe that users should be able to exit to Bitcoin L1
-                whenever they want, without needing permission from anyone.
-              </p>
-              <p className="mb-4">There are two ways to exit Spark to L1:</p>
-              <h5 className="text-md font-bold mb-2">The Cooperative Exit</h5>
-              <p className="mb-4">
-                This is the cheapest and fastest way to exit Spark. Similarly to
-                Spark Lightning transfers, cooperative exits are done via swaps
-                with an on-chain party for funds. On Spark, this is thanks to
-                SSPs. SSPs will atomically swap their on-chain funds for Spark
-                funds.
-              </p>
-              <h5 className="text-md font-bold mb-2">The Unilateral Exit</h5>
-              <p className="mb-4">
-                This is the most pessimistic scenario and can occur at any time.
-                Unilateral exits are more expensive than cooperative exits, due
-                to the fact that the entire branch needs to be published to
-                prove ownership of the most recent state. There doesn&apos;t
-                need to be a reason to unilaterally exit, but users could choose
-                to if a set of SOs goes offline, or if they&apos;ve lost
-                confidence in the SE itself.
-              </p>
-              <p className="mb-4">
-                This solution requires no cooperation, and can be done by any
-                user at any time. This is the core to the design of Spark.
-              </p>
-              <h3 className="text-xl font-bold mb-2">Risks</h3>
-              <p className="mb-4">
-                As you&apos;ve now probably understood, Spark Operators play a
-                big role in Spark. Without them, you wouldn&apos;t be able to
-                send or receive money on Spark.
-                <br />
-                <br />
-                The system relies on a minimum of 1 honest operator of the SE
-                out of the <InlineMath math="n" /> participants but can be
-                configured with a threshold as desired for liveliness. Threshold
-                increases the honest operator requirement to the{" "}
-                <InlineMath math="((n-threshold)+1)/n" /> operators being honest
-                (the minority of signers), but decreases the need for every
-                single SO to be online at every point in time. This makes the
-                system more trusted, but also more robust from a network
-                perspective.
-              </p>
-            </>
+                  <h4 className="text-lg font-bold mb-2">Splitting Leaves</h4>
+                  <p className="mb-4">
+                    Much like UTXOs (the BTC you haven&apos;t spent yet) on
+                    Bitcoin, users can split their leaves into smaller
+                    denominations for more flexible transactions. Via splitting,
+                    Spark enables you to send smaller portions of leaves as
+                    needed. For example, let&apos;s say you deposited 1 BTC into
+                    Spark. If you wanted to send 0.5 BTC to a friend, you&apos;d
+                    first split the 1 BTC into two smaller leaves (0.5 BTC each)
+                    and then transfer one away. You can even split and transfer
+                    atomically for efficiency and performance!
+                  </p>
+                  <h4 className="text-lg font-bold mb-2">
+                    Lightning &lt;-&gt; Spark
+                  </h4>
+                  <p className="mb-4">
+                    Users within Spark can always send and receive payments
+                    directly via the Lightning Network. The best part is that
+                    Spark is natively compatible with existing Lightning rails.
+                    This is helpful if Spark users want to off-ramp to an
+                    exchange, on-ramp to Spark via an exchange, or pay a
+                    merchant via Lightning.
+                    <br />
+                    <br />
+                    Importantly, Spark users don&apos;t need to run a node,
+                    manage Lightning channels, or lock up liquidity themselves.
+                    This eliminates almost all the overhead associated with
+                    traditional Lightning operations while providing true
+                    offline receipt of funds - which isn’t available in typical
+                    Lightning.
+                    <br />
+                    <br />
+                    All Lightning payments are powered by SSPs who accept Spark
+                    leaves to send Lightning payments or accept Lightning
+                    payments for Spark leaves. This is all done via atomic
+                    swaps, so no funds are ever at risk of being stolen by the
+                    SSP or user. An SSP may choose to charge a small fee for
+                    this service.
+                  </p>
+                  <h4 className="text-lg font-bold mb-2">
+                    Spark -&gt; Bitcoin
+                  </h4>
+                  <p className="mb-4">
+                    We believe that users should be able to exit to Bitcoin L1
+                    whenever they want, without needing permission from anyone.
+                  </p>
+                  <p className="mb-4">
+                    There are two ways to exit Spark to L1:
+                  </p>
+                  <h5 className="text-md font-bold mb-2">
+                    The Cooperative Exit
+                  </h5>
+                  <p className="mb-4">
+                    This is the cheapest and fastest way to exit Spark.
+                    Similarly to Spark Lightning transfers, cooperative exits
+                    are done via swaps with an on-chain party for funds. On
+                    Spark, this is thanks to SSPs. SSPs will atomically swap
+                    their on-chain funds for Spark funds.
+                  </p>
+                  <h5 className="text-md font-bold mb-2">
+                    The Unilateral Exit
+                  </h5>
+                  <p className="mb-4">
+                    This is the most pessimistic scenario and can occur at any
+                    time. Unilateral exits are more expensive than cooperative
+                    exits, due to the fact that the entire branch needs to be
+                    published to prove ownership of the most recent state. There
+                    doesn&apos;t need to be a reason to unilaterally exit, but
+                    users could choose to if a set of SOs goes offline, or if
+                    they&apos;ve lost confidence in the SE itself.
+                  </p>
+                  <p className="mb-4">
+                    This solution requires no cooperation, and can be done by
+                    any user at any time. This is the core to the design of
+                    Spark.
+                  </p>
+                  <h3 className="text-xl font-bold mb-2">Risks</h3>
+                  <p className="mb-4">
+                    As you&apos;ve now probably understood, Spark Operators play
+                    a big role in Spark. Without them, you wouldn&apos;t be able
+                    to send or receive money on Spark.
+                    <br />
+                    <br />
+                    The system relies on a minimum of 1 honest operator of the
+                    SE out of the <InlineMath math="n" /> participants but can
+                    be configured with a threshold as desired for liveliness.
+                    Threshold increases the honest operator requirement to the{" "}
+                    <InlineMath math="((n-threshold)+1)/n" /> operators being
+                    honest (the minority of signers), but decreases the need for
+                    every single SO to be online at every point in time. This
+                    makes the system more trusted, but also more robust from a
+                    network perspective.
+                  </p>
+                </div>
+              </TabsContent>
+              <TabsContent value="technical" className="w-full">
+                <TechnicalOverview />
+              </TabsContent>
+            </Tabs>
           )}
           {section.id === "spark-ux" && (
             <p className="mb-4">
