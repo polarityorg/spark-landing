@@ -92,7 +92,11 @@ const Overview = () => {
                   <p>Ability to scale to billions of users</p>
                 </li>
                 <li className="pl-2">
-                  <p>1/n trust assumptions (or minority/n)</p>
+                  <p>
+                    1/n trust assumptions (or minority/n) with
+                    perfect-forward-security - meaning that the trust assumption
+                    is ONLY for the time of transference, not in perpetuity
+                  </p>
                 </li>
                 <li className="pl-2">
                   <p>Unconditional unilateral exits</p>
