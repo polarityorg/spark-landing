@@ -1,0 +1,19 @@
+{
+  "name": "wallet-bindings",
+  "type": "module",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/polarityorg/spark"
+  },
+  "files": [
+    "wallet_bindings_bg.wasm",
+    "wallet_bindings.js",
+    "wallet_bindings.d.ts"
+  ],
+  "main": "wallet_bindings.js",
+  "types": "wallet_bindings.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
