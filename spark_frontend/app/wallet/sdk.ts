@@ -387,10 +387,27 @@ class WalletSDK {
 
     await this.wallet.send_lightning_payment(invoice, amount, "03c56f7d10037de2cd79db8cd0d32482bfa78e848e502f2b6c6c647f8f36151084");
 
-    await payLightningInvoice("https://spark-demo.dev.dev.sparkinfra.net", {
-      user_pubkey: Buffer.from(this.getMasterPublicKey()).toString('hex'),
-      encoded_invoice: invoice
+    // await payLightningInvoice("https://spark-demo.dev.dev.sparkinfra.net", {
+    //   user_pubkey: Buffer.from(this.getMasterPublicKey()).toString('hex'),
+    //   encoded_invoice: invoice
+    // });
+
+    const paymentResponse = await fetch('https://spark-demo.dev.dev.sparkinfra.net/spark/pay_invoice', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_pubkey: Buffer.from(this.getMasterPublicKey()).toString('hex'),
+        encoded_invoice: invoice
+      }),
     });
+
+    if (!paymentResponse.ok) {
+      throw new Error('Failed to pay Lightning invoice');
+    }
+
+    const paymentData = await paymentResponse.json();
+    console.log('Payment response:', paymentData);
+
   }
 
   private async ensureInitialized() {

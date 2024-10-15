@@ -56,7 +56,6 @@ export default function RootLayout({
           if (!isMounted) return;
           try {
             const balance = await walletSDK.getBalance();
-            console.log("Balance:", balance);
             setBalance(Number(balance));
             if (previousBalanceRef.current === null) {
               previousBalanceRef.current = Number(balance);

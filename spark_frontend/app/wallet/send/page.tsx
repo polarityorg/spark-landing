@@ -153,6 +153,7 @@ export default function SendPage() {
         recipientPubKey = recipient;
       } else {
         // Fetch the public key for the given phone number
+        console.log("Fetching public key for", recipient);
         const pubKeyResponse = await fetch(
           "https://spark-demo.dev.dev.sparkinfra.net/spark/user_pubkey",
           {
@@ -184,7 +185,7 @@ export default function SendPage() {
       setBalance(Number(updatedBalance));
       // **Notify Receiver if Recipient is Identified by Phone Number**
       if (inputType === "phone") {
-        notifyReceiverTransfer("spark-demo.dev.dev.sparkinfra.net/spark", {
+        notifyReceiverTransfer("spark-demo.dev.dev.sparkinfra.net", {
           receiver_phone_number: recipient,
           currency: "USD",
           amount: Number(amountInUsd),
