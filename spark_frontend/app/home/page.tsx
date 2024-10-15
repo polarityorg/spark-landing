@@ -8,13 +8,10 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Cloud, Plus } from "lucide-react";
 
-import { walletSDK } from "../wallet/sdk";
-
 export default function HomePage() {
   const { mnemonic } = useWalletStore();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
-  const [pubkey, setPubkey] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);

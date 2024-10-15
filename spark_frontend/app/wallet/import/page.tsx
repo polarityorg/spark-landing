@@ -85,7 +85,7 @@ export default function ImportWalletPage() {
 
   const handleImport = async () => {
     try {
-      let { isValid, pubkey } = await walletSDK.importWallet(
+      const { isValid, pubkey } = await walletSDK.importWallet(
         mnemonic.trim(),
         phoneNumber
       );

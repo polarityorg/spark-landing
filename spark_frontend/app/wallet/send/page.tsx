@@ -7,14 +7,10 @@ import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Loader2, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Transaction, useWalletStore } from "../store";
+import { useWalletStore } from "../store";
 import { useRouter } from "next/navigation";
-import { v4 as uuidv4 } from "uuid";
-import {
-  formatSats,
-  isValidPhoneNumber,
-  isValidPublicKey,
-} from "@/utils/validation";
+
+import { isValidPhoneNumber, isValidPublicKey } from "@/utils/validation";
 import { ToStep, SummaryStep } from "@/components/SendSteps";
 import { walletSDK } from "../sdk";
 import { toast } from "sonner";
@@ -25,8 +21,6 @@ export default function SendPage() {
   const availableBalance = useWalletStore((state) => state.balance);
   const btcPrice = useWalletStore((state) => state.btcPrice); // Imported btcPrice
   const setBalance = useWalletStore((state) => state.setBalance);
-  const setActivity = useWalletStore((state) => state.setActivity);
-  const activity = useWalletStore((state) => state.activity);
   const router = useRouter();
 
   const [amountCents, setAmountCents] = useState(0);

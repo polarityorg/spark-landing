@@ -1,7 +1,7 @@
 import { SparkClient, createSparkUserLightningInvoice, initWasmClient, payLightningInvoice } from 'js-sdk/src/spark-client';
 import * as bip39 from 'bip39';
-import { HDKey } from '@scure/bip32';
-import { NoncePair, OperatorInfo, PreimageResult, RPCResult, SparkWalletBindings } from 'js-sdk/wasm';
+
+import { NoncePair, OperatorInfo, RPCResult, SparkWalletBindings } from 'js-sdk/wasm';
 import { decode } from "@gandlaf21/bolt11-decode";
 
 class WalletSDK {
@@ -316,17 +316,17 @@ class WalletSDK {
     return await this.wallet.get_balance();
   }
 
-  /**
-   * Fetches the LRC20 balance of the user.
-   * @returns {Promise<any>}
-   */
-  async getLrc20Balance(): Promise<any> {
-    await this.ensureInitialized();
-    if (!this.wallet) {
-      throw new Error('Wallet not initialized. Call createSparkClient() first.');
-    }
-    return await this.wallet.get_lrc20_balance();
-  }
+  // /**
+  //  * Fetches the LRC20 balance of the user.
+  //  * @returns {Promise<any>}
+  //  */
+  // async getLrc20Balance(): Promise<> {
+  //   await this.ensureInitialized();
+  //   if (!this.wallet) {
+  //     throw new Error('Wallet not initialized. Call createSparkClient() first.');
+  //   }
+  //   return await this.wallet.get_lrc20_balance();
+  // }
 
   /**
    * Synchronizes the wallet with the server by fetching the latest leaves and balances.
@@ -349,13 +349,13 @@ class WalletSDK {
     if (!this.wallet) {
       throw new Error('Wallet not initialized. Call createSparkClient() first.');
     }
-    let paymentHash = await this.wallet.create_lightning_invoice_payment_hash(amount, threshold, participants);
+    const paymentHash = await this.wallet.create_lightning_invoice_payment_hash(amount, threshold, participants);
     // (alias) createSparkUserLightningInvoice(host: string, params: {
     // user_pubkey: string;
     // payment_hash: string;
     // amount_sats: number;
 
-    let invoice = await createSparkUserLightningInvoice("https://spark-demo.dev.dev.sparkinfra.net", {
+    const invoice = await createSparkUserLightningInvoice("https://spark-demo.dev.dev.sparkinfra.net", {
       user_pubkey: Buffer.from(this.getMasterPublicKey()).toString('hex'),
       payment_hash: paymentHash,
       amount_sats: Number(amount)
@@ -373,12 +373,12 @@ class WalletSDK {
     if (!this.wallet) {
       throw new Error('Wallet not initialized. Call createSparkClient() first.');
     }
-    let decoded = decode(invoice);
-        let amountSection = decoded.sections.find((section: any) => section.name === 'amount');
+    const decoded = decode(invoice);
+    const amountSection = decoded.sections.find((section) => section.name === 'amount');
     if (!amountSection || !amountSection.value) {
       throw new Error('Amount not found in the invoice');
     }
-    let amount = BigInt(amountSection.value);
+    const amount = BigInt(amountSection.value);
 
 
     await this.wallet.send_lightning_payment(invoice, amount, "03c56f7d10037de2cd79db8cd0d32482bfa78e848e502f2b6c6c647f8f36151084");

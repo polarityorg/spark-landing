@@ -29,7 +29,7 @@ export default function WithdrawPage() {
     try {
       const decodedInvoice = decode(invoice);
       const amountSection = decodedInvoice.sections.find(
-        (section: any) => section.name === "amount"
+        (section) => section.name === "amount"
       );
 
       if (!amountSection || !amountSection.value) {
