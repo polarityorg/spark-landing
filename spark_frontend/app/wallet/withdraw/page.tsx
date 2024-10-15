@@ -57,7 +57,7 @@ export default function WithdrawPage() {
       // Create the Spark client
       await walletSDK.createSparkClient(mnemonic!);
       const balance = await walletSDK.getBalance();
-      console.log("Balance:", balance);
+
       setBalance(Number(balance));
       // Pay the Lightning invoice
       await walletSDK.payLightningInvoice(invoice);

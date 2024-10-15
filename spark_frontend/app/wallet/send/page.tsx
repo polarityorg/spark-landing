@@ -121,7 +121,6 @@ export default function SendPage() {
       await walletSDK.createSparkClient(mnemonic!);
       // now get balance
       const balance = await walletSDK.getBalance();
-      console.log("Balance:", balance);
       setBalance(Number(balance));
 
       // Convert USD cents to USD dollars
@@ -153,7 +152,7 @@ export default function SendPage() {
         recipientPubKey = recipient;
       } else {
         // Fetch the public key for the given phone number
-        console.log("Fetching public key for", recipient);
+
         const pubKeyResponse = await fetch(
           "https://spark-demo.dev.dev.sparkinfra.net/spark/user_pubkey",
           {
@@ -175,8 +174,6 @@ export default function SendPage() {
         recipientPubKey = pubKeyData.user_pubkey;
       }
 
-      console.log("amountInSats:", amountInSats);
-      console.log("recipientPubKey:", recipientPubKey);
       // Perform the transfer
       await walletSDK.transfer(amountInSats, recipientPubKey);
 

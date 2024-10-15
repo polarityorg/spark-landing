@@ -1,4 +1,4 @@
-import { SparkClient, createSparkUserLightningInvoice, initWasmClient, payLightningInvoice } from 'js-sdk/src/spark-client';
+import { SparkClient, createSparkUserLightningInvoice, initWasmClient } from 'js-sdk/src/spark-client';
 import * as bip39 from 'bip39';
 
 import { NoncePair, OperatorInfo, RPCResult, SparkWalletBindings } from 'js-sdk/wasm';
