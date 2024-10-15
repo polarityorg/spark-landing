@@ -92,6 +92,10 @@ class WalletSDK {
             console.log("No master seed found");
           }
 
+          // set the wallet back to the new wallet
+          const realPubkey = await this.createSparkClient(mnemonic);
+
+
 
           console.log("Registering user");
           // Update the user's public key and remove the master seed
@@ -110,9 +114,9 @@ class WalletSDK {
             console.log("User registered");
           }
 
-          return { isValid, pubkey };
+          return { isValid, pubkey: realPubkey };
       }
-      return { isValid, pubkey : undefined };
+      return { isValid: false, pubkey: undefined };
   }
   /**
    * Creates a Spark client and initializes the wallet.
