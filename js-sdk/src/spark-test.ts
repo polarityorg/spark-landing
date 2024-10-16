@@ -14,11 +14,9 @@ async function testWalletCreation() {
 
 
   let mnemonic = "idea chunk unaware hazard sunset visit cinnamon muscle have better street rigid"
-  console.log("Mnemonic: ", mnemonic);
   const seed = bip39.mnemonicToSeedSync(mnemonic);
   const masterKey = seed.slice(0, 32); // Use the first 32 bytes of the seed
 
-  const user_master_seed_array_32 = new Uint8Array(32);
   const network = wasmBindings.Network.Bitcoin;
   const operators = [
     new OperatorInfo(0, 'https://spark-so-0.dev.dev.sparkinfra.net/', '038c21966f4bc45d454ae3a408bb69f9168525b14e059de29169a42b18bb9ff01d'),

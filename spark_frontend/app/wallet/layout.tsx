@@ -29,7 +29,6 @@ export default function RootLayout({
 
   const [mounted, setMounted] = useState(false);
   const mnemonic = useWalletStore((state) => state.mnemonic);
-  const setPubkey = useWalletStore((state) => state.setPubkey);
   const previousBalanceRef = useRef<number | null>(null);
   const setBtcPrice = useWalletStore((state) => state.setBtcPrice);
   const setBalance = useWalletStore((state) => state.setBalance);
@@ -49,9 +48,7 @@ export default function RootLayout({
     const initializeAndPoll = async () => {
       try {
         // Initialize the wallet client once
-        const pubkey = await walletSDK.createSparkClient(mnemonic);
-        // set the pubkey in the store
-        setPubkey(pubkey);
+        await walletSDK.createSparkClient(mnemonic);
         console.log("Wallet initialized.");
 
         // Function to fetch and handle balance

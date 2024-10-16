@@ -153,8 +153,6 @@ class WalletSDK {
     const wallet = new bindings.SparkWalletBindings(masterKey, network, operators) as SparkWalletBindings;
     
     const pubkey = wallet.get_master_public_key();
-    console.log('Public key:', Buffer.from(pubkey).toString('hex'));
-    console.log('mnemonic:', mnemonic);
     this.wallet = wallet;
     return Buffer.from(pubkey).toString('hex');
   }
