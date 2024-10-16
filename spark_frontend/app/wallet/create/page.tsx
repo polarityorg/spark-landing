@@ -30,7 +30,7 @@ export default function CreateWalletPage() {
   const [otp, setOtp] = useState("");
   const [fetchedOtp, setFetchedOtp] = useState("");
   const fetchBalance = useWalletStore((state) => state.fetchBalance);
-
+  const importWallet = useWalletStore((state) => state.importWallet);
   const [isFetchingOTP, setIsFetchingOTP] = useState(false); // New state
   const [isCreatingWallet, setIsCreatingWallet] = useState(false); // New state
 
@@ -54,10 +54,7 @@ export default function CreateWalletPage() {
     if (mnemonic.split(" ").length === 12) {
       try {
         setIsCreatingWallet(true); // Start loader
-        const { isValid, pubkey } = await walletSDK.importWallet(
-          mnemonic,
-          phoneNumber
-        );
+        const { isValid, pubkey } = await importWallet(mnemonic, phoneNumber);
         if (isValid && pubkey) {
           setMnemonic(mnemonic);
           setPubkey(pubkey);

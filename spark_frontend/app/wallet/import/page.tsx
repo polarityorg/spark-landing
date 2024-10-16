@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { walletSDK } from "../sdk";
 import { useWalletStore } from "../store";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -31,7 +30,7 @@ export default function ImportWalletPage() {
   const [error, setError] = useState("");
   const [step, setStep] = useState<"phone" | "otp" | "mnemonic">("phone");
   const [fetchedOtp, setFetchedOtp] = useState("");
-
+  const importWallet = useWalletStore((state) => state.importWallet);
   const handleContinue = async () => {
     if (step === "phone") {
       if (isValidPhoneNumber(phoneNumber)) {
@@ -85,7 +84,7 @@ export default function ImportWalletPage() {
 
   const handleImport = async () => {
     try {
-      const { isValid, pubkey } = await walletSDK.importWallet(
+      const { isValid, pubkey } = await importWallet(
         mnemonic.trim(),
         phoneNumber
       );

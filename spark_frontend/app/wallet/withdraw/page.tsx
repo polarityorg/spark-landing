@@ -28,9 +28,10 @@ export default function WithdrawPage() {
   const setBalance = useWalletStore((state) => state.setBalance);
   const setActivity = useWalletStore((state) => state.setActivity);
   const activity = useWalletStore((state) => state.activity);
-  const mnemonic = useWalletStore((state) => state.mnemonic);
   const btcPrice = useWalletStore((state) => state.btcPrice);
-
+  const payLightningInvoice = useWalletStore(
+    (state) => state.payLightningInvoice
+  );
   // State for amount input by the user
   const [userInputAmountCents, setUserInputAmountCents] = useState<number>(0); // Default to 0
 
@@ -110,13 +111,8 @@ export default function WithdrawPage() {
     }
     setIsSending(true);
     try {
-      // Create the Spark client
-      await walletSDK.createSparkClient(mnemonic!);
-      const balance = await walletSDK.getBalance();
-
-      setBalance(Number(balance));
       // Pay the Lightning invoice
-      await walletSDK.payLightningInvoice(receiver);
+      await payLightningInvoice(receiver);
       // Update balance and activity
       const newBalance = availableBalance - amountCents / 100;
       setBalance(newBalance);

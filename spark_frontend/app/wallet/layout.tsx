@@ -7,7 +7,6 @@ import { useState, useEffect, useRef } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { useWalletStore } from "./store";
-import { walletSDK } from "./sdk";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -31,8 +30,8 @@ export default function RootLayout({
   const mnemonic = useWalletStore((state) => state.mnemonic);
   const previousBalanceRef = useRef<number | null>(null);
   const setBtcPrice = useWalletStore((state) => state.setBtcPrice);
-  const setBalance = useWalletStore((state) => state.setBalance);
   const fetchBalance = useWalletStore((state) => state.fetchBalance);
+  const createSparkClient = useWalletStore((state) => state.createSparkClient);
   const POLLING_INTERVAL = 1000; // 1 second
   const BTC_POLLING_INTERVAL = 60000; // 1 minute
 
@@ -49,7 +48,7 @@ export default function RootLayout({
     const initializeAndPoll = async () => {
       try {
         // Initialize the wallet client once
-        await walletSDK.createSparkClient(mnemonic);
+        await createSparkClient(mnemonic);
         console.log("Wallet initialized.");
 
         // Function to fetch and handle balance

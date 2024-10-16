@@ -12,7 +12,6 @@ import { useRouter } from "next/navigation";
 
 import { isValidPhoneNumber, isValidPublicKey } from "@/utils/validation";
 import { ToStep, SummaryStep } from "@/components/SendSteps";
-import { walletSDK } from "../sdk";
 import { toast } from "sonner";
 import { notifyReceiverTransfer } from "js-sdk/src/spark-client";
 
@@ -20,7 +19,7 @@ export default function SendPage() {
   const mnemonic = useWalletStore((state) => state.mnemonic);
   const availableBalance = useWalletStore((state) => state.balance);
   const btcPrice = useWalletStore((state) => state.btcPrice); // Imported btcPrice
-  const setBalance = useWalletStore((state) => state.setBalance);
+  const transfer = useWalletStore((state) => state.transfer);
   const router = useRouter();
 
   const [amountCents, setAmountCents] = useState(0);
@@ -120,12 +119,6 @@ export default function SendPage() {
     }
     setIsSending(true);
     try {
-      // Create the Spark client
-      await walletSDK.createSparkClient(mnemonic!);
-      // Now get balance
-      const balance = await walletSDK.getBalance();
-      setBalance(Number(balance));
-
       // Convert USD cents to USD dollars
       const amountInUsd = amountCents / 100;
 
@@ -145,7 +138,7 @@ export default function SendPage() {
         );
         btcPriceFetched = 50000;
       }
-      const amountInSats = BigInt(
+      const amountInSats = Number(
         Math.round((amountInUsd / btcPriceFetched) * 100000000)
       );
 
@@ -177,11 +170,7 @@ export default function SendPage() {
       }
 
       // Perform the transfer
-      await walletSDK.transfer(amountInSats, recipientPubKey);
-
-      // Update the balance
-      const updatedBalance = await walletSDK.getBalance();
-      setBalance(Number(updatedBalance));
+      await transfer(amountInSats, recipientPubKey);
 
       // **Notify Receiver if Recipient is Identified by Phone Number**
       if (inputType === "phone") {

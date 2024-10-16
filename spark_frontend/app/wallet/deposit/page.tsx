@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import QRCode from "react-qr-code";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { walletSDK } from "../sdk";
 import { useWalletStore } from "../store";
 import { AmountInput } from "@/components/AmountInput";
 
@@ -17,8 +16,9 @@ export default function DepositPage() {
   const [step, setStep] = useState<"amount" | "invoice">("amount");
   const [amountCents, setAmountCents] = useState(0);
   const [error, setError] = useState("");
-
-  const mnemonic = useWalletStore((state) => state.mnemonic);
+  const createLightningInvoice = useWalletStore(
+    (state) => state.createLightningInvoice
+  );
   const btcPrice = useWalletStore((state) => state.btcPrice);
 
   const copyToClipboard = (text: string) => {
@@ -38,22 +38,19 @@ export default function DepositPage() {
     setError("");
 
     try {
-      // Create the Spark client
-      await walletSDK.createSparkClient(mnemonic!);
-
       // Convert USD amount to sats
-      const amountSats = BigInt(
+      const amountSats = Number(
         Math.floor((amountCents / 100 / btcPrice) * 1e8)
       );
 
       // Create the Lightning invoice
-      const newInvoice = await walletSDK.createLightningInvoice(
-        amountSats,
-        3,
-        5
-      );
-      setInvoice(newInvoice);
-      setStep("invoice");
+      const newInvoice = await createLightningInvoice(amountSats, 3, 5);
+      if (newInvoice) {
+        setInvoice(newInvoice);
+        setStep("invoice");
+      } else {
+        setError("Failed to create invoice. Please try again.");
+      }
     } catch (error) {
       console.error(error);
       setError("Failed to create invoice. Please try again.");

@@ -24,7 +24,12 @@ interface WalletState {
   setActivity: (activity: Transaction[]) => void;
   setPhoneNumber: (phoneNumber: string) => void;
   setPubkey: (pubkey: string) => void;
+  createSparkClient: (mnemonic: string) => Promise<void>;
+  importWallet: (mnemonic: string, phoneNumber: string) => Promise<{ isValid: boolean; pubkey: string | null }>;
   fetchBalance: () => Promise<number>;
+  transfer: (amount: number, to: string) => Promise<void>;
+  createLightningInvoice: (amount: number, threshold: number, participants: number) => Promise<string | null>;
+  payLightningInvoice: (invoice: string) => Promise<void>;
 }
 
 export const useWalletStore = create<WalletState>()(
@@ -43,6 +48,16 @@ export const useWalletStore = create<WalletState>()(
       setActivity: (activity: Transaction[]) => set({ activity }),
       setPhoneNumber: (phoneNumber: string) => set({ phoneNumber }),
       setPubkey: (pubkey: string) => set({ pubkey }),
+      createSparkClient: async (mnemonic: string) => {
+        await walletSDK.createSparkClient(mnemonic);
+      },
+      importWallet: async (mnemonic: string, phoneNumber: string) => {
+        const { isValid, pubkey } = await walletSDK.importWallet(mnemonic, phoneNumber);
+        if (isValid) {
+          set({ mnemonic, pubkey: pubkey || null });
+        }
+        return { isValid, pubkey: pubkey || null };
+      },
       fetchBalance: async () => {
         if (get().mnemonic) {
           try {
@@ -55,6 +70,37 @@ export const useWalletStore = create<WalletState>()(
           }
         }
         return 0;
+      },
+      transfer: async (amount: number, to: string) => {
+        if (get().mnemonic) {
+          try {
+            await walletSDK.getBalance();
+            await walletSDK.transfer(BigInt(amount), to);
+            await get().fetchBalance();
+          } catch (error) {
+            console.error("Failed to transfer:", error);
+          }
+        }
+      },
+      createLightningInvoice: async (amount: number, threshold: number, participants: number) => {
+        if (get().mnemonic) {
+          try {
+            return await walletSDK.createLightningInvoice(BigInt(amount), threshold, participants);
+          } catch (error) {
+            console.error("Failed to create Lightning invoice:", error);
+          }
+        }
+        return null;
+      },
+      payLightningInvoice: async (invoice: string) => {
+        if (get().mnemonic) {
+          try {
+            await walletSDK.getBalance();
+            await walletSDK.payLightningInvoice(invoice);
+          } catch (error) {
+            console.error("Failed to pay Lightning invoice:", error);
+          }
+        }
       },
     }),
     {
