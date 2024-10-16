@@ -150,11 +150,12 @@ class WalletSDK {
       [operators[i], operators[j]] = [operators[j], operators[i]];
     }
 
-    this.wallet = new bindings.SparkWalletBindings(masterKey, network, operators) as SparkWalletBindings;
+    const wallet = new bindings.SparkWalletBindings(masterKey, network, operators) as SparkWalletBindings;
     
-    const pubkey = this.wallet.get_master_public_key();
+    const pubkey = wallet.get_master_public_key();
     console.log('Public key:', Buffer.from(pubkey).toString('hex'));
-    
+    console.log('mnemonic:', mnemonic);
+    this.wallet = wallet;
     return Buffer.from(pubkey).toString('hex');
   }
 
@@ -317,7 +318,9 @@ class WalletSDK {
     if (!this.wallet) {
       throw new Error('Wallet not initialized. Call createSparkClient() first.');
     }
-    return await this.wallet.get_balance();
+    const balance = await this.wallet.get_balance();
+    console.log("Balance: ", balance);
+    return balance;
   }
 
   // /**

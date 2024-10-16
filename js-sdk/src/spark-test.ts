@@ -1,5 +1,6 @@
 import { OperatorInfo, SparkWalletBindings } from '../wasm/wallet_bindings';
 import { SparkClient, createSparkUserLightningInvoice, initWasmClient } from './spark-client';
+import * as bip39 from 'bip39';
 
 async function testWalletCreation() {
   // Step 1: Initialize the WASM client
@@ -12,6 +13,11 @@ async function testWalletCreation() {
   const wasmBindings = sparkClient.getBindings();
 
 
+  let mnemonic = "idea chunk unaware hazard sunset visit cinnamon muscle have better street rigid"
+  console.log("Mnemonic: ", mnemonic);
+  const seed = bip39.mnemonicToSeedSync(mnemonic);
+  const masterKey = seed.slice(0, 32); // Use the first 32 bytes of the seed
+
   const user_master_seed_array_32 = new Uint8Array(32);
   const network = wasmBindings.Network.Bitcoin;
   const operators = [
@@ -21,10 +27,11 @@ async function testWalletCreation() {
     new OperatorInfo(3, 'https://spark-so-3.dev.dev.sparkinfra.net/', '029d7db14a8587095656faf10f55a7ff30a3e44fcab26ba623a9c890520fb1efc9'),
     new OperatorInfo(4, 'https://spark-so-4.dev.dev.sparkinfra.net/', '033549b26c17e85da9edeb5f500ba40c849bb28773d474cc5f8e57647b4b855453')
   ];
-  const wallet = new wasmBindings.SparkWalletBindings(user_master_seed_array_32, network, operators) as SparkWalletBindings;
+  const wallet = new wasmBindings.SparkWalletBindings(masterKey, network, operators) as SparkWalletBindings;
 
-  const paymentHash = await wallet.create_lightning_invoice_payment_hash(BigInt(1000), 3, 5);
-  console.log(paymentHash);
+  console.log("Public Key: ", Buffer.from(wallet.get_master_public_key()).toString('hex'));
+  const balance = await wallet.get_balance();
+  console.log(balance);
 
     // const invoice = await createSparkUserLightningInvoice("https://spark-demo.dev.dev.sparkinfra.net", {
     //   user_pubkey: Buffer.from(wallet.get_master_public_key()).toString('hex'),

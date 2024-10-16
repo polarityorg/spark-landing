@@ -4,18 +4,9 @@ const heap = new Array(128).fill(undefined);
 
 heap.push(undefined, null, true, false);
 
-let heap_next = heap.length;
-
-function addHeapObject(obj) {
-    if (heap_next === heap.length) heap.push(heap.length + 1);
-    const idx = heap_next;
-    heap_next = heap[idx];
-
-    heap[idx] = obj;
-    return idx;
-}
-
 function getObject(idx) { return heap[idx]; }
+
+let heap_next = heap.length;
 
 function dropObject(idx) {
     if (idx < 132) return;
@@ -27,6 +18,15 @@ function takeObject(idx) {
     const ret = getObject(idx);
     dropObject(idx);
     return ret;
+}
+
+function addHeapObject(obj) {
+    if (heap_next === heap.length) heap.push(heap.length + 1);
+    const idx = heap_next;
+    heap_next = heap[idx];
+
+    heap[idx] = obj;
+    return idx;
 }
 
 const cachedTextDecoder = (typeof TextDecoder !== 'undefined' ? new TextDecoder('utf-8', { ignoreBOM: true, fatal: true }) : { decode: () => { throw Error('TextDecoder not available') } } );
@@ -211,12 +211,12 @@ function makeMutClosure(arg0, arg1, dtor, f) {
     CLOSURE_DTORS.register(real, state, state);
     return real;
 }
-function __wbg_adapter_34(arg0, arg1) {
-    wasm.__wbindgen_export_3(arg0, arg1);
+function __wbg_adapter_34(arg0, arg1, arg2) {
+    wasm.__wbindgen_export_3(arg0, arg1, addHeapObject(arg2));
 }
 
-function __wbg_adapter_37(arg0, arg1, arg2) {
-    wasm.__wbindgen_export_4(arg0, arg1, addHeapObject(arg2));
+function __wbg_adapter_41(arg0, arg1) {
+    wasm.__wbindgen_export_4(arg0, arg1);
 }
 
 function __wbg_adapter_44(arg0, arg1, arg2) {
@@ -1176,10 +1176,6 @@ async function __wbg_load(module, imports) {
 function __wbg_get_imports() {
     const imports = {};
     imports.wbg = {};
-    imports.wbg.__wbindgen_bigint_from_u64 = function(arg0) {
-        const ret = BigInt.asUintN(64, arg0);
-        return addHeapObject(ret);
-    };
     imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
         takeObject(arg0);
     };
@@ -1191,6 +1187,22 @@ function __wbg_get_imports() {
         const ret = getStringFromWasm0(arg0, arg1);
         return addHeapObject(ret);
     };
+    imports.wbg.__wbindgen_bigint_from_u64 = function(arg0) {
+        const ret = BigInt.asUintN(64, arg0);
+        return addHeapObject(ret);
+    };
+    imports.wbg.__wbg_preimageshard_new = function(arg0) {
+        const ret = PreimageShard.__wrap(arg0);
+        return addHeapObject(ret);
+    };
+    imports.wbg.__wbindgen_is_string = function(arg0) {
+        const ret = typeof(getObject(arg0)) === 'string';
+        return ret;
+    };
+    imports.wbg.__wbindgen_error_new = function(arg0, arg1) {
+        const ret = new Error(getStringFromWasm0(arg0, arg1));
+        return addHeapObject(ret);
+    };
     imports.wbg.__wbindgen_cb_drop = function(arg0) {
         const obj = takeObject(arg0).original;
         if (obj.cnt-- == 1) {
@@ -1198,18 +1210,6 @@ function __wbg_get_imports() {
             return true;
         }
         const ret = false;
-        return ret;
-    };
-    imports.wbg.__wbg_preimageshard_new = function(arg0) {
-        const ret = PreimageShard.__wrap(arg0);
-        return addHeapObject(ret);
-    };
-    imports.wbg.__wbindgen_error_new = function(arg0, arg1) {
-        const ret = new Error(getStringFromWasm0(arg0, arg1));
-        return addHeapObject(ret);
-    };
-    imports.wbg.__wbindgen_is_string = function(arg0) {
-        const ret = typeof(getObject(arg0)) === 'string';
         return ret;
     };
     imports.wbg.__wbg_preimageshard_unwrap = function(arg0) {
@@ -1501,28 +1501,28 @@ function __wbg_get_imports() {
         const ret = wasm.memory;
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper1251 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 528, __wbg_adapter_34);
+    imports.wbg.__wbindgen_closure_wrapper1198 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 466, __wbg_adapter_34);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper1253 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 528, __wbg_adapter_37);
+    imports.wbg.__wbindgen_closure_wrapper1200 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 466, __wbg_adapter_34);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper1255 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 528, __wbg_adapter_37);
+    imports.wbg.__wbindgen_closure_wrapper1202 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 466, __wbg_adapter_34);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper1257 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 528, __wbg_adapter_37);
+    imports.wbg.__wbindgen_closure_wrapper1204 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 466, __wbg_adapter_41);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper1720 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 602, __wbg_adapter_44);
+    imports.wbg.__wbindgen_closure_wrapper1649 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 540, __wbg_adapter_44);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper1749 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 617, __wbg_adapter_47);
+    imports.wbg.__wbindgen_closure_wrapper1678 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 555, __wbg_adapter_47);
         return addHeapObject(ret);
     };
 
