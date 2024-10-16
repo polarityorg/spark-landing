@@ -311,7 +311,6 @@ class WalletSDK {
    * @returns {Promise<bigint>}
    */
   async getBalance(): Promise<bigint> {
-    console.log("getBalance");
     await this.ensureInitialized();
     if (!this.wallet) {
       throw new Error('Wallet not initialized. Call createSparkClient() first.');

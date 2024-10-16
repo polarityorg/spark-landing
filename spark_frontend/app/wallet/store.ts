@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { walletSDK } from "./sdk"; // Import the walletSDK
-
+import { walletSDK } from "./sdk";
 export interface Transaction {
   id: string;
   type: "received" | "sent" | "withdraw" | "deposit";
@@ -25,7 +24,7 @@ interface WalletState {
   setActivity: (activity: Transaction[]) => void;
   setPhoneNumber: (phoneNumber: string) => void;
   setPubkey: (pubkey: string) => void;
-  fetchBalance: () => Promise<void>;
+  fetchBalance: () => Promise<number>;
 }
 
 export const useWalletStore = create<WalletState>()(
@@ -47,12 +46,15 @@ export const useWalletStore = create<WalletState>()(
       fetchBalance: async () => {
         if (get().mnemonic) {
           try {
+
             const balance = await walletSDK.getBalance();
             set({ balance: Number(balance) });
+            return Number(balance);
           } catch (error) {
             console.error("Failed to fetch balance:", error);
           }
         }
+        return 0;
       },
     }),
     {

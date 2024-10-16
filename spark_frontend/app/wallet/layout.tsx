@@ -32,6 +32,7 @@ export default function RootLayout({
   const previousBalanceRef = useRef<number | null>(null);
   const setBtcPrice = useWalletStore((state) => state.setBtcPrice);
   const setBalance = useWalletStore((state) => state.setBalance);
+  const fetchBalance = useWalletStore((state) => state.fetchBalance);
   const POLLING_INTERVAL = 1000; // 1 second
   const BTC_POLLING_INTERVAL = 60000; // 1 minute
 
@@ -52,11 +53,10 @@ export default function RootLayout({
         console.log("Wallet initialized.");
 
         // Function to fetch and handle balance
-        const fetchBalance = async () => {
+        const updateBalance = async () => {
           if (!isMounted) return;
           try {
-            const balance = await walletSDK.getBalance();
-            setBalance(Number(balance));
+            const balance = await fetchBalance();
             if (previousBalanceRef.current === null) {
               previousBalanceRef.current = Number(balance);
             } else if (balance > previousBalanceRef.current) {
@@ -73,10 +73,10 @@ export default function RootLayout({
         };
 
         // Initial balance fetch
-        await fetchBalance();
+        await updateBalance();
 
         // Start polling for balance
-        intervalId = setInterval(fetchBalance, POLLING_INTERVAL);
+        intervalId = setInterval(updateBalance, POLLING_INTERVAL);
       } catch (error) {
         console.error("Error initializing wallet:", error);
         toast.error("Failed to initialize wallet.");
