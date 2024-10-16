@@ -7,14 +7,20 @@ import { ChevronLeft, Loader2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Transaction, useWalletStore } from "../store";
-import { InvoiceStep, SummaryStep } from "@/components/WithdrawSteps";
+import {
+  ReceiverStep,
+  SummaryStep,
+  AmountStep,
+} from "@/components/WithdrawSteps"; // Import AmountStep
 import { decode } from "@gandlaf21/bolt11-decode";
 import { v4 as uuidv4 } from "uuid";
 import { walletSDK } from "../sdk";
 
 export default function WithdrawPage() {
-  const [step, setStep] = useState<"invoice" | "summary" | "sent">("invoice");
-  const [invoice, setInvoice] = useState("");
+  const [step, setStep] = useState<"receiver" | "amount" | "summary" | "sent">(
+    "receiver"
+  ); // Include "amount" step
+  const [receiver, setReceiver] = useState("");
   const [amountCents, setAmountCents] = useState<number>(0);
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState("");
@@ -25,9 +31,53 @@ export default function WithdrawPage() {
   const mnemonic = useWalletStore((state) => state.mnemonic);
   const btcPrice = useWalletStore((state) => state.btcPrice);
 
-  const handleContinueFromInvoice = () => {
+  // State for amount input by the user
+  const [userInputAmountCents, setUserInputAmountCents] = useState<number>(0); // Default to 0
+
+  const handleContinueFromInvoice = async () => {
+    setError("");
+    if (receiver.includes("@")) {
+      // If UMA address, move to amount step
+      setStep("amount");
+    } else {
+      try {
+        const decodedInvoice = decode(receiver);
+
+        const amountSection = decodedInvoice.sections.find(
+          (section) => section.name === "amount"
+        );
+
+        if (!amountSection || !amountSection.value) {
+          setError("Invoice does not specify an amount.");
+          return;
+        }
+
+        const amountSats = BigInt(amountSection.value / 1000);
+        const amountInDollars = (Number(amountSats) / 100_000_000) * btcPrice;
+        setAmountCents(Math.round(amountInDollars * 100));
+        setStep("summary");
+      } catch (error) {
+        console.error(error);
+        setError("Please enter a valid Lightning invoice.");
+      }
+    }
+  };
+
+  const handleContinueFromAmount = async () => {
+    setError("");
+    if (userInputAmountCents === null || userInputAmountCents <= 0) {
+      setError("Please enter a valid amount.");
+      return;
+    }
     try {
+      // Convert cents to satoshis
+      const amountSats = BigInt(
+        Math.round((userInputAmountCents / 100 / btcPrice) * 100000000)
+      );
+      const invoice = await walletSDK.decodeUma(receiver, amountSats);
       const decodedInvoice = decode(invoice);
+      setReceiver(invoice);
+
       const amountSection = decodedInvoice.sections.find(
         (section) => section.name === "amount"
       );
@@ -37,17 +87,20 @@ export default function WithdrawPage() {
         return;
       }
 
-      const amountSats = BigInt(amountSection.value);
-      const amountInDollars = (Number(amountSats) / 100_000_000) * btcPrice;
+      const amountSatsDecoded = BigInt(amountSection.value / 1000);
+      const amountInDollars =
+        (Number(amountSatsDecoded) / 100_000_000) * btcPrice;
       setAmountCents(Math.round(amountInDollars * 100));
+
       setStep("summary");
     } catch (error) {
       console.error(error);
-      setError("Please enter a valid Lightning invoice.");
+      setError("Failed to decode UMA.");
     }
   };
 
   const handleSendMoney = async () => {
+    setError("");
     if (availableBalance < amountCents / 100) {
       setError("Insufficient balance.");
       return;
@@ -60,7 +113,7 @@ export default function WithdrawPage() {
 
       setBalance(Number(balance));
       // Pay the Lightning invoice
-      await walletSDK.payLightningInvoice(invoice);
+      await walletSDK.payLightningInvoice(receiver);
       // Update balance and activity
       const newBalance = availableBalance - amountCents / 100;
       setBalance(newBalance);
@@ -69,7 +122,7 @@ export default function WithdrawPage() {
         id: uuidv4(),
         type: "withdraw",
         amount: amountCents / 100,
-        to: invoice,
+        to: receiver,
         date: new Date(),
       };
 
@@ -85,9 +138,24 @@ export default function WithdrawPage() {
   };
 
   const handleBack = () => {
+    setError("");
     if (step === "summary") {
-      setStep("invoice");
+      if (receiver.includes("@")) {
+        setStep("amount");
+      } else {
+        setStep("receiver");
+      }
+    } else if (step === "amount") {
+      setStep("receiver");
     }
+  };
+
+  const handleUseMax = () => {
+    const balanceInUSDInCents = Math.floor(
+      (availableBalance / 100000000) * btcPrice * 100
+    );
+    const MAX_AMOUNT_CENTS = Math.min(99999999, balanceInUSDInCents);
+    setUserInputAmountCents(MAX_AMOUNT_CENTS);
   };
 
   return (
@@ -97,7 +165,7 @@ export default function WithdrawPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}>
         <div className="flex items-center justify-between p-6">
-          {step === "invoice" || step === "sent" ? (
+          {step === "receiver" || step === "sent" ? (
             <Link href="/wallet" aria-label="Back to wallet">
               <Button variant="ghost" size="icon">
                 <ChevronLeft className="h-6 w-6" strokeWidth={4} />
@@ -113,22 +181,29 @@ export default function WithdrawPage() {
             </Button>
           )}
           <h1 className="text-xl font-bold">
-            {step === "invoice"
+            {step === "receiver"
               ? "Withdraw"
-              : step === "summary"
-                ? "Summary"
-                : "Success"}
+              : step === "amount"
+                ? "Enter Amount"
+                : step === "summary"
+                  ? "Summary"
+                  : "Success"}
           </h1>
           <div className="w-10" aria-hidden="true" />
         </div>
 
-        {step !== "invoice" && (
+        {step !== "receiver" && (
           <div className="h-0.5 bg-gray-200 w-full">
             <motion.div
               className="h-0.5 bg-black"
-              initial={{ width: "50%" }}
+              initial={{ width: "33%" }}
               animate={{
-                width: step === "summary" ? "50%" : "100%",
+                width:
+                  step === "amount"
+                    ? "33%"
+                    : step === "summary"
+                      ? "66%"
+                      : "100%",
               }}
               transition={{ duration: 0.3 }}
             />
@@ -141,16 +216,27 @@ export default function WithdrawPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
         className="flex-grow flex flex-col justify-between px-6 py-8">
-        {step === "invoice" && (
-          <InvoiceStep
-            invoice={invoice}
-            setInvoice={setInvoice}
+        {step === "receiver" && (
+          <ReceiverStep
+            receiver={receiver}
+            setReceiver={setReceiver}
             error={error}
           />
         )}
 
+        {step === "amount" && (
+          <AmountStep
+            amountCents={userInputAmountCents}
+            setAmountCents={setUserInputAmountCents}
+            availableBalance={availableBalance}
+            btcPrice={btcPrice}
+            handleUseMax={handleUseMax}
+            handleBack={handleBack}
+          />
+        )}
+
         {step === "summary" && (
-          <SummaryStep amountCents={amountCents} recipient={invoice} />
+          <SummaryStep amountCents={amountCents} recipient={receiver} />
         )}
 
         {step === "sent" && (
@@ -172,11 +258,20 @@ export default function WithdrawPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
         className="p-6 mb-8 pb-[calc(4.5em+env(safe-area-inset-bottom))]">
-        {step === "invoice" && (
+        {step === "receiver" && (
           <Button
             onClick={handleContinueFromInvoice}
             className="w-full h-14 text-lg font-bold shadow-none rounded-full"
-            disabled={!invoice}>
+            disabled={!receiver}>
+            Continue
+          </Button>
+        )}
+
+        {step === "amount" && (
+          <Button
+            onClick={handleContinueFromAmount}
+            className="w-full h-14 text-lg font-bold shadow-none rounded-full"
+            disabled={!userInputAmountCents || userInputAmountCents <= 0}>
             Continue
           </Button>
         )}

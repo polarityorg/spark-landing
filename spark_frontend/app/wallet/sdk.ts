@@ -1,4 +1,4 @@
-import { SparkClient, createSparkUserLightningInvoice, initWasmClient } from 'js-sdk/src/spark-client';
+import { SparkClient, createSparkUserLightningInvoice, initWasmClient, querySparkLnurlp, sendUmaPayRequest } from 'js-sdk/src/spark-client';
 import * as bip39 from 'bip39';
 
 import { NoncePair, OperatorInfo, RPCResult, SparkWalletBindings } from 'js-sdk/wasm';
@@ -349,17 +349,13 @@ class WalletSDK {
    * @param {bigint} amount - The amount in satoshis.
    * @returns {Promise<string>}
    */
-  async createLightningInvoicePaymentHash(amount: bigint, threshold: number, participants: number): Promise<string> {
+  async createLightningInvoice(amount: bigint, threshold: number, participants: number): Promise<string> {
     if (!this.wallet) {
       throw new Error('Wallet not initialized. Call createSparkClient() first.');
     }
     const paymentHash = await this.wallet.create_lightning_invoice_payment_hash(amount, threshold, participants);
-    // (alias) createSparkUserLightningInvoice(host: string, params: {
-    // user_pubkey: string;
-    // payment_hash: string;
-    // amount_sats: number;
 
-    const invoice = await createSparkUserLightningInvoice("https://spark-demo.dev.dev.sparkinfra.net", {
+    const invoice = await createSparkUserLightningInvoice("spark-demo.dev.dev.sparkinfra.net", {
       user_pubkey: Buffer.from(this.getMasterPublicKey()).toString('hex'),
       payment_hash: paymentHash,
       amount_sats: Number(amount)
@@ -382,7 +378,7 @@ class WalletSDK {
     if (!amountSection || !amountSection.value) {
       throw new Error('Amount not found in the invoice');
     }
-    const amount = BigInt(amountSection.value);
+    const amount = BigInt(amountSection.value / 1000);
 
 
     await this.wallet.send_lightning_payment(invoice, amount, "03c56f7d10037de2cd79db8cd0d32482bfa78e848e502f2b6c6c647f8f36151084");
@@ -407,9 +403,66 @@ class WalletSDK {
 
     const paymentData = await paymentResponse.json();
     console.log('Payment response:', paymentData);
-
   }
 
+  /**
+   * Decodes a UMA or LNURL address and retrieves the corresponding Lightning invoice.
+   * @param {string} uma - The UMA address or LNURL.
+   * @param {bigint} amount - The amount in satoshis.
+   * @returns {Promise<string>} The encoded Lightning invoice.
+   */
+  async decodeUma(uma: string, amount: bigint): Promise<string> {
+    if (uma.startsWith('$')) {
+      // Handle UMA address
+      const lnurlPayReq = await querySparkLnurlp("spark-demo.dev.dev.sparkinfra.net", uma);
+      const invoice = await sendUmaPayRequest("spark-demo.dev.dev.sparkinfra.net", {
+        receiver_uma_address: uma,
+        receiving_amount: Number(amount),
+        receiving_currency_code: "SAT",
+        payreq_url: lnurlPayReq.payreq_url
+      });
+      return invoice.encoded_invoice;
+    } else {
+      // Handle LNURL address
+      // Assume the address is in the format 'username@domain.com'
+      const [username, domain] = uma.split('@');
+      if (!username || !domain) {
+        throw new Error('Invalid LNURL address format');
+      }
+
+      // Construct the LNURL pay endpoint
+      const lnurlpUrl = `https://${domain}/.well-known/lnurlp/${username}`;
+      const lnurlpResponse = await fetch(lnurlpUrl);
+      if (!lnurlpResponse.ok) {
+        throw new Error('Failed to fetch LNURL pay information');
+      }
+
+      const lnurlpData = await lnurlpResponse.json();
+      const { callback, minSendable, maxSendable } = lnurlpData;
+      const milliSatoshiAmount = Number(amount) * 1000; // Convert satoshis to millisatoshis
+
+      if (milliSatoshiAmount < minSendable || milliSatoshiAmount > maxSendable) {
+        throw new Error('Amount is out of bounds for this LNURL pay request');
+      }
+
+      // Append the amount to the callback URL
+      const callbackUrl = new URL(callback);
+      callbackUrl.searchParams.append('amount', milliSatoshiAmount.toString());
+
+      // Fetch the invoice from the callback URL
+      const invoiceResponse = await fetch(callbackUrl.toString());
+      if (!invoiceResponse.ok) {
+        throw new Error('Failed to fetch invoice from the LNURL callback');
+      }
+
+      const invoiceData = await invoiceResponse.json();
+      if (!invoiceData.pr) {
+        throw new Error('Invoice data does not contain an invoice');
+      }
+
+      return invoiceData.pr;
+    }
+  }
   private async ensureInitialized() {
     if (!this.initialized) {
       await this.initAsync();
