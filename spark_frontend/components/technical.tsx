@@ -188,8 +188,8 @@ const TechnicalOverview = () => {
                   <br />
                   First, begin with the assumption that keys can be linearly
                   added together to form a single key. We will start with two
-                  parties holding keys - one is the user Alice (A) and the other
-                  will be called the statechain entity (SE) which can be
+                  parties holding keys - one is the user Alice (A), and the
+                  other will be called the statechain entity (SE), which can be
                   composed of any number of members but will be shown as a
                   single entity below.
                   <br />
@@ -532,9 +532,24 @@ const TechnicalOverview = () => {
               <section>
                 <h3 className="text-xl font-semibold mb-4">Aggreggation</h3>
                 <p className="mb-4">
-                  Aggregation The process of using child keys to spend the input
-                  to one of their ancestors. In the above example, a1+a2 can
-                  spend the input to Txn1.
+                  The process of using child keys to spend the input to one of
+                  their ancestors. In the above example, a1+a2 can spend the
+                  input to Txn1. Aggregation is utilized to efficiently reclaim
+                  branches of the UTXO trees on L1. A common pattern will be
+                  that an SSP actively manages which leaves are given to
+                  specific users. This may occur as part of transfers or simply
+                  as atomic swaps when users come online. This shifts the
+                  complexity overhead onto the SSP and away from the user -
+                  simplifying the user and developer experience significantly.
+                  The SSP may choose to reclaim liquidity by defragmenting the
+                  tree and claiming chunks of liquidity from the tree. The SSP
+                  does so by owning all keys under a specific branch of the
+                  tree. Rather than needing to publish on-chain transactions for
+                  each leaf, the SSP can now claim all funds under the leaf by
+                  spending a single output. The SSP will additionally attempt to
+                  cluster a single user under as few branches as possible, such
+                  that if the user were to unilaterally exit, the cost to do so
+                  would be as low as possible.
                 </p>
               </section>
             </div>
@@ -546,11 +561,11 @@ const TechnicalOverview = () => {
                   <AccordionTrigger>Deposits from L1</AccordionTrigger>
                   <AccordionContent>
                     <p className="mb-4">
-                      Depositing L1 funds to Spark isstraight forward. The SE
+                      Depositing L1 funds to Spark is straight-forward. The SE
                       and user collaborate to generate an aggregate public key
                       and derive a pay-to-taproot address from it. They then
                       work together to collaboratively create and sign two
-                      transactions, an exittransaction and an intermediate
+                      transactions, an exit transaction, and an intermediate
                       branch transaction before it that triggers the exit
                       transaction’s relative timelock. Once these transactions
                       are both signed, the user can finally send their deposit
@@ -683,7 +698,7 @@ const TechnicalOverview = () => {
                   <AccordionContent>
                     <p className="mb-4">
                       Leaf ownership is transferred by adjusting the SE&apos;s
-                      key so that the combined key (SE+User) remains the same
+                      key such that the combined key (SE+User) remains the same
                       before and after the transfer, but control shifts from the
                       sender to the receiver.
                       <br />
@@ -821,7 +836,7 @@ const TechnicalOverview = () => {
                       <br />
                       <br />
                       If the user refuses to update the leaf to give control of
-                      the itsolely to the SSP, then the SSP can still claim the
+                      the it solely to the SSP, then the SSP can still claim the
                       funds by putting the branch on-chain - since the SSP has
                       published the connector transaction.
                     </p>
@@ -1002,17 +1017,18 @@ const TechnicalOverview = () => {
                   </AccordionTrigger>
                   <AccordionContent>
                     <p className="mb-4">
-                      The first attack is for an old owner of the UTXO to
-                      publish the branch. When this happens, there is a time
-                      limitation during which the correct owner needs to publish
-                      the leaf transaction. If the current owner does not do so
-                      during the window, then the attacker can claim the UTXO.
-                      The SE entities all have a copy of the signed transaction
-                      and can act as watchtowers. Additionally, depending on how
-                      the Spark is configured, this attack can be fairly costly
-                      for the attacker - they need to publish the entire tree
-                      (unless someone else has unilaterally closed much of the
-                      same branch) and CPFP it.
+                      If a prior owner of a Spark leaf publishes the branch in a
+                      unilateral exit, there is a time limitation during which
+                      the correct owner needs to publish the correct leaf
+                      transaction. If the current owner does not do so during
+                      the window, then the attacker can claim the leaf UTXO. The
+                      SOs all have a copy of the signed transaction and can act
+                      as watchtowers on behalf of the current leaf owner.
+                      Additionally, depending on how the Spark is configured,
+                      this attack can be fairly costly for the attacker - they
+                      need to publish the entire branch (unless someone else has
+                      unilaterally closed much of the same branch) and CPFP each
+                      tree node.
                     </p>
                   </AccordionContent>
                 </AccordionItem>
@@ -1020,18 +1036,18 @@ const TechnicalOverview = () => {
                   <AccordionTrigger>Loss of SE liveliness</AccordionTrigger>
                   <AccordionContent>
                     <p className="mb-4">
-                      If any (or a minority if threshold) of the entities
-                      comprising the SE lose liveness or lose their keys, Spark
-                      will not be able to continue. Users will still be able to
-                      withdraw their funds through unilateral exits, but they
-                      will be unable to continue to send off-chain payments with
-                      Spark. This means that the entities comprising the SE
-                      should be carefully chosen to be highly available and
-                      low-latency since they are in the flow of UTXO transfers.
-                      The number of entities and the threshold of trust are
-                      configurable - for example, could require trusting ⅓ of
-                      the n entities in the SE, which would grant higher
-                      liveliness.
+                      If any (or a minority if the Spark is configured for
+                      threshold) of the SOs lose liveness or lose their keys,
+                      the Spark will not be able to continue. Users will still
+                      be able to withdraw their funds through unilateral exits,
+                      but they will be unable to continue to send off-chain
+                      payments with Spark. This means that the entities
+                      comprising the SE should be carefully chosen to be highly
+                      available and low-latency since they are in the flow of
+                      UTXO transfers. The number of entities and the threshold
+                      of trust are configurable - for example, could require
+                      trusting ⅓ of the n entities in the SE, which would grant
+                      higher liveliness.``
                     </p>
                   </AccordionContent>
                 </AccordionItem>
