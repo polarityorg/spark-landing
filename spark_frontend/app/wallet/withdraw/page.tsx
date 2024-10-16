@@ -101,6 +101,9 @@ export default function WithdrawPage() {
 
   const handleSendMoney = async () => {
     setError("");
+    const MIN_DURATION = 500;
+    const startTime = Date.now();
+
     if (availableBalance < amountCents / 100) {
       setError("Insufficient balance.");
       return;
@@ -128,8 +131,18 @@ export default function WithdrawPage() {
 
       setActivity([newTransaction, ...activity]);
 
-      setIsSending(false);
-      setStep("sent");
+      const elapsedTime = Date.now() - startTime;
+      const remainingTime = MIN_DURATION - elapsedTime;
+
+      if (remainingTime > 0) {
+        setTimeout(() => {
+          setIsSending(false);
+          setStep("sent");
+        }, remainingTime);
+      } else {
+        setIsSending(false);
+        setStep("sent");
+      }
     } catch (error) {
       console.error(error);
       setError("Failed to send payment.");

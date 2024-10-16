@@ -111,6 +111,9 @@ export default function SendPage() {
   };
 
   const handleSendMoney = async () => {
+    const MIN_DURATION = 500; // Minimum duration in milliseconds
+    const startTime = Date.now();
+
     if (availableBalance < amountCents / 100) {
       setError("Insufficient balance.");
       return;
@@ -119,7 +122,7 @@ export default function SendPage() {
     try {
       // Create the Spark client
       await walletSDK.createSparkClient(mnemonic!);
-      // now get balance
+      // Now get balance
       const balance = await walletSDK.getBalance();
       setBalance(Number(balance));
 
@@ -127,7 +130,7 @@ export default function SendPage() {
       const amountInUsd = amountCents / 100;
 
       // Convert USD to sats (assuming walletSDK.usdToSats returns BigInt)
-      // get the usd price of bitcoin from the coingecko api
+      // Get the USD price of Bitcoin from the CoinGecko API
       let btcPriceFetched;
       try {
         const response = await fetch(
@@ -152,7 +155,6 @@ export default function SendPage() {
         recipientPubKey = recipient;
       } else {
         // Fetch the public key for the given phone number
-
         const pubKeyResponse = await fetch(
           "https://spark-demo.dev.dev.sparkinfra.net/spark/user_pubkey",
           {
@@ -180,6 +182,7 @@ export default function SendPage() {
       // Update the balance
       const updatedBalance = await walletSDK.getBalance();
       setBalance(Number(updatedBalance));
+
       // **Notify Receiver if Recipient is Identified by Phone Number**
       if (inputType === "phone") {
         notifyReceiverTransfer("spark-demo.dev.dev.sparkinfra.net", {
@@ -194,10 +197,18 @@ export default function SendPage() {
       setError("Failed to send funds. Please try again.");
       toast.error("Failed to send funds. Please try again.");
     } finally {
-      setTimeout(() => {
+      const elapsedTime = Date.now() - startTime;
+      const remainingTime = MIN_DURATION - elapsedTime;
+
+      if (remainingTime > 0) {
+        setTimeout(() => {
+          setIsSending(false);
+          setStep("sent");
+        }, remainingTime);
+      } else {
         setIsSending(false);
         setStep("sent");
-      }, 500);
+      }
     }
   };
 
