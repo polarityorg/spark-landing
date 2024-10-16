@@ -60,7 +60,7 @@ export default function RootLayout({
             if (previousBalanceRef.current === null) {
               previousBalanceRef.current = Number(balance);
             } else if (balance > previousBalanceRef.current) {
-              toast.success(`Balance Increased: ${balance}`);
+              toast.success(`Received ${balance.toLocaleString("en-US")} sats`);
               previousBalanceRef.current = Number(balance);
             } else {
               // Balance has not increased, update the previous balance
