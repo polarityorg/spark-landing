@@ -53,13 +53,11 @@ const Overview = () => {
           {section.id === "spark-tldr" && (
             <>
               <p className="mb-4">
-                Spark is an off-chain protocol with native Lightning
-                interoperability designed to nearly infinitely scale Bitcoin
-                transactions. Spark enables instant, free, and unlimited
-                self-custodial transactions of Bitcoin while also enabling users
-                to send and receive via Lightning. It&apos;s designed as an
-                extension of Lightning, addressing some of its key limitations
-                while maintaining full compatibility.
+                Spark is <b>the payment network</b> for developers. It's a new
+                scaling solution that enables instant, free, and unlimited
+                self-custodial transactions of Bitcoin and tokens while also
+                enabling users to send and receive natively via Lightning.
+                It&apos;s open-sourced and secured by Bitcoin.
               </p>
               <Image
                 src="/overview1.png"
@@ -68,7 +66,10 @@ const Overview = () => {
                 height={400}
                 className="mb-8"
               />
-              <p className="mb-4">Spark boasts the following:</p>
+              <p className="mb-4">
+                Spark is <b>purpose-built for payments</b>, and as such enables
+                the following:
+              </p>
               <ul className="list-disc pl-6 mb-8">
                 <li className="pl-2">
                   <p>Native BTC</p>
@@ -83,6 +84,9 @@ const Overview = () => {
                   <p>Extremely low fees</p>
                 </li>
                 <li className="pl-2">
+                  <p>Native tokens (e.g. stablecoins)</p>
+                </li>
+                <li className="pl-2">
                   <p>
                     Native Lightning interface without needing to run a
                     Lightning node
@@ -94,8 +98,8 @@ const Overview = () => {
                 <li className="pl-2">
                   <p>
                     1/n trust assumptions (or minority/n) with
-                    perfect-forward-security - meaning that the trust assumption
-                    is ONLY for the time of transference, not in perpetuity
+                    perfect-forward-security, meaning that the trust assumption
+                    is only for the time of transference, not in perpetuity
                   </p>
                 </li>
                 <li className="pl-2">
@@ -103,12 +107,8 @@ const Overview = () => {
                 </li>
                 <li className="pl-2">
                   <p>
-                    Capital efficiency (no pre-funding, large liquidity lockups,
-                    etc.)
+                    Capital efficiency (no pre-funding, liquidity lockups, etc.)
                   </p>
-                </li>
-                <li className="pl-2">
-                  <p>Offline receive</p>
                 </li>
                 <li className="pl-2">
                   <p>
@@ -117,18 +117,10 @@ const Overview = () => {
                     available)
                   </p>
                 </li>
-                <li className="pl-2">
-                  <p>
-                    Compatible with any Bitcoin token protocol (LRC-20, BRC-20,
-                    Runes, Taproot Assets, etc.)
-                  </p>
-                </li>
-                <li className="pl-2">
-                  <p>Purpose-built to excel at facilitating payments</p>
-                </li>
               </ul>
               <p className="mb-4">What Spark is not:</p>
               <ul className="list-disc pl-6 mb-8">
+                4
                 <li className="pl-2">
                   <p>100% trustless on day one</p>
                 </li>
@@ -380,7 +372,7 @@ const Overview = () => {
                     manage Lightning channels, or lock up liquidity themselves.
                     This eliminates almost all the overhead associated with
                     traditional Lightning operations while providing true
-                    offline receipt of funds - which isn’t available in typical
+                    offline receive - which isn't available in typical
                     Lightning.
                     <br />
                     <br />
@@ -453,11 +445,21 @@ const Overview = () => {
             </Tabs>
           )}
           {section.id === "spark-ux" && (
-            <p className="mb-4">
-              Spark is our dream payment solution. We&apos;re building Spark
-              with simplicity, security, and performance in mind &mdash; all so
-              end-users and developers can have the best experience possible.
-            </p>
+            <div className="flex flex-col items-center justify-center">
+              <p>
+                Spark is our dream payment solution. We&apos;re building Spark
+                with simplicity, security, and performance in mind &mdash; all
+                so end-users and developers can have the best experience
+                possible.
+              </p>
+              <Image
+                src="/spark-ux.png"
+                alt="Spark UX"
+                width={800}
+                height={400}
+                className="mb-4"
+              />
+            </div>
           )}
           {section.id === "faq" && (
             <Accordion type="single" collapsible className="w-full">

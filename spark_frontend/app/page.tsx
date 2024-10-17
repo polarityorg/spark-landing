@@ -1,6 +1,9 @@
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import Overview from "@/components/overview";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Input } from "@/components/ui/input";
 
 export default function Home() {
   return (
@@ -20,7 +23,7 @@ export default function Home() {
         </p>
         <Separator />
         {/* disclaimer */}
-        <div className="flex flex-col gap-2 text-sm text-left text-muted-foreground">
+        {/* <div className="flex flex-col gap-2 text-sm text-left text-muted-foreground">
           <h5 className="font-bold text-sm">Disclaimer</h5>
           <p>
             Typically, when a new scaling solution is introduced to the
@@ -30,6 +33,16 @@ export default function Home() {
             audiences.
           </p>
           <p>Please keep us honest — any and all feedback is welcome.</p>
+        </div> */}
+        <div className="flex w-full border border-gray-300 shadow-sm rounded-md p-2">
+          <Input
+            placeholder="Email"
+            type="email"
+            className="flex-1 border-none focus:ring-0 focus-visible:ring-0 focus:border-gray-300 shadow-none"
+          />
+          <Button className="ml-2 px-4 py-2 rounded-md w-1/3">
+            Build on Spark
+          </Button>
         </div>
         <Overview />
       </main>
