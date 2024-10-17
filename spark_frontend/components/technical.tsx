@@ -883,9 +883,9 @@ const TechnicalOverview = () => {
                     />
                     <p className="mb-4">
                       This provides Alice with true offline receive - she
-                      doesn't need to be online in order to receive the full
-                      Lightning payment. Additionally, Alice does not need to
-                      run a Lightning node and does not need to open any
+                      doesn&apos;t need to be online in order to receive the
+                      full Lightning payment. Additionally, Alice does not need
+                      to run a Lightning node and does not need to open any
                       channels or perform any force closures.
                     </p>
 

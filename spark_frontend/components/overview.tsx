@@ -53,8 +53,8 @@ const Overview = () => {
           {section.id === "spark-tldr" && (
             <>
               <p className="mb-4">
-                Spark is <b>the payment network</b> for developers. It's a new
-                scaling solution that enables instant, free, and unlimited
+                Spark is <b>the payment network</b> for developers. It&apos;s a
+                new scaling solution that enables instant, free, and unlimited
                 self-custodial transactions of Bitcoin and tokens while also
                 enabling users to send and receive natively via Lightning.
                 It&apos;s open-sourced and secured by Bitcoin.
@@ -120,7 +120,6 @@ const Overview = () => {
               </ul>
               <p className="mb-4">What Spark is not:</p>
               <ul className="list-disc pl-6 mb-8">
-                4
                 <li className="pl-2">
                   <p>100% trustless on day one</p>
                 </li>
@@ -372,7 +371,7 @@ const Overview = () => {
                     manage Lightning channels, or lock up liquidity themselves.
                     This eliminates almost all the overhead associated with
                     traditional Lightning operations while providing true
-                    offline receive - which isn't available in typical
+                    offline receive - which isn&apos;t available in typical
                     Lightning.
                     <br />
                     <br />
