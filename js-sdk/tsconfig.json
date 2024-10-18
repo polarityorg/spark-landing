@@ -8,6 +8,12 @@
     "allowJs": true,
     "strict": true
   },
-  "include": ["src/**/*"],
+  "include": [
+    "src/**/*",
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "types/**/*.d.ts"
+  ],
   "exclude": ["node_modules"]
 }

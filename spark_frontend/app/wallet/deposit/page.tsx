@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useWalletStore } from "../store";
+// @ts-expect-error type error
 import QRCode from "react-fancy-qrcode";
 import Image from "next/image";
 import debounce from "lodash.debounce";
