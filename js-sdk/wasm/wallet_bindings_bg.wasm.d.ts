@@ -1,6 +1,22 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
+export function __wbg_sparkwalletbindings_free(a: number, b: number): void;
+export function sparkwalletbindings_new(a: number, b: number, c: number, d: number, e: number): number;
+export function sparkwalletbindings_get_master_xpriv(a: number, b: number): void;
+export function sparkwalletbindings_get_master_xpub(a: number, b: number): void;
+export function sparkwalletbindings_get_master_public_key(a: number, b: number): void;
+export function sparkwalletbindings_get_master_secret_key(a: number, b: number): void;
+export function sparkwalletbindings_new_deposit_address_request(a: number, b: number, c: number, d: number, e: number, f: number): void;
+export function sparkwalletbindings_create_nonce_pair(a: number, b: number, c: number): void;
+export function sparkwalletbindings_create_lightning_invoice_payment_hash(a: number, b: number, c: number, d: number): number;
+export function sparkwalletbindings_send_lightning_payment(a: number, b: number, c: number, d: number, e: number, f: number, g: number): number;
+export function sparkwalletbindings_deposit(a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number): number;
+export function sparkwalletbindings_transfer(a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number): number;
+export function sparkwalletbindings_claim_pending_payments(a: number): number;
+export function sparkwalletbindings_get_balance(a: number): number;
+export function sparkwalletbindings_get_lrc20_balance(a: number): number;
+export function sparkwalletbindings_sync_wallet(a: number): number;
 export function __wbg_depositresult_free(a: number, b: number): void;
 export function depositresult_signed_deposit_tx(a: number, b: number): void;
 export function depositresult_signed_intermediate_tx(a: number, b: number): void;
@@ -26,22 +42,6 @@ export function operatorinfo_new(a: number, b: number, c: number, d: number, e: 
 export function operatorinfo_id(a: number): number;
 export function operatorinfo_url(a: number, b: number): void;
 export function operatorinfo_master_public_key(a: number, b: number): void;
-export function __wbg_sparkwalletbindings_free(a: number, b: number): void;
-export function sparkwalletbindings_new(a: number, b: number, c: number, d: number, e: number): number;
-export function sparkwalletbindings_get_master_xpriv(a: number, b: number): void;
-export function sparkwalletbindings_get_master_xpub(a: number, b: number): void;
-export function sparkwalletbindings_get_master_public_key(a: number, b: number): void;
-export function sparkwalletbindings_get_master_secret_key(a: number, b: number): void;
-export function sparkwalletbindings_new_deposit_address_request(a: number, b: number, c: number, d: number, e: number, f: number): void;
-export function sparkwalletbindings_create_nonce_pair(a: number, b: number, c: number): void;
-export function sparkwalletbindings_create_lightning_invoice_payment_hash(a: number, b: number, c: number, d: number): number;
-export function sparkwalletbindings_send_lightning_payment(a: number, b: number, c: number, d: number, e: number, f: number, g: number): number;
-export function sparkwalletbindings_deposit(a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number): number;
-export function sparkwalletbindings_transfer(a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number): number;
-export function sparkwalletbindings_claim_pending_payments(a: number): number;
-export function sparkwalletbindings_get_balance(a: number): number;
-export function sparkwalletbindings_get_lrc20_balance(a: number): number;
-export function sparkwalletbindings_sync_wallet(a: number): number;
 export function rustsecp256k1_v0_9_2_context_create(a: number): number;
 export function rustsecp256k1_v0_9_2_context_destroy(a: number): void;
 export function rustsecp256k1_v0_9_2_default_illegal_callback_fn(a: number, b: number): void;

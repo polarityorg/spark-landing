@@ -67,7 +67,7 @@ export default function Activity() {
                 return (
                   <li
                     key={transaction.id}
-                    className="flex items-center justify-between px-4 py-2 rounded-md">
+                    className="flex items-center justify-between py-2 rounded-md">
                     <div>
                       <p className="font-semibold text-[#F9F9F9]">
                         {transaction.type === "received"
