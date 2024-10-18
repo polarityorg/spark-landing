@@ -496,7 +496,7 @@ export default function SendPage() {
                 }
                 onChange={(e) => handleRecipientChange(e.target.value)}
                 placeholder={"Phone, UMA, address, or invoice"}
-                className="w-full bg-transparent border-none shadow-none focus-visible:ring-0 focus-visible:outline-none placeholder-gray-500 text-sm"
+                className="w-full bg-transparent border-none shadow-none focus-visible:ring-0 focus-visible:outline-none placeholder-gray-500 text-md"
               />
             </div>
             {recipient && recipientType && (
