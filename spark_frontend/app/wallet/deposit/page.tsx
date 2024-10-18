@@ -35,6 +35,7 @@ export default function DepositPage() {
   const createLightningInvoice = useWalletStore(
     (state) => state.createLightningInvoice
   );
+  const [qrSize, setQrSize] = useState(500);
   const btcPrice = useWalletStore((state) => state.btcPrice);
   const userPublicKey = useWalletStore((state) => state.pubkey);
   const userPhone = useWalletStore((state) => state.phoneNumber);
@@ -118,6 +119,25 @@ export default function DepositPage() {
       amountInputRef.current.focus();
     }
   }, [isEditingAmount]);
+
+  useEffect(() => {
+    const updateQrSize = () => {
+      if (window.innerWidth * 0.8 < 500) {
+        setQrSize(window.innerWidth * 0.8);
+      } else {
+        setQrSize(500);
+      }
+    };
+
+    // Set initial size
+    updateQrSize();
+
+    // Update size on window resize
+    window.addEventListener("resize", updateQrSize);
+
+    // Clean up the event listener on unmount
+    return () => window.removeEventListener("resize", updateQrSize);
+  }, []);
 
   const qrData =
     selectedNetwork === "lightning"
@@ -212,7 +232,7 @@ export default function DepositPage() {
                 /* Show the QR code when not loading and invoice or public key is available */
                 <QRCode
                   value={qrData}
-                  size={Math.min(500, window?.innerWidth * 0.8)}
+                  size={qrSize}
                   dotScale={1}
                   dotRadius="100%"
                   positionRadius={["5%", "1%"]}
@@ -230,7 +250,7 @@ export default function DepositPage() {
                   <div className="relative w-full h-full flex items-center justify-center blur-md">
                     <QRCode
                       value="lnbc149329510n1pns79s9pp5emssj9sawqf8jqg5n49acdwv46tjyss8g7avk9dqng9fw7kyn7gshp5732rzz6dwm3carh4ju0vx6ghcdrymgyemjrln8lgr6s3qppn8j7qcqzzsxqyz5vqsp584emxnrtvlmymlvxng2vumfhnkd3ef5k6q2vcuvhrgg5l2aut7ys9qxpqysgq7de7rv4rywxu7ppeh2aunft8nkrfcxr3ss3datg423vy8ezh7a9px03dyxls5q5chvdvlwmfta6qz2q80qmghkgr07thte4ymaank9gpnfllfa"
-                      size={Math.min(500, window?.innerWidth * 0.8)}
+                      size={qrSize}
                       dotScale={1}
                       dotRadius="100%"
                       positionRadius={["5%", "1%"]}
