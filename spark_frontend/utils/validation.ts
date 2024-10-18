@@ -27,3 +27,13 @@ export const formatSats = (sats: number) => {
     return sats.toString();
   }
 };
+
+export const isValidInvoice = (invoice: string): boolean => {
+  // Check if the invoice starts with "ln" (case-insensitive)
+  return invoice.toLowerCase().startsWith('ln') && invoice.length > 20;
+}
+
+export const isValidUMA = (uma: string): boolean => {
+  // Check if the UMA contains an "@" symbol
+  return uma.includes("@") && uma.length > 3;
+}

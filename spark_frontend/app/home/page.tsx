@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Cloud, Plus } from "lucide-react";
 
 export default function HomePage() {
   const { mnemonic } = useWalletStore();
@@ -28,39 +27,42 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col p-6 font-[family-name:var(--font-geist-sans)]">
+    <div className="relative min-h-screen bg-[#10151C] flex flex-col p-6 font-[family-name:var(--font-decimal)] overflow-x-hidden">
       <motion.main
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
         className="flex-grow flex flex-col items-center justify-center">
-        <Image
-          className="dark:invert mb-10"
-          src="/spark.svg"
-          alt="Spark Logo"
-          width={180}
-          height={38}
-          priority
-        />
+        <div className="flex items-center">
+          <Image
+            className="mr-2"
+            src="/wallet.svg"
+            alt="Spark Logo"
+            width={50}
+            height={50}
+            priority
+          />
+          <h1 className="text-white text-4xl font-bold">Wallet</h1>
+        </div>
+        <p className="text-muted-foreground text-md text-center my-6">
+          A Spark-enabled, self-custody
+          <br />
+          Bitcoin wallet
+        </p>
 
-        <div className="flex gap-2 mb-20">
-          {[
-            { href: "/wallet/import", icon: Cloud, text: "Import Wallet" },
-            { href: "/wallet/create", icon: Plus, text: "Create Wallet" },
-          ].map(({ href, icon: Icon, text }) => (
-            <Link
-              key={href}
-              href={href}
-              className="flex items-center justify-center gap-1 rounded-xl bg-gray-100 text-black font-bold shadow-none text-xs sm:text-sm md:text-base px-2 sm:px-4 py-3 hover:bg-gray-200 transition-colors duration-200 whitespace-nowrap flex-1">
-              <div className="bg-black rounded-full p-1">
-                <Icon
-                  className="w-3 h-3 text-gray-100"
-                  strokeWidth={text === "Import Wallet" ? 5 : 4}
-                />
-              </div>
-              {text}
-            </Link>
-          ))}
+        <div className="flex flex-col gap-2 mb-20">
+          <Link
+            href="/wallet/create"
+            className="flex items-center justify-center gap-2 rounded-full bg-[#0E3154] text-white font-medium text-sm sm:text-base md:text-lg px-8 sm:px-10 py-6 hover:bg-[#1A4B7C] transition-colors duration-200 whitespace-nowrap w-full relative overflow-hidden border-2 border-black shadow-[inset_0_0_10px_rgba(255,255,255,0.3)]">
+            <Image src="/sparkles.svg" alt="Sparkles" width={30} height={29} />
+            CREATE A NEW WALLET
+          </Link>
+          <Link
+            href="/wallet/import"
+            className="flex items-center justify-center gap-2 rounded-full bg-[rgba(14,49,84,0.2)] text-white font-medium text-sm sm:text-base md:text-lg px-8 sm:px-10 py-6 hover:bg-[rgba(14,49,84,0.5] transition-colors duration-200 whitespace-nowrap w-full relative overflow-hidden border-2 border-black shadow-[inset_0_0_10px_rgba(255,255,255,0.3)]">
+            <Image src="/key.svg" alt="Key" width={30} height={29} />I already
+            have a wallet
+          </Link>
         </div>
       </motion.main>
     </div>

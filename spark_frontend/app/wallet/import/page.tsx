@@ -3,9 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useWalletStore } from "../store";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Textarea } from "@/components/ui/textarea";
 import { PhoneInput } from "@/components/phone-input";
@@ -16,6 +15,7 @@ import {
   InputOTPSeparator,
 } from "@/components/ui/input-otp";
 import { isValidPhoneNumber } from "@/utils/validation";
+import SparkButton from "@/components/SparkButton";
 
 export default function ImportWalletPage() {
   const router = useRouter();
@@ -23,6 +23,7 @@ export default function ImportWalletPage() {
   const setPubkey = useWalletStore((state) => state.setPubkey);
   const setPhoneState = useWalletStore((state) => state.setPhoneNumber);
   const fetchBalance = useWalletStore((state) => state.fetchBalance);
+  const importWallet = useWalletStore((state) => state.importWallet);
 
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState("");
@@ -30,10 +31,29 @@ export default function ImportWalletPage() {
   const [error, setError] = useState("");
   const [step, setStep] = useState<"phone" | "otp" | "mnemonic">("phone");
   const [fetchedOtp, setFetchedOtp] = useState("");
-  const importWallet = useWalletStore((state) => state.importWallet);
+  const [isSendingOTP, setIsSendingOTP] = useState(false);
+  const [isImportingWallet, setIsImportingWallet] = useState(false);
+
+  const handleOtpChange = (value: string) => {
+    setOtp(value);
+    if (value.length === 6) {
+      verifyOtp(value);
+    }
+  };
+
+  const verifyOtp = (otpValue: string) => {
+    if (otpValue === fetchedOtp) {
+      setStep("mnemonic");
+      setError("");
+    } else {
+      setError("Invalid OTP. Please try again.");
+    }
+  };
+
   const handleContinue = async () => {
     if (step === "phone") {
       if (isValidPhoneNumber(phoneNumber)) {
+        setIsSendingOTP(true);
         try {
           // Send OTP request
           const response = await fetch(
@@ -54,30 +74,26 @@ export default function ImportWalletPage() {
 
           const data = await response.json();
           setFetchedOtp(data.otp.toString());
-
           setStep("otp");
           setError("");
         } catch (err) {
           console.error(err);
           setError("Failed to send OTP. Please try again.");
+        } finally {
+          setIsSendingOTP(false);
         }
       } else {
         setError("Please enter a valid phone number.");
       }
-    } else if (step === "otp") {
-      // Validate OTP here
-      if (otp === fetchedOtp.toString()) {
-        setStep("mnemonic");
-        setError("");
-      } else {
-        setError("Invalid OTP. Please try again.");
-      }
     } else if (step === "mnemonic") {
+      setIsImportingWallet(true);
       try {
-        handleImport();
+        await handleImport();
       } catch (err) {
         console.log(err);
         setError("An error occurred while importing the wallet.");
+      } finally {
+        setIsImportingWallet(false);
       }
     }
   };
@@ -114,10 +130,10 @@ export default function ImportWalletPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col p-6 font-[family-name:var(--font-geist-sans)]">
+    <div className="min-h-screen flex flex-col p-6 font-[family-name:var(--font-decimal)]">
       <motion.header
         initial={{ opacity: 0, y: 0 }}
-        animate={{ opacity: 1, y: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.3 }}
         className="flex justify-between items-center mb-20">
         {step === "phone" ? (
@@ -135,7 +151,7 @@ export default function ImportWalletPage() {
 
       <motion.main
         initial={{ opacity: 0, y: 0 }}
-        animate={{ opacity: 1, y: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
         className="flex-grow flex flex-col items-center justify-center space-y-8">
         {step === "phone" && (
@@ -153,7 +169,7 @@ export default function ImportWalletPage() {
             <InputOTP
               maxLength={6}
               value={otp}
-              onChange={setOtp}
+              onChange={handleOtpChange}
               className="w-full h-full justify-center shadow-none">
               <InputOTPGroup className="gap-2 sm:gap-4 shadow-none w-full h-full">
                 {[0, 1, 2].map((index) => (
@@ -198,19 +214,31 @@ export default function ImportWalletPage() {
 
       <motion.footer
         initial={{ opacity: 0, y: 0 }}
-        animate={{ opacity: 1, y: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.3 }}
         className="pb-[calc(4.5em+env(safe-area-inset-bottom))]">
-        <Button
+        <SparkButton
           onClick={handleContinue}
           disabled={
             (step === "phone" && !isValidPhoneNumber(phoneNumber)) ||
-            (step === "otp" && otp !== fetchedOtp.toString()) ||
-            (step === "mnemonic" && mnemonic.trim().split(" ").length !== 12)
-          }
-          className="w-full py-6 font-bold text-lg rounded-full shadow-none">
-          {step === "mnemonic" ? "Import Wallet" : "Continue"}
-        </Button>
+            (step === "mnemonic" && mnemonic.trim().split(" ").length !== 12) ||
+            isSendingOTP ||
+            isImportingWallet
+          }>
+          {isSendingOTP ? (
+            <>
+              <Loader2 className="mr-2 animate-spin" /> Sending OTP...
+            </>
+          ) : isImportingWallet ? (
+            <>
+              <Loader2 className="mr-2 animate-spin" /> Importing Wallet...
+            </>
+          ) : step === "mnemonic" ? (
+            "Import Wallet"
+          ) : (
+            "Continue"
+          )}
+        </SparkButton>
       </motion.footer>
     </div>
   );

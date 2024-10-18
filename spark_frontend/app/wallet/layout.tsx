@@ -3,20 +3,108 @@ import localFont from "next/font/local";
 import "../globals.css";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { useWalletStore } from "./store";
+import { ThemeProvider } from "@/components/theme-provider";
 
-const geistSans = localFont({
-  src: "../fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "../fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+// Import Decimal font with multiple weights and styles
+const decimal = localFont({
+  src: [
+    {
+      path: "../fonts/Decimal-Thin-Pro.otf",
+      weight: "100",
+      style: "normal",
+    },
+    {
+      path: "../fonts/Decimal-ThinItalic-Pro.otf",
+      weight: "100",
+      style: "italic",
+    },
+    {
+      path: "../fonts/Decimal-Light-Pro.otf",
+      weight: "200",
+      style: "normal",
+    },
+    {
+      path: "../fonts/Decimal-LightItalic-Pro.otf",
+      weight: "200",
+      style: "italic",
+    },
+    {
+      path: "../fonts/Decimal-XLight-Pro.otf",
+      weight: "300",
+      style: "normal",
+    },
+    {
+      path: "../fonts/Decimal-XLightItalic-Pro.otf",
+      weight: "300",
+      style: "italic",
+    },
+    {
+      path: "../fonts/Decimal-Book-Pro.otf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../fonts/Decimal-BookItalic-Pro.otf",
+      weight: "400",
+      style: "italic",
+    },
+    {
+      path: "../fonts/Decimal-Medium-Pro.otf",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../fonts/Decimal-MediumItalic-Pro.otf",
+      weight: "500",
+      style: "italic",
+    },
+    {
+      path: "../fonts/Decimal-Semibold-Pro.otf",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../fonts/Decimal-SemiboldItalic-Pro.otf",
+      weight: "600",
+      style: "italic",
+    },
+    {
+      path: "../fonts/Decimal-Bold-Pro.otf",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../fonts/Decimal-BoldItalic-Pro.otf",
+      weight: "700",
+      style: "italic",
+    },
+    {
+      path: "../fonts/Decimal-XBlack-Pro.otf",
+      weight: "800",
+      style: "normal",
+    },
+    {
+      path: "../fonts/Decimal-XBlackItalic-Pro.otf",
+      weight: "800",
+      style: "italic",
+    },
+    {
+      path: "../fonts/Decimal-Black-Pro.otf",
+      weight: "900",
+      style: "normal",
+    },
+    {
+      path: "../fonts/Decimal-BlackItalic-Pro.otf",
+      weight: "900",
+      style: "italic",
+    },
+  ],
+  variable: "--font-decimal",
+  display: "swap",
 });
 
 export default function RootLayout({
@@ -26,9 +114,23 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
 
-  const [mounted, setMounted] = useState(false);
+  // Remove the mounted state and useEffect
+  // const [mounted, setMounted] = useState(false);
+
+  // Remove this useEffect
+  // useEffect(() => {
+  //   setMounted(true);
+  // }, []);
+
+  // Remove the conditional rendering
+  // if (!mounted) {
+  //   return null;
+  // }
+
   const mnemonic = useWalletStore((state) => state.mnemonic);
-  const previousBalanceRef = useRef<number | null>(null);
+  const previousBtcBalanceRef = useRef<number | null>(null);
+  const previousStablecoinBalanceRef = useRef<number | null>(null);
+
   const setBtcPrice = useWalletStore((state) => state.setBtcPrice);
   const fetchBalance = useWalletStore((state) => state.fetchBalance);
   const createSparkClient = useWalletStore((state) => state.createSparkClient);
@@ -36,11 +138,7 @@ export default function RootLayout({
   const BTC_POLLING_INTERVAL = 60000; // 1 minute
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!mounted || !mnemonic) return;
+    if (!mnemonic) return;
 
     let isMounted = true;
     let intervalId: NodeJS.Timeout;
@@ -55,19 +153,34 @@ export default function RootLayout({
         const updateBalance = async () => {
           if (!isMounted) return;
           try {
-            const balance = await fetchBalance();
-            if (previousBalanceRef.current === null) {
-              previousBalanceRef.current = Number(balance);
-            } else if (balance > previousBalanceRef.current) {
-              toast.success(`Received ${balance.toLocaleString("en-US")} sats`);
-              previousBalanceRef.current = Number(balance);
+            const [btcBalance, stablecoinBalance] = await fetchBalance();
+
+            if (previousBtcBalanceRef.current === null) {
+              previousBtcBalanceRef.current = Number(btcBalance);
+            } else if (btcBalance > previousBtcBalanceRef.current) {
+              toast.success(
+                `Received ${btcBalance.toLocaleString("en-US")} sats`
+              );
+              previousBtcBalanceRef.current = Number(btcBalance);
             } else {
-              // Balance has not increased, update the previous balance
-              previousBalanceRef.current = Number(balance);
+              previousBtcBalanceRef.current = Number(btcBalance);
+            }
+
+            if (previousStablecoinBalanceRef.current === null) {
+              previousStablecoinBalanceRef.current = Number(stablecoinBalance);
+            } else if (
+              stablecoinBalance > previousStablecoinBalanceRef.current
+            ) {
+              toast.success(
+                `Received ${stablecoinBalance.toLocaleString("en-US")} sats`
+              );
+              previousStablecoinBalanceRef.current = Number(stablecoinBalance);
+            } else {
+              previousStablecoinBalanceRef.current = Number(stablecoinBalance);
             }
           } catch (error) {
-            console.error("Error fetching balance:", error);
-            toast.error("Failed to fetch balance.");
+            console.error("Error fetching balances:", error);
+            toast.error("Failed to fetch balances.");
           }
         };
 
@@ -89,12 +202,10 @@ export default function RootLayout({
       isMounted = false;
       if (intervalId) clearInterval(intervalId);
     };
-  }, [mounted, mnemonic]);
+  }, [mnemonic]);
 
-  // Add useEffect for BTC price polling
+  // Use effect for BTC price polling
   useEffect(() => {
-    if (!mounted) return;
-
     let isMounted = true;
 
     const fetchBtcPrice = async () => {
@@ -122,22 +233,17 @@ export default function RootLayout({
       isMounted = false;
       clearInterval(btcIntervalId);
     };
-  }, [mounted]);
-
-  if (!mounted) {
-    return null;
-  }
+  }, []);
 
   const isVerticalAnimation =
     pathname.includes("activity") || pathname.includes("settings");
 
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="en" className={decimal.variable}>
+      <body className={`bg-[#10151C] overflow-x-hidden antialiased`}>
         {/* Provide BTC price via Context */}
 
-        <div className="mx-auto w-full h-[100dvh] max-w-[490px] overflow-hidden bg-white">
+        <div className="mx-auto w-full h-[100dvh] max-w-[490px] bg-[#10151C] overflow-x-hidden">
           <motion.div
             key={pathname}
             initial={{
@@ -160,7 +266,12 @@ export default function RootLayout({
               duration: 0.5,
             }}
             className="h-full flex flex-col">
-            {children}
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem={false}>
+              {children}
+            </ThemeProvider>
           </motion.div>
           <Toaster position="top-center" />
         </div>

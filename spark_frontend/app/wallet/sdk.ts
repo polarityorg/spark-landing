@@ -133,6 +133,7 @@ class WalletSDK {
     
     const seed = bip39.mnemonicToSeedSync(mnemonic);
     const masterKey = seed.slice(0, 32); // Use the first 32 bytes of the seed
+    //console.log("Master Seed is: " + Buffer.from(masterKey).toString('hex'));
     const network = bindings.Network.Bitcoin;
 
 
@@ -310,27 +311,39 @@ class WalletSDK {
    * Fetches the balance of the user.
    * @returns {Promise<bigint>}
    */
-  async getBalance(): Promise<bigint> {
+  async getBtcBalance(): Promise<bigint> {
     await this.ensureInitialized();
     if (!this.wallet) {
       throw new Error('Wallet not initialized. Call createSparkClient() first.');
     }
     const balance = await this.wallet.get_balance();
-    console.log("Balance: ", balance);
+    console.log("BTC Balance: ", balance);
     return balance;
   }
 
-  // /**
-  //  * Fetches the LRC20 balance of the user.
-  //  * @returns {Promise<any>}
-  //  */
-  // async getLrc20Balance(): Promise<> {
-  //   await this.ensureInitialized();
-  //   if (!this.wallet) {
-  //     throw new Error('Wallet not initialized. Call createSparkClient() first.');
-  //   }
-  //   return await this.wallet.get_lrc20_balance();
-  // }
+    /**
+   * Fetches the balance of the user.
+   * @returns {Promise<bigint>}
+   */
+    async getStablecoinBalance(): Promise<bigint> {
+      await this.ensureInitialized();
+      if (!this.wallet) {
+        throw new Error('Wallet not initialized. Call createSparkClient() first.');
+      }
+      const balances = await this.wallet.get_lrc20_balance();
+      console.log("Stablecoin Balance: ", balances);
+      // TODO: Support different stablecoins seperately
+      if (!balances) {
+        console.log("No stablecoin balances provided.");
+        return BigInt(0);
+      } else if (balances instanceof Map) {
+        const totalBalance = Array.from(balances.values()).reduce((sum, value) => sum + BigInt(value), BigInt(0));
+        return totalBalance;
+      } else {
+        console.log("Unexpected type for stablecoin balance");
+        return BigInt(0);
+      }
+    }
 
   /**
    * Synchronizes the wallet with the server by fetching the latest leaves and balances.

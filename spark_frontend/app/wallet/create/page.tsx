@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ChevronLeft, Copy, Check, Loader2 } from "lucide-react"; // Updated import
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useWalletStore } from "../store";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/input-otp";
 import { isValidPhoneNumber } from "@/utils/validation";
 import { walletSDK } from "../sdk";
+import SparkButton from "@/components/SparkButton";
 
 export default function CreateWalletPage() {
   const router = useRouter();
@@ -33,6 +34,31 @@ export default function CreateWalletPage() {
   const importWallet = useWalletStore((state) => state.importWallet);
   const [isFetchingOTP, setIsFetchingOTP] = useState(false); // New state
   const [isCreatingWallet, setIsCreatingWallet] = useState(false); // New state
+  const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(false);
+
+  useEffect(() => {
+    setIsPhoneNumberValid(validatePhoneNumber(phoneNumber));
+  }, [phoneNumber]);
+
+  const validatePhoneNumber = (number: string): boolean => {
+    const phoneRegex = /^\+\d{10,15}$/; // Allows '+' followed by 10 to 15 digits
+    return phoneRegex.test(number);
+  };
+
+  useEffect(() => {
+    if (otp.length === 6) {
+      verifyOTP();
+    }
+  }, [otp]);
+
+  const verifyOTP = () => {
+    if (otp === fetchedOtp.toString()) {
+      setStep("mnemonic");
+      handleCreate();
+    } else {
+      setError("Invalid OTP. Please try again.");
+    }
+  };
 
   const handleCreate = () => {
     try {
@@ -111,14 +137,6 @@ export default function CreateWalletPage() {
       } else {
         setError("Please enter a valid phone number.");
       }
-    } else if (step === "otp") {
-      // Validate OTP here
-      if (otp === fetchedOtp.toString()) {
-        setStep("mnemonic");
-        handleCreate();
-      } else {
-        setError("Invalid OTP. Please try again.");
-      }
     } else if (step === "mnemonic") {
       handleCreateWallet();
     }
@@ -133,7 +151,7 @@ export default function CreateWalletPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col p-6 font-[family-name:var(--font-geist-sans)]">
+    <div className="min-h-screen bg-[#10151C] flex flex-col p-6 font-[family-name:var(--font-decimal)] text-white">
       <motion.header
         initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
@@ -160,7 +178,11 @@ export default function CreateWalletPage() {
         {step === "phone" && (
           <div className="w-full">
             <h2 className="text-2xl font-bold mb-4">Enter your phone number</h2>
-            <PhoneInput value={phoneNumber} onChange={setPhoneNumber} />
+            <PhoneInput
+              value={phoneNumber}
+              onChange={setPhoneNumber}
+              className="w-full"
+            />
           </div>
         )}
 
@@ -169,7 +191,6 @@ export default function CreateWalletPage() {
             <h2 className="text-2xl font-bold mb-4">
               Verify your phone number
             </h2>
-
             <InputOTP
               maxLength={6}
               value={otp}
@@ -214,15 +235,15 @@ export default function CreateWalletPage() {
               </div>
               <Button
                 onClick={handleCopyMnemonic}
-                className="py-1.5 font-bold text-xs flex items-center bg-transparent text-gray-700 hover:bg-transparent">
+                className="py-1.5 font-bold text-xs flex items-center bg-transparent text-gray-500 hover:bg-transparent">
                 {copied ? (
                   <>
-                    <Check className="mr-2 text-grey-700 w-4 h-4" /> Copied
+                    <Check className="mr-2 text-grey-500 w-4 h-4" /> Copied
                     Mnemonic
                   </>
                 ) : (
                   <>
-                    <Copy className="mr-2 text-gray-700 w-4 h-4" /> Copy
+                    <Copy className="mr-2 text-gray-500 w-4 h-4" /> Copy
                     Mnemonic
                   </>
                 )}
@@ -246,11 +267,10 @@ export default function CreateWalletPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
         className="pb-[calc(4.5em+env(safe-area-inset-bottom))]">
-        <Button
+        <SparkButton
           onClick={handleContinue}
-          className="w-full py-6 font-bold text-lg rounded-full"
           disabled={
-            (step === "phone" && !phoneNumber) ||
+            (step === "phone" && (!phoneNumber || !isPhoneNumberValid)) ||
             (step === "otp" && otp.length !== 6) ||
             (step === "mnemonic" && !mnemonic) ||
             isFetchingOTP ||
@@ -269,7 +289,7 @@ export default function CreateWalletPage() {
           ) : (
             "Continue"
           )}
-        </Button>
+        </SparkButton>
       </motion.footer>
     </div>
   );
