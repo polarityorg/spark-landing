@@ -212,7 +212,7 @@ export default function DepositPage() {
                 /* Show the QR code when not loading and invoice or public key is available */
                 <QRCode
                   value={qrData}
-                  size={Math.min(500, window.innerWidth * 0.8)}
+                  size={Math.min(500, window?.innerWidth * 0.8)}
                   dotScale={1}
                   dotRadius="100%"
                   positionRadius={["5%", "1%"]}
@@ -230,7 +230,7 @@ export default function DepositPage() {
                   <div className="relative w-full h-full flex items-center justify-center blur-md">
                     <QRCode
                       value="lnbc149329510n1pns79s9pp5emssj9sawqf8jqg5n49acdwv46tjyss8g7avk9dqng9fw7kyn7gshp5732rzz6dwm3carh4ju0vx6ghcdrymgyemjrln8lgr6s3qppn8j7qcqzzsxqyz5vqsp584emxnrtvlmymlvxng2vumfhnkd3ef5k6q2vcuvhrgg5l2aut7ys9qxpqysgq7de7rv4rywxu7ppeh2aunft8nkrfcxr3ss3datg423vy8ezh7a9px03dyxls5q5chvdvlwmfta6qz2q80qmghkgr07thte4ymaank9gpnfllfa"
-                      size={Math.min(500, window.innerWidth * 0.8)}
+                      size={Math.min(500, window?.innerWidth * 0.8)}
                       dotScale={1}
                       dotRadius="100%"
                       positionRadius={["5%", "1%"]}
