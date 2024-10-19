@@ -10,7 +10,8 @@ import { useWalletStore } from "../store";
 import QRCode from "react-fancy-qrcode";
 import Image from "next/image";
 import debounce from "lodash.debounce";
-import { truncatePubkey } from "@/lib/utils";
+import { copy, share, truncatePubkey } from "@/lib/utils";
+import { url } from "inspector";
 
 const formatRecipient = (value: string) => {
   const phonePattern = /^\+\d{10,}$/;
@@ -44,15 +45,14 @@ export default function DepositPage() {
   );
   const [isCopied, setIsCopied] = useState(false);
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopyStatus("Copied!");
-      setIsCopied(true);
-      setTimeout(() => {
-        setCopyStatus("");
-        setIsCopied(false);
-      }, 2000);
-    });
+  const copyToClipboard = async (text: string) => {
+    await copy(text);
+    setCopyStatus("Copied!");
+    setIsCopied(true);
+    setTimeout(() => {
+      setCopyStatus("");
+      setIsCopied(false);
+    }, 2000);
   };
 
   const handleNetworkSelection = (network: "spark" | "lightning") => {
@@ -163,16 +163,18 @@ export default function DepositPage() {
           ? {
               title: "Lightning Invoice",
               text: invoice,
+              url: window.location.href,
             }
           : {
               title: "Public Key",
               text: publicKey,
+              url: window.location.href,
             };
 
-      if (navigator.share) {
-        await navigator.share(shareData);
+      try {
+        await share(shareData);
         console.log("Successful share");
-      } else {
+      } catch (error) {
         copyToClipboard(shareData.text);
         alert(
           "Share not supported on this browser. The data has been copied to your clipboard instead."

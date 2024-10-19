@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useWalletStore } from "../store";
 import { useRouter } from "next/navigation";
-import { truncatePubkey } from "@/lib/utils";
+import { copy, truncatePubkey } from "@/lib/utils";
 import SparkButton from "@/components/SparkButton";
 import { useState } from "react";
 
@@ -36,9 +36,9 @@ export default function SettingsPage() {
   };
 
   // Updated function to copy mnemonic to clipboard
-  const handleCopyMnemonic = () => {
+  const handleCopyMnemonic = async () => {
     if (mnemonic) {
-      navigator.clipboard.writeText(mnemonic);
+      await copy(mnemonic);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
     }

@@ -17,6 +17,7 @@ import {
 import { isValidPhoneNumber } from "@/utils/validation";
 import { walletSDK } from "../sdk";
 import SparkButton from "@/components/SparkButton";
+import { copy } from "@/lib/utils";
 
 export default function CreateWalletPage() {
   const router = useRouter();
@@ -70,8 +71,8 @@ export default function CreateWalletPage() {
     }
   };
 
-  const handleCopyMnemonic = () => {
-    navigator.clipboard.writeText(mnemonic);
+  const handleCopyMnemonic = async () => {
+    await copy(mnemonic);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

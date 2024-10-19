@@ -38,58 +38,68 @@ export default function Activity() {
               </p>
             </div>
           ) : (
-            <ul className="space-y-4 w-full">
-              {activity.map((transaction) => {
-                const usdAmount = formatUsdAmount(
-                  transaction.amount,
-                  transaction.currency
-                );
-                const currencyAmount = formatCurrencyAmount(
-                  transaction.amount,
-                  transaction.currency
-                );
-                const timestamp = transaction.date
-                  ? new Date(transaction.date).toLocaleString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      hour: "numeric",
-                      minute: "numeric",
-                      hour12: true,
-                    })
-                  : "Unknown Date";
+            <>
+              <ul className="space-y-4 w-full">
+                {activity.map((transaction) => {
+                  const usdAmount = formatUsdAmount(
+                    transaction.amount,
+                    transaction.currency
+                  );
+                  const currencyAmount = formatCurrencyAmount(
+                    transaction.amount,
+                    transaction.currency
+                  );
+                  const timestamp = transaction.date
+                    ? new Date(transaction.date).toLocaleString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "numeric",
+                        hour12: true,
+                      })
+                    : "Unknown Date";
 
-                // Determine the text color based on transaction type
-                const amountClass =
-                  transaction.type === "sent"
-                    ? "text-red-500"
-                    : "text-green-500";
+                  // Determine the text color based on transaction type
+                  const amountClass =
+                    transaction.type === "sent"
+                      ? "text-red-500"
+                      : "text-green-500";
 
-                return (
-                  <li
-                    key={transaction.id}
-                    className="flex items-center justify-between py-2 rounded-md">
-                    <div>
-                      <p className="font-semibold text-[#F9F9F9]">
-                        {transaction.type === "received"
-                          ? `Received ${transaction.currency}`
-                          : transaction.type === "withdraw"
-                            ? `Withdrawn ${transaction.currency}`
-                            : transaction.type === "deposit"
-                              ? `Deposited ${transaction.currency}`
-                              : `Sent ${transaction.currency}`}
-                      </p>
-                      <p className="text-gray-500 text-sm">{timestamp}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className={`font-semibold ${amountClass}`}>
-                        ${usdAmount}
-                      </p>
-                      <p className="text-gray-500 text-sm">{currencyAmount}</p>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
+                  return (
+                    <li
+                      key={transaction.id}
+                      className="flex items-center justify-between py-2 rounded-md">
+                      <div>
+                        <p className="font-semibold text-[#F9F9F9]">
+                          {transaction.type === "received"
+                            ? `Received ${transaction.currency}`
+                            : transaction.type === "withdraw"
+                              ? `Withdrawn ${transaction.currency}`
+                              : transaction.type === "deposit"
+                                ? `Deposited ${transaction.currency}`
+                                : `Sent ${transaction.currency}`}
+                        </p>
+                        <p className="text-gray-500 text-sm">{timestamp}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className={`font-semibold ${amountClass}`}>
+                          ${usdAmount}
+                        </p>
+                        <p className="text-gray-500 text-sm">
+                          {currencyAmount}
+                        </p>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+              {/* end of list text */}
+              <div className="flex flex-col items-center justify-center pt-12 mb-12">
+                <p className="text-gray-500 text-center">
+                  No more activity to show
+                </p>
+              </div>
+            </>
           )}
         </section>
       </main>

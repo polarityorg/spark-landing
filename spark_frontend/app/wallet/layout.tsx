@@ -241,8 +241,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={decimal.variable}>
       <body className={`bg-[#10151C] overflow-x-hidden antialiased`}>
-        {/* Provide BTC price via Context */}
-
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+        />
         <div className="mx-auto w-full h-[100dvh] max-w-[490px] bg-[#10151C] overflow-x-hidden">
           <motion.div
             key={pathname}
