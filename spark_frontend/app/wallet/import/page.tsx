@@ -219,6 +219,7 @@ export default function ImportWalletPage() {
         className="pb-[calc(4.5em+env(safe-area-inset-bottom))]">
         <SparkButton
           onClick={handleContinue}
+          className="w-full h-14 text-lg font-bold"
           disabled={
             (step === "phone" && !isValidPhoneNumber(phoneNumber)) ||
             (step === "mnemonic" && mnemonic.trim().split(" ").length !== 12) ||

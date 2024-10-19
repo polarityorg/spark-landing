@@ -217,6 +217,7 @@ export default function Receive() {
           </div>
           <SparkButton
             onClick={handleVerifyOTP}
+            className="w-full h-14 text-lg font-bold"
             disabled={otp.length !== 6 || isCreatingWallet}>
             {isCreatingWallet ? (
               <>

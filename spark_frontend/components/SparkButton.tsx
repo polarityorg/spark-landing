@@ -44,7 +44,7 @@ const SparkButton: React.FC<SparkButtonProps> = ({
     border: "1px",
     borderImage: "linear-gradient(to bottom, #F9F9F9 12%, transparent 4%) 1",
     background:
-      "linear-gradient(to bottom, #0E3154, #0E3154), linear-gradient(to bottom, #F9F9F9 12%, transparent 4%)",
+      "linear-gradient(to bottom, #0E3154, #0E3154), linear-gradient(to bottom, #0E3154 12%, transparent 4%)",
     backgroundClip: "padding-box, border-box",
     backgroundOrigin: "padding-box, border-box",
     boxShadow: `
@@ -52,6 +52,7 @@ const SparkButton: React.FC<SparkButtonProps> = ({
     0px 4px 6px 0px rgba(0, 0, 0, 0.14),
     inset 0px 9px 14px -5px rgba(255, 255, 255, 0.1)
    `,
+    overflow: "hidden",
   };
 
   const combinedStyle = { ...defaultStyle, ...style };

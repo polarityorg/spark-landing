@@ -270,6 +270,7 @@ export default function CreateWalletPage() {
         className="pb-[calc(4.5em+env(safe-area-inset-bottom))]">
         <SparkButton
           onClick={handleContinue}
+          className="w-full h-14 text-lg font-bold"
           disabled={
             (step === "phone" && (!phoneNumber || !isPhoneNumberValid)) ||
             (step === "otp" && otp.length !== 6) ||
