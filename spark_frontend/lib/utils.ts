@@ -72,6 +72,7 @@ export async function copy(text: string): Promise<void> {
         reject(new Error("None of the copying methods are supported by this browser!"));
       }
     } catch (error) {
+      console.error("Error copying to clipboard", error);
       // Attempt fallback if any error occurs in the primary method
       if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
         const textarea = document.createElement("textarea");
