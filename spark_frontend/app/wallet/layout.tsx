@@ -245,6 +245,8 @@ export default function RootLayout({
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
         />
+        <meta http-equiv="ScreenOrientation" content="autoRotate:disabled" />
+
         <div className="mx-auto w-full h-[100dvh] max-w-[490px] bg-[#10151C] overflow-x-hidden">
           <motion.div
             key={pathname}

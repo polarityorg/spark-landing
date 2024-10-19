@@ -167,7 +167,7 @@ export default function CreateWalletPage() {
             <ChevronLeft className="w-6 h-6" strokeWidth={2.5} />
           </button>
         )}
-        <h1 className="text-xl font-bold">Create Wallet</h1>
+        <h1 className="text-md font-md">Create Wallet</h1>
         <div className="w-6 h-6" aria-hidden="true" />
       </motion.header>
 

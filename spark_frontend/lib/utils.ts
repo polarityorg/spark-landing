@@ -31,7 +31,7 @@ export async function copy(text: string): Promise<void> {
             });
         }
         else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
-            var textarea = document.createElement("textarea");
+            const textarea = document.createElement("textarea");
             textarea.textContent = text;
             textarea.style.position = "fixed";
             textarea.style.width = '2em';

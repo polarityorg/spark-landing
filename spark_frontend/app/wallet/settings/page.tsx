@@ -56,7 +56,7 @@ export default function SettingsPage() {
             <X className="w-6 h-6" strokeWidth={2.5} />
           </Button>
         </Link>
-        <h1 className="text-xl font-bold">My Account</h1>
+        <h1 className="text-md font-md">My Account</h1>
         <div className="w-8 h-8 rounded-full flex items-center justify-center"></div>
       </motion.header>
 

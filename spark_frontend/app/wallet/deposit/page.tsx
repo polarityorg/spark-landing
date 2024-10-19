@@ -11,7 +11,6 @@ import QRCode from "react-fancy-qrcode";
 import Image from "next/image";
 import debounce from "lodash.debounce";
 import { copy, share, truncatePubkey } from "@/lib/utils";
-import { url } from "inspector";
 
 const formatRecipient = (value: string) => {
   const phonePattern = /^\+\d{10,}$/;
@@ -29,7 +28,8 @@ export default function DepositPage() {
   const [invoice, setInvoice] = useState("");
   const [publicKey, setPublicKey] = useState("");
   const [loading, setLoading] = useState(false);
-  const [amountCents, setAmountCents] = useState(0);
+  const [, setAmountCents] = useState(0);
+  const [amountInput, setAmountInput] = useState("");
   const [, setError] = useState("");
   const [isEditingAmount, setIsEditingAmount] = useState(false);
   const amountInputRef = useRef<HTMLInputElement>(null);
@@ -69,9 +69,25 @@ export default function DepositPage() {
   };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, "");
-    setAmountCents(Number(value));
-    generateInvoiceDebounced(Number(value));
+    // Allow digits and a single decimal point
+    const value = e.target.value.replace(/[^0-9.]/g, "");
+
+    // Ensure only one decimal point is present
+    const parts = value.split(".");
+    let sanitizedValue = parts.length > 2 ? parts[0] + "." + parts[1] : value;
+
+    // Limit to two decimal places
+    if (sanitizedValue.includes(".")) {
+      const [integerPart, decimalPart] = sanitizedValue.split(".");
+      sanitizedValue = integerPart + "." + decimalPart.slice(0, 2);
+    }
+
+    setAmountInput(sanitizedValue);
+
+    const amountDollars = parseFloat(sanitizedValue) || 0;
+    const amountCents = Math.round(amountDollars * 100);
+    setAmountCents(amountCents);
+    generateInvoiceDebounced(amountCents);
   };
 
   const generateInvoice = async (amountCents: number) => {
@@ -175,6 +191,7 @@ export default function DepositPage() {
         await share(shareData);
         console.log("Successful share");
       } catch (error) {
+        console.error("Error sharing", error);
         copyToClipboard(shareData.text);
         alert(
           "Share not supported on this browser. The data has been copied to your clipboard instead."
@@ -196,7 +213,7 @@ export default function DepositPage() {
         <Link href="/wallet" aria-label="Back to wallet">
           <X className="w-6 h-6" strokeWidth={2.5} />
         </Link>
-        <h1 className="text-xl font-bold">Receive</h1>
+        <h1 className="text-md font-md">Receive</h1>
         <div className="w-6 h-6" aria-hidden="true" />
       </motion.header>
       <motion.main
@@ -286,7 +303,8 @@ export default function DepositPage() {
                         <input
                           ref={amountInputRef}
                           type="text"
-                          value={amountCents}
+                          inputMode="decimal"
+                          value={amountInput}
                           onChange={handleAmountChange}
                           onBlur={() => setIsEditingAmount(false)}
                           onClick={(e) => e.stopPropagation()}
@@ -294,7 +312,7 @@ export default function DepositPage() {
                         />
                       ) : (
                         <span className="text-gray-500 block text-sm">
-                          ${(amountCents / 100).toFixed(2)}
+                          ${amountInput || "0.00"}
                         </span>
                       )}
                     </div>
@@ -322,7 +340,15 @@ export default function DepositPage() {
             </div>
           </div>
           <div className="w-full" style={{ height: "20%" }}>
-            <div className="h-full border-t border-[#2D3845] flex items-center">
+            <div
+              className="h-full border-t border-[#2D3845] flex items-center"
+              onClick={() => {
+                if (selectedNetwork === "lightning") {
+                  copyToClipboard(invoice);
+                } else {
+                  copyToClipboard(publicKey);
+                }
+              }}>
               <div className="flex justify-between items-center px-8 w-full">
                 <div>
                   <span className="text-gray-200">
@@ -332,7 +358,7 @@ export default function DepositPage() {
                   </span>
                   <span className="text-gray-500 block text-sm truncate max-w-[200px]">
                     {selectedNetwork === "lightning"
-                      ? invoice || "Add an amount to generate invoice"
+                      ? invoice || "Add an amount..."
                       : publicKey}
                   </span>
                 </div>
